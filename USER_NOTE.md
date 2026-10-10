@@ -68,7 +68,7 @@ Open a new session with your AI agent (Codex or Claude Code depending on your
 setup) and say only two things: what you want to do, and what the topic is.
 
 ```text
-Read WORKFLOW-CONFIG.md and AGENTS.md first, confirm your role, then follow this repository's workflow starting with Pre-Planning Session Setup.
+Read WORKFLOW-CONFIG.md and AGENTS.md (Codex) or CLAUDE.md (Claude Code) first, confirm your role, then follow this repository's workflow starting with Pre-Planning Session Setup.
 The topic is: [describe your question, problem, or research idea in plain language].
 ```
 
@@ -81,7 +81,7 @@ agent asks or when they become relevant.
 If you just want to try the framework with a small test question first, use:
 
 ```text
-Read WORKFLOW-CONFIG.md and AGENTS.md first, confirm your role, then run a small framework smoke test with synthetic gates.
+Read WORKFLOW-CONFIG.md and AGENTS.md (Codex) or CLAUDE.md (Claude Code) first, confirm your role, then run a small framework smoke test with synthetic gates.
 The topic is: [short test topic, or "choose one for me"].
 ```
 
@@ -103,12 +103,73 @@ For real projects, the AI should begin with Planning only. Modeling, Reporting,
 and Reviewing should not be treated as active work until the previous gate is
 approved.
 
+`<run_dir>` in this guide means `research/<research-name>/artifacts/<run_id>/`
+(or `artifacts/<run_id>/` for a smoke test).
+
+---
+
+## Decisions Inside a Stage: Checkpoints
+
+Gates are not the only time you decide. Inside each stage the AI will stop and
+ask you about consequential choices — the research question wording, which
+dataset to use, how an event or label is defined, which cases to exclude, which
+metrics a model is judged by, how to interpret a result. These are **decision
+checkpoints** (Tier 1 in `docs/decision-rights.md`).
+
+At a checkpoint the AI should show you:
+
+- what it proposes and what that changes
+- the evidence and where to look at it
+- the alternatives it considered
+- any objections it knows about
+- whether the choice is easy or hard to reverse
+
+Routine choices (file names, code structure, retries) the AI makes on its own.
+If you think a choice the AI made alone should have come to you, say so — that
+is useful feedback and gets recorded.
+
+Choices that shape the analysis (labels, exclusions, metrics, model search
+space) are fixed **before** the AI sees results. If they change afterward, the
+AI must tell you that results were already visible.
+
+Every checkpoint and gate decision is written to the project's
+`decision-log.md`. The top of the project's `README.md` shows the current
+status: stage, last decision, open escalations, and the next action.
+
+```text
+Show me the decision log entries for this stage.
+```
+
 ---
 
 ## At the Gates: What to Say
 
-At the end of each stage, the AI will present a **gate decision** — a short
-summary of what was done and a list of options. You choose one:
+At the end of each stage, the AI will present a **gate decision**. It should
+include:
+
+- what decision is needed and what the AI recommends
+- what was done and where the stage package is
+- three to five files worth opening to check the evidence
+- **open objections**: any reviewer finding the AI did not fully fix, in the
+  reviewer's own words, and the AI's reason
+- the alternatives and what approval will cause
+
+If the AI rejected or postponed a serious reviewer finding (blocker or major),
+you decide whether that response stands:
+
+```text
+On PR-3, I do not accept your reason. Fix it before the gate.
+```
+
+If something is missing from the gate summary, you can ask for more checks
+before deciding:
+
+```text
+Before I decide, show me the reviewer's original findings and the evidence for
+the main result.
+```
+
+Then choose one:
 
 When the chat interface supports structured choices, the AI should show
 clickable options for the gate, such as approve, revise, or backtrack. You can
@@ -160,10 +221,10 @@ research plan, the method choice, and the output format.
 **Standard folder for domain materials:**
 
 ```
-artifacts/<your-run-id>/domain-materials/
+research/<research-name>/artifacts/input/domain-materials/
 ```
 
-For example: `artifacts/water-quality-2026/domain-materials/`
+For example: `research/water-quality-2026/artifacts/input/domain-materials/`
 
 **What to put there:**
 
@@ -176,7 +237,7 @@ For example: `artifacts/water-quality-2026/domain-materials/`
 **How to tell the AI about your materials:**
 
 ```text
-I have domain background materials in artifacts/<run-id>/domain-materials/.
+I have domain background materials in research/<research-name>/artifacts/input/domain-materials/.
 Please read them before writing the research plan and tell me what you
 extracted from them.
 ```
@@ -194,7 +255,7 @@ extracted from them.
 You can provide materials at any stage, not only at the beginning.
 
 ```text
-I am adding a report to artifacts/<run-id>/domain-materials/.
+I am adding a report to research/<research-name>/artifacts/input/domain-materials/.
 Please read [filename] and tell me if it changes any assumptions
 in the current plan.
 ```
@@ -293,6 +354,27 @@ current package contains, and what the next step is.
 
 ---
 
+## Changing Who Does What
+
+Sometimes the problem is not the research but how the work is divided. Signs:
+you keep correcting the AI on the same domain point; the same kind of decision
+keeps coming back; the reviewer keeps flagging the same area; or the project's
+real focus has changed. You can ask for a change in how the collaboration is
+organized (a **reconfiguration**):
+
+```text
+I keep correcting the label definitions. From now on, propose options only and
+let me (or [domain expert]) decide labels. Record this in the decision log.
+```
+
+```text
+Switch to step-by-step discussion for the rest of Modeling.
+```
+
+The AI should also propose such a change on its own when it sees these signs.
+
+---
+
 ## What You Should NOT Delegate to the AI
 
 - **Final judgment on your research question**: the AI can sharpen it, but the
@@ -326,7 +408,7 @@ The current stage package is at [path].
 If continuing after a reviewer critique:
 
 ```text
-The reviewer critique is at artifacts/<run_id>/reviewer-critique.md.
+The reviewer critique is at <run_dir>/reviewer-critique.md.
 Please read it, triage each finding, update the stage package, and then
 present the gate to me.
 ```
@@ -378,7 +460,7 @@ Do not move forward until this is verified.
 ### Providing Materials Mid-Stage
 
 ```text
-I am adding domain materials to artifacts/<run_id>/domain-materials/.
+I am adding domain materials to research/<research-name>/artifacts/input/domain-materials/.
 Before continuing, please read [specific file or folder] and tell me
 what you extracted from it that is relevant to our research plan.
 ```
@@ -429,11 +511,17 @@ You are the reviewer agent. Read WORKFLOW-CONFIG.md to confirm your role,
 then read AGENTS.md (or CLAUDE.md).
 
 Please review the [Planning / Modeling / Reporting / Reviewing] package.
-The review request is at artifacts/<run_id>/review-request.md.
+The review request is at <run_dir>/review-request.md.
 Read the stage package and supporting artifacts listed there.
-Write your critique to artifacts/<run_id>/reviewer-critique.md.
+Write your critique to <run_dir>/reviewer-critique.md.
 Critique only — do not modify any files.
 ```
+
+The review request says whether this is a **standard** or **blind** review. In
+blind mode the reviewer forms its own findings before reading the researcher's
+summary and questions, which makes it harder for the researcher's framing to
+hide a problem. Reviewing uses blind mode by default; you can ask for it at any
+stage.
 
 If you want to focus the review:
 
@@ -446,7 +534,7 @@ method validity / citation support / a specific section].
 
 **If a finding is too vague:**
 ```text
-Finding RC-[N] is not specific enough. What exactly is wrong, and
+Finding PR-[N] is not specific enough. What exactly is wrong, and
 where in the package does the problem appear? Please restate it with
 a concrete example and a clearer recommended action.
 ```
@@ -467,14 +555,14 @@ Add any findings on this to your critique file.
 ### Disagreeing with a Finding
 
 ```text
-I disagree with finding RC-[N]. In this domain, [explanation of why
+I disagree with finding PR-[N]. In this domain, [explanation of why
 the finding does not apply or is already addressed]. Please mark this
 as an accepted limitation or withdraw the finding, and explain your
 revised assessment.
 ```
 
 ```text
-Finding RC-[N] is correct but not fixable within the current scope.
+Finding PR-[N] is correct but not fixable within the current scope.
 Please mark it as an accepted limitation with the reason:
 [explanation]. We will disclose it in the Reporting stage.
 ```
@@ -485,7 +573,7 @@ By default the reviewer agent does not modify files. If you want it to
 fix something directly:
 
 ```text
-I authorize you to fix finding RC-[N] directly. Please make only
+I authorize you to fix finding PR-[N] directly. Please make only
 that change to [specific file], record what you changed, and then
 stop. Do not make any other edits.
 ```
@@ -512,8 +600,8 @@ off context explicitly. Use these scripts each time you switch.
 ```text
 You are the reviewer agent. Read WORKFLOW-CONFIG.md, then AGENTS.md (or CLAUDE.md).
 The researcher has completed the [stage] package.
-The review request is at artifacts/<run_id>/review-request.md.
-Please critique and write findings to artifacts/<run_id>/reviewer-critique.md.
+The review request is at <run_dir>/review-request.md.
+Please critique and write findings to <run_dir>/reviewer-critique.md.
 Critique only — do not modify any files.
 ```
 
@@ -521,7 +609,7 @@ Critique only — do not modify any files.
 
 ```text
 You are the researcher agent. Read WORKFLOW-CONFIG.md, then AGENTS.md (or CLAUDE.md).
-The reviewer has finished. Read artifacts/<run_id>/reviewer-critique.md.
+The reviewer has finished. Read <run_dir>/reviewer-critique.md.
 Triage each finding, update the [stage] package with the response-to-reviewer
 section, and then present the gate to me.
 ```
@@ -530,10 +618,10 @@ section, and then present the gate to me.
 
 ```text
 Before you update the package, here is my position on the reviewer findings:
-- RC-1: Accept and fix. [Any guidance on how.]
-- RC-2: Accept as limitation. Disclose in the Reporting stage.
-- RC-3: Reject. [Reason.]
-- RC-4: I need your recommendation before deciding.
+- PR-1: Accept and fix. [Any guidance on how.]
+- PR-2: Accept as limitation. Disclose in the Reporting stage.
+- PR-3: Reject. [Reason.]
+- PR-4: I need your recommendation before deciding.
 Now triage the rest and update the package.
 ```
 

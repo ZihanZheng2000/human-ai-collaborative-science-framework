@@ -102,8 +102,12 @@ Package itself.
 
 Default rule:
 
-- The reviewer agent critiques only.
+- The reviewer agent critiques and may escalate (see `decision-rights.md#reviewer-rights`).
 - It does not modify files.
+- The Reviewing stage uses **blind** review mode by default: the reviewer reads
+  the packages, deliverables, and artifacts and writes independent findings
+  before reading the researcher's summary and questions (see
+  `coordination.md#reviewer-information-modes`).
 - It returns findings with severity, evidence, and route.
 - The researcher agent consolidates the findings and performs revisions unless the user explicitly asks the reviewer agent to edit.
 
@@ -133,6 +137,9 @@ Core criteria:
 - reporting/package inspectability
 - readiness for finalization, release, submission, or archive
 - ethical, licensing, disclosure, or responsible-AI concerns
+- accountability: every consequential decision is reconstructable from the
+  decision log (proposer, evidence, objections, authorizer); nominal approvals
+  and unresolved escalations are visible
 
 For manuscript or paper outputs, add:
 
@@ -163,6 +170,11 @@ Every actionable finding should be routed.
 | Reporting | package clarity, evidence inventory, provenance summaries, finding labels, deliverable organization, manuscript or slide argument, citation placement, venue or format compliance, limitation language |
 | Review | reviewer disagreement, severity calibration, acceptance of limitations |
 | Terminate | project is infeasible, noncompliant, or misleading under current constraints |
+| User decision | a judgment only the user or a domain expert should make; also every deferred or rejected blocker/major |
+
+If findings show that the current Decision-Rights Map no longer fits (for
+example, repeated domain errors in one decision class), recommend a
+reconfiguration in addition to routing the finding.
 
 ## 8. Revision Execution Plan
 
@@ -193,6 +205,8 @@ Gate questions:
 - Are claim-strength risks acceptable?
 - Is the work ready for finalization/release, another Modeling/Reporting cycle, Planning revision, archive, or termination?
 - If reviewer-agent critique was used, were its findings triaged and either fixed, routed, or explicitly rejected?
+- Do you uphold or overturn the researcher's response to each escalated finding?
+- Are there nominal upstream approvals that should be re-done substantively before release?
 
 Possible decisions:
 
@@ -202,8 +216,17 @@ Possible decisions:
 - request Modeling addendum
 - backtrack to Planning
 - run another reviewer-agent critique
+- reconfigure the Decision-Rights Map and re-check affected decisions
 - accept limitations and proceed
 - terminate
+
+### Workflow Evaluation Record
+
+At the Reviewing Gate, fill the Workflow Evaluation section of the project's
+`run-notes.md` (see `workflow-evaluation.md`): claim-support audit, trajectory-
+changing findings, decision traceability, nominal vs substantive approvals,
+escalations, and human effort. This evaluates the collaboration itself, not
+only the deliverable.
 
 ## 10. Review Package
 

@@ -12,6 +12,9 @@
 - Reviewing Reviewer: reviewer agent name or runtime / skipped
 - reviewer file: `docs/reviewer-agents/reviewing-reviewer-agent.md`
 - reviewer mode: critique-only / edits explicitly authorized by user / skipped
+- review mode: blind (default for Reviewing) / standard
+- reviewer rights: advisory + escalation (default) / other per Decision-Rights Map
+- decision log: `decision-log.md`
 - Reviewing Review status: pending / completed / skipped
 - researcher-agent response status: pending / completed / not applicable
 
@@ -40,6 +43,10 @@
 | usable evidence is distinguished from candidate material |  |  | Model |
 | Reporting separates supported/preliminary/uncertain/unsupported findings |  |  | Reporting |
 | limitations and failures remain visible |  |  | Reporting |
+| every Tier 1/2 decision in the decision log has proposer, evidence, objections, and authorizer |  |  | Review / user decision |
+| nominal approvals of consequential decisions are identified |  |  | user decision |
+| open escalations and deferred items are listed, none silently closed |  |  | user decision |
+| locked analysis choices were not changed after results without a logged decision |  |  | Model |
 
 ## Internal Self Review
 
@@ -55,9 +62,12 @@
 - packet path or prompt path:
 - output path:
 
-| Reviewer finding | Severity | Accepted? | Researcher-agent response | Route | Action |
-|---|---|---|---|---|---|
-|  | blocker / major / minor / suggestion / accepted limitation | yes / no / partial / deferred |  | Plan / Model / Reporting / Review / Terminate |  |
+Independent (blind) findings and follow-up findings are kept separate in the
+critique file; note which block each finding came from.
+
+| Reviewer finding | Block | Severity | Accepted? | Researcher-agent response | Escalated to user? | User ruling | Route | Action |
+|---|---|---|---|---|---|---|---|---|
+|  | independent / follow-up | blocker / major / minor / suggestion / accepted limitation | yes / no / partial / deferred |  | yes / no | upheld / overturned / pending / n.a. | Plan / Model / Reporting / Review / Terminate / user decision |  |
 
 ## Review Criteria
 
@@ -74,6 +84,7 @@
 | synthesis quality and uncertainty handling |  |  |
 | reporting readability and traceability |  |  |
 | ethics/licensing/disclosure |  |  |
+| accountability and decision traceability |  |  |
 | readiness for next route |  |  |
 
 ## Findings Table
@@ -100,6 +111,12 @@
 | public sharing/submission | yes / no / maybe |  |
 | archive or terminate | yes / no / maybe |  |
 
+## Reconfiguration Recommendations
+
+| Signal | Decision class affected | Recommended change | Decision ID if adopted |
+|---|---|---|---|
+|  |  |  |  |
+
 ## Accepted Limitations
 
 | Limitation | Why accepted | Where disclosed |
@@ -109,6 +126,11 @@
 ## Review Gate Decision
 
 - decision: approve for finalization or release / approve limited package / revise Reporting / request Model addendum / backtrack to Plan / run another reviewer-agent critique / accept limitations and finalize / terminate
+- decision-log ID:
+- approval quality: substantive / nominal (what was missing) / synthetic
+- escalated findings ruled on: finding ID -> upheld / overturned
+- open objections carried forward:
+- workflow evaluation recorded in run-notes.md: yes / no
 - user notes:
 - blocker issues remaining:
 - major issues remaining:

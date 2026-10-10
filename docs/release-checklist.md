@@ -19,7 +19,7 @@ Use this before publishing the repository on GitHub.
 
 ## Paper
 
-- [ ] Review `docs/paper.md` for citation correctness
+- [ ] The companion paper is maintained in a separate repository; confirm the README citation and title match its current version
 - [ ] Replace placeholder contributor names if needed
 - [ ] Decide whether the paper targets arXiv, preprint, or internal technical note first
 - [ ] Add repository URL after GitHub publication

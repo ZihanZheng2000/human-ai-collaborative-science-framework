@@ -11,6 +11,7 @@ Use a descriptive, stable slug:
 ```text
 research/<research-name>/
   README.md
+  decision-log.md
   run-notes.md
   packages/
     planning-package.md
@@ -28,6 +29,7 @@ research/<research-name>/
       run_summary.md
       agent/
     input/
+      domain-materials/
     data/
     code/
     logs/
@@ -41,13 +43,14 @@ research/<research-name>/
 
 | Location | Purpose |
 |---|---|
-| `README.md` | Short orientation: research question, current stage, status, important paths |
-| `run-notes.md` | Provisional lessons, decisions, friction, and after-action notes |
+| `README.md` | Status block (see below) plus research question and important paths |
+| `decision-log.md` | Shared research state for decisions: every Tier 1 checkpoint, Tier 2 gate, escalation, reconfiguration, and informal review (template: `templates/decision-log.md`) |
+| `run-notes.md` | Provisional lessons, friction, and the workflow evaluation record (template: `templates/example-run-notes.md`) |
 | `packages/` | Compact stage handoff packages only |
 | `deliverables/` | Reader-facing outputs such as manuscript drafts, reports, slides, dashboards, or software packages |
 | `notes/` | Discussion notes, literature reviews, problem taxonomies, source notes, method sketches |
 | `artifacts/<run_id>/` | Run-scoped review requests, critiques, manifests, logs, summaries, and agent artifacts |
-| `artifacts/input/` | User-supplied files and route-defining inputs |
+| `artifacts/input/` | User-supplied files and route-defining inputs; `domain-materials/` holds Domain Onboarding materials |
 | `artifacts/data/` | Raw and cleaned datasets or literature/source matrices |
 | `artifacts/code/` | Scripts and notebooks |
 | `artifacts/logs/` | Command logs, environment repair logs, execution traces |
@@ -62,13 +65,32 @@ At the beginning of a new real research project, the researcher agent should:
 
 1. propose a `research/<research-name>/` slug;
 2. create the default folder skeleton after the user confirms or when the slug is safe to infer;
-3. create `README.md` and `run-notes.md`;
+3. create `README.md` (with the status block), `decision-log.md`, and `run-notes.md`;
+   record the Pre-Planning setup choices as `D-1`;
 4. create or revise only the active stage package in `packages/`;
 5. put detailed stepwise discussion artifacts in `notes/`;
 6. put review requests and reviewer critiques under `artifacts/<run_id>/`.
 
 For framework tests or tiny smoke tests, a shorter layout is acceptable, but the
 run must still record where packages, notes, artifacts, and deliverables live.
+
+## README Status Block
+
+Keep this block at the top of the project README and update it whenever the
+researcher stops:
+
+```markdown
+## Status
+
+- current stage:
+- active package:
+- last decision: D-<n> (date) — one line
+- open escalations: none / list
+- deferred items due soon: none / list
+- current workflow mode and reviewer strategy:
+- next action:
+- user decision needed now: none / what
+```
 
 ## Root Directory Rule
 

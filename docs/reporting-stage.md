@@ -210,7 +210,12 @@ The reviewer should inspect:
 
 The researcher agent must respond to reviewer findings before the Reporting
 Gate. Findings should be accepted and fixed, accepted but deferred, rejected
-with reason, or escalated for user decision.
+with reason, or escalated for user decision. Deferred or rejected blocker and
+major findings are escalated to the user automatically.
+
+The claim level used in the deliverable must not exceed the level authorized in
+the decision log. Raising it is a Tier 1 checkpoint; if it needs new evidence,
+route it to Modeling.
 
 ## 9. Reporting Gate
 
@@ -225,6 +230,8 @@ Gate questions:
 - Does the deliverable match its output mode, such as paper, report, slides, web, dashboard, software, or review packet?
 - Have Reporting Reviewer findings been fixed, deferred, rejected with reason, or escalated for user decision?
 - Are any missing evidence items routed back to Modeling or Planning?
+- Does the deliverable stay within the authorized claim level?
+- Do you uphold or overturn the researcher's response to each escalated finding?
 - Is the package ready for Review, or should Reporting revise locally?
 - Does the user approve moving to Review?
 

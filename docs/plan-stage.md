@@ -62,6 +62,10 @@ the user gate:
 - rejected with reason
 - needs user decision
 
+Blocker and major findings that the researcher defers or rejects are escalated
+to the user; only the user can uphold that response (see
+`decision-rights.md#reviewer-rights`).
+
 Only after the researcher agent has recorded this response should the Planning
 Gate be shown to the user. If no separate reviewer agent is available or the
 user declines it, the Plan Package must say that the Planning Review was
@@ -84,7 +88,8 @@ and reviewer strategy.
 6. Generate candidate research plans, if more than one route remains
 7. Run feasibility and cost checks on the plausible routes
 8. Calibrate target venue, audience, or output format using official requirements and exemplar articles
-9. Select or confirm the research route, research question, and claim level
+9. Select or confirm the research route, research question, and claim level,
+   and draft the project's Decision-Rights Map
 10. Scan for mature external tools, packages, templates, and existing skills for the selected route
 11. Distill useful selected prior work into research-skill cards or skill candidates
 12. Write the Planning Researcher draft package
@@ -125,6 +130,10 @@ In stepwise mode, the researcher agent should:
    Planning package.
 5. Ask the user for a concrete next decision when a unit would shape the
    research route.
+6. Treat each accepted unit that shapes the research as a Tier 1 decision
+   checkpoint: append it to `decision-log.md` with the proposal, evidence,
+   alternatives, open objections, and the user's decision (see
+   `decision-rights.md`).
 
 Only after the user has discussed or accepted the major Planning units should
 the researcher consolidate them into a complete Planning package for reviewer
@@ -183,7 +192,9 @@ If the user says no or does not respond, proceed to step 1 without waiting.
 ### Procedure
 
 1. Identify the user-supplied material folder or file list.
-   Convention: place materials in `artifacts/<run_id>/domain-materials/`.
+   Convention: real projects use
+   `research/<research-name>/artifacts/input/domain-materials/`; smoke tests
+   and legacy runs use `artifacts/<run_id>/domain-materials/`.
 2. Read each file. For each, note:
    - material type (paper, report, data documentation, policy doc, field notes, other)
    - domain covered
@@ -486,6 +497,25 @@ The selected route should lock:
 If the route remains uncertain, stop and ask the user to choose among the
 candidate routes rather than drafting a full package around an unapproved route.
 
+### Draft the Decision-Rights Map
+
+Once the route is selected, copy the default map from `decision-rights.md` into
+the Planning Package and adjust it to the project:
+
+- mark decision classes where the researcher or the user lacks the needed
+  domain judgment, and say who supplies it (user materials, a named domain
+  expert, or a deferred check);
+- raise the tier of any decision with irreversible cost, safety, privacy, or
+  public-release consequences;
+- state reviewer rights (default: advisory + escalation) and which stages use
+  blind review;
+- list which analysis choices must be locked at a Tier 1 checkpoint before
+  results are visible (labels, exclusions, metrics, model search space,
+  validation split).
+
+The map is itself a Tier 1 decision and is confirmed by the user before the
+Planning package goes to the reviewer.
+
 ## 10. Scan for Mature External Tools, Packages, Templates, and Existing Skills
 
 Before creating a new project skill or custom method for the selected route,
@@ -562,6 +592,8 @@ The draft should include:
 - venue or output calibration
 - candidate routes, when relevant
 - selected research question and method blueprint
+- Decision-Rights Map
+- decision-log references for each Tier 1 decision made during Planning
 - Model-stage acceptance rubric
 
 The package status should be `draft for Planning Review`, not `approved`.
@@ -603,6 +635,9 @@ For each finding, record:
 - change made or planned
 - whether the item blocks the Planning Gate
 
+Blocker or major findings that are deferred or rejected are escalated: add them
+to the decision log's Open Escalations and quote them at the gate.
+
 The researcher agent may fix local plan-package issues, clarify assumptions,
 soften claims, add fallback sources, tighten acceptance criteria, or mark
 limitations. The researcher agent should not silently change the user's research
@@ -629,6 +664,9 @@ Gate questions:
 - Does the target venue, audience, or output format fit this plan?
 - Have Planning Reviewer findings been fixed, deferred, rejected with reason, or escalated for user decision?
 - Is any skipped external Planning Review acceptable for this project?
+- Do you uphold or overturn the researcher's response to each escalated finding?
+- Does the Decision-Rights Map give the right people authority over the
+  decisions that matter, including domain judgment the AI agents lack?
 - What must be changed before modeling starts?
 
 ## 16. Approved Plan Package

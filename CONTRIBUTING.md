@@ -15,8 +15,10 @@ This repository is a research workflow kit. Contributions should preserve the co
 - Improve stage specifications in `docs/`.
 - Improve package templates in `templates/`.
 - Add or refine workflow-native skills in `skills/`.
+- Edit researcher/reviewer agent instructions in `docs/agent-roles/`, then run `python scripts/build_agent_instructions.py` to regenerate `CLAUDE.md` and `AGENTS.md` (do not edit those two files directly).
 - Add small, reproducible examples in `examples/`.
-- Improve the paper draft in `docs/paper.md`.
+- Improve the organization, coordination, and evaluation layers (`docs/decision-rights.md`, `docs/coordination.md`, `docs/workflow-evaluation.md`).
+- Report workflow evaluation results from real or smoke-test runs (see `templates/example-run-notes.md`).
 - Add tests or smoke tests that reveal workflow gaps.
 
 ## Example Requirements

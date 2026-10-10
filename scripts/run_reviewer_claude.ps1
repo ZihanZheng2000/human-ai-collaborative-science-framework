@@ -31,20 +31,19 @@ Work from this repository root:
 $repoRoot
 
 Required behavior:
-1. Read WORKFLOW-CONFIG.md to confirm the active configuration and whether Claude Code is currently the reviewer.
-2. Read CLAUDE.md.
-3. Read docs/reviewer-agents/cross-agent-handoff.md.
-4. Read this review request:
+1. Read CLAUDE.md and follow the Reviewer role section.
+2. Read docs/decision-rights.md, docs/coordination.md, and docs/reviewer-agents/cross-agent-handoff.md.
+3. Read the Header and Artifacts to Inspect sections of this review request:
 $requestFullPath
-5. If WORKFLOW-CONFIG does not assign Claude Code as reviewer, still write a critique file to the exact path below, but make the first finding a blocker that says the active configuration does not authorize Claude Code as reviewer.
-6. If Claude Code is the reviewer, read the stage package and supporting artifacts listed in the review request.
-7. If Claude Code is the reviewer, read the relevant stage reviewer-agent file named by the review request stage.
-8. Write your critique to this exact path:
+4. Check the assignment. The request header is authoritative for this pass. If it names a reviewer other than Claude Code, or names Claude Code while WORKFLOW-CONFIG.md assigns a different reviewer and the header does not cite a user override decision, still write the critique, but make the assignment mismatch the first finding (severity major, route user decision).
+5. Read the relevant stage reviewer-agent file, the stage package, the decision log, and the listed artifacts.
+6. If the review mode is blind, write independent findings before reading the Researcher Framing section, then add follow-up findings in a separate block. If standard, read the Researcher Framing section before critiquing.
+7. Write your critique to this exact path:
 $critiqueFullPath
 
-Use the critique table format required by the reviewer-agent instructions.
-Do not edit the stage package, docs, templates, or supporting artifacts.
-If the request is incomplete, still write reviewer-critique.md and record the blocker.
+Use the critique format in docs/reviewer-agents/cross-agent-handoff.md.
+Do not edit the stage package, docs, templates, decision log, or supporting artifacts.
+If the request is incomplete, still write the critique file and record the gap as a finding.
 "@
 
 Push-Location $repoRoot

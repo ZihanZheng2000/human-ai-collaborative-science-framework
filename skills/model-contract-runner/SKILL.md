@@ -21,8 +21,8 @@ description: Use during Model when an Approved Plan Package must be turned into 
 
 ## Procedure
 
-1. State a concrete Modeling Goal for the run: continue until the Model Package is ready for the Model Gate, or until a user decision, Plan backtrack, or termination condition is required.
-2. Lock the modeling contract from the approved plan.
+1. State a concrete Modeling Goal for the run: continue until the Model Package is ready for the Modeling Gate, or until a user decision, Plan backtrack, or termination condition is required.
+2. Lock the modeling contract from the approved plan. Present labels, exclusion rules, metrics, model search space, and validation split as a Tier 1 decision checkpoint and record the user's decision in `decision-log.md` before running the analyses they affect.
 3. Record data source identity: raw host, official source, documentation source, citation source, version/access date, and license/access status.
 4. Retrieve raw data under explicit acquisition success rules and save provenance.
 5. Run preflight and data quality checks before analysis.
@@ -35,7 +35,7 @@ description: Use during Model when an Approved Plan Package must be turned into 
 12. Run a Model Critic Pass.
 13. If the result is correct but insufficient, build a Next Analysis Queue.
 14. Run bounded repair, cleaning, environment repair, method-fidelity, result-quality, or evidence-deepening loops only when justified.
-15. Stop, escalate, or pass through the Model Gate.
+15. Stop, escalate, or pass through the Modeling Gate.
 
 ## Outputs
 
@@ -55,6 +55,9 @@ description: Use during Model when an Approved Plan Package must be turned into 
 - limitations and addendum requests
 
 ## Guardrails
+
+- Make Tier 0 choices (repairs, retries, code structure, cleaning within locked rules) yourself and record them in the run log; stop and raise a Tier 1 checkpoint if a repair would change a locked choice.
+- If a locked choice changes after results were visible, log a new decision that says so.
 
 - Do not change the research question or method without user approval.
 - Do not stop merely because a script ran, a table was produced, or a figure exists.

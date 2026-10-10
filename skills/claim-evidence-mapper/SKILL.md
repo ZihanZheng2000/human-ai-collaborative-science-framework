@@ -45,6 +45,8 @@ description: Use during Reporting or Reviewing to ensure every important finding
 
 ## Guardrails
 
+- Do not map any claim at a higher claim level than the one authorized in the decision log; raising it is a Tier 1 checkpoint.
+
 - Do not use citations as decoration.
 - Do not cite a source unless it supports the sentence or clause being cited.
 - Do not leave "previous studies show," "little work has examined," or similar gap claims without mapped evidence.

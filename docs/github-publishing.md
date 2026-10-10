@@ -14,7 +14,7 @@ Recommended display title:
 2. Make sure `.env` is not committed.
 3. Decide whether generated example data and figures should be included.
 4. Replace contributor names and citation metadata if desired.
-5. Review `docs/paper.md` for citation correctness.
+5. Confirm the README's companion-paper reference matches the separately maintained paper.
 
 ## Suggested Repository Description
 
@@ -47,7 +47,6 @@ Then create a GitHub repository named `human-gated-ai-research-framework` and fo
 After the repository URL exists, update:
 
 - `CITATION.cff`
-- `docs/paper.md`
 - `docs/release-checklist.md`
 
 ## Suggested v0.1 Release Notes
@@ -61,4 +60,4 @@ Initial development release of AI-Native Academic Research Framework, including:
 - workflow-native skills
 - smoke-test mode
 - lightweight examples folder and example organization rules
-- accompanying paper draft
+- organization, coordination, and evaluation layers (decision rights, decision log, escalation, workflow evaluation)

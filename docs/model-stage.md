@@ -63,11 +63,11 @@ For agentic execution environments, the Model stage should begin with a concrete
 Use this distinction:
 
 - **Goal** keeps Model work moving until the Model Package is gate-ready or a route decision is required.
-- **Model Gate** decides whether the Model Package can move downstream to Reporting.
+- **Modeling Gate** decides whether the Model Package can move downstream to Reporting.
 
 A good Modeling Goal should state that the agent must continue until one of these conditions is met:
 
-1. the Model Package is complete and ready for the Model Gate;
+1. the Model Package is complete and ready for the Modeling Gate;
 2. the approved modeling contract is impossible under current data, tools, permissions, or runtime;
 3. a user/domain decision is required;
 4. the workflow must backtrack to Plan;
@@ -76,7 +76,7 @@ A good Modeling Goal should state that the agent must continue until one of thes
 Suggested goal text:
 
 ```text
-Complete the Model stage for the approved plan. If the workflow is new or uncertain, first run a small exploratory demo phase before scaling up. Do not stop after the first successful script, table, or figure. Continue until usable data acquisition, preflight checks, data-quality audit, executable analysis, output validation, Preliminary Finding Brief, correctness check, sufficiency check, Model Critic Pass, Next Analysis Queue decision, claim-readiness notes, and the Model Package are ready for the Model Gate, or until a user decision, Plan backtrack, or termination condition is required.
+Complete the Model stage for the approved plan. If the workflow is new or uncertain, first run a small exploratory demo phase before scaling up. Do not stop after the first successful script, table, or figure. Continue until usable data acquisition, preflight checks, data-quality audit, executable analysis, output validation, Preliminary Finding Brief, correctness check, sufficiency check, Model Critic Pass, Next Analysis Queue decision, claim-readiness notes, and the Model Package are ready for the Modeling Gate, or until a user decision, Plan backtrack, or termination condition is required.
 ```
 
 ## Internal Flow
@@ -98,7 +98,7 @@ Complete the Model stage for the approved plan. If the workflow is new or uncert
 15. Repair environment, data, code, or evidence within bounded loops
 16. Prepare reporting-support artifacts and claim-readiness notes
 17. Run Modeling Reviewer critique and researcher-agent response when available and approved
-18. Stop, escalate, or pass through the Model Gate
+18. Stop, escalate, or pass through the Modeling Gate
 19. Output one Model Package
 
 The final output should be one **Model Package**. It combines code location, data provenance, acquisition success counts, execution environment, run manifest, run log, validation checks, preliminary finding briefs, model state updates, critic notes, reviewer-agent critique when used, next-analysis queue, result tables, figure inventory, iteration history, evidence-deepening decisions, stopping decision, and handoff notes for Reporting.
@@ -187,11 +187,11 @@ If the first executable run fails because of missing packages, incompatible vers
 
 For substantial runs, create or update:
 
-- `artifacts/<run_id>/run_manifest.json`
-- `artifacts/<run_id>/run_log.md`
-- `artifacts/<run_id>/run_summary.md`
+- `<run_dir>/run_manifest.json`
+- `<run_dir>/run_log.md`
+- `<run_dir>/run_summary.md`
 
-The run manifest should record run id, date, scope, mode, approved package inputs, data/source targets, scripts or tools used, output locations, validation status, and gate status. The run log should record chronological actions, decisions, failures, repairs, and user approvals. The run summary should explain what this run proved in human-readable form.
+The run manifest should record run id, date, scope, mode, approved package inputs, data/source targets, scripts or tools used, output locations, validation status, and gate status. The run log should record chronological actions, Tier 0 decisions, failures, and repairs; Tier 1 and Tier 2 decisions and user approvals go in the project `decision-log.md`. The run summary should explain what this run proved in human-readable form.
 
 Before acquisition, Model should confirm the source identity fields from the Plan Package:
 
@@ -588,9 +588,27 @@ If a downstream stage needs additional empirical support, it should create a **M
 
 The Model stage then performs a bounded addendum run, validates the new artifact, updates the Model Package, and returns to the requesting stage. Conceptual diagrams, workflow figures, and non-empirical explanatory visuals may be created in Reporting, but empirical figures must be produced or validated by Model.
 
+## Decision Checkpoints During Modeling
+
+These Modeling decisions are Tier 1 checkpoints (see `decision-rights.md`) and
+go in `decision-log.md`:
+
+- the locked modeling contract, including labels, exclusion rules, evaluation
+  metrics, model search space, and validation split — locked **before** the
+  results they affect are visible;
+- acceptance of acquired data and any exclusions;
+- any change to a locked choice after results were seen (the entry must say
+  results were visible);
+- interpretation of results that makes causal, domain, or operational claims;
+- scale-up from exploratory demo to full study.
+
+Repairs, retries, cleaning within the locked rules, and code structure are
+Tier 0: the researcher decides and records them in the run log. If a Tier 0
+repair would change a Tier 1 choice, stop and raise a checkpoint.
+
 ## 17. Modeling Reviewer Pass
 
-Before the Model Gate, a reviewer agent should critique the Model Package when
+Before the Modeling Gate, a reviewer agent should critique the Model Package when
 a separate reviewer agent is available and approved. Use
 `reviewer-agents/modeling-reviewer-agent.md`.
 
@@ -604,9 +622,10 @@ The reviewer should inspect:
 - whether weak, null, or failed results are preserved honestly
 - whether Reporting can use the outputs without reconstructing scattered context
 
-The researcher agent must respond to reviewer findings before the Model Gate.
+The researcher agent must respond to reviewer findings before the Modeling Gate.
 Findings should be accepted and fixed, accepted but deferred, rejected with
-reason, or escalated for user decision.
+reason, or escalated for user decision. Deferred or rejected blocker and major
+findings are escalated to the user automatically.
 
 ## 18. Stopping Rules
 
@@ -622,9 +641,9 @@ The Model stage should stop under any of these conditions:
 
 Stopping is not failure. In an AI-native research workflow, stopping is part of scientific control. However, the system should not stop merely because it produced one table, one figure, or one executable result. It should stop when the result is correct and sufficient for the accepted claim level, or when further progress requires user judgment, new data, or a backtrack.
 
-## 19. Model Gate
+## 19. Modeling Gate
 
-After execution and validation, the workflow must pause for a Model Gate. The user should approve, edit, reject, request another bounded iteration, or backtrack the Model Package. The system should not automatically pass results into Reporting just because code ran successfully.
+After execution and validation, the workflow must pause for a Modeling Gate. The user should approve, edit, reject, request another bounded iteration, or backtrack the Model Package. The system should not automatically pass results into Reporting just because code ran successfully.
 
 Gate questions:
 
@@ -641,6 +660,8 @@ Gate questions:
 - Are assumptions and limitations explicit?
 - Is there enough reporting-support evidence for Reporting to package the results transparently?
 - Did the system stay within the approved plan?
+- Were locked analysis choices kept, or were changes after seeing results logged?
+- Do you uphold or overturn the researcher's response to each escalated finding?
 - Should Reporting begin, should Model iterate, or should Plan be revised?
 
 Possible decisions:

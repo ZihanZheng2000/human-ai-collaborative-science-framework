@@ -1,4 +1,7 @@
-# Approved Plan Package
+# Planning Package
+
+This package becomes the **Approved Planning Package** only after the user
+approves the Planning Gate.
 
 ## Planning Workflow Identity
 
@@ -7,6 +10,9 @@
 - Planning Reviewer: reviewer agent name or runtime / skipped
 - reviewer file: `docs/reviewer-agents/planning-reviewer-agent.md`
 - reviewer mode: critique-only / edits explicitly authorized by user / skipped
+- review mode: standard / blind
+- reviewer rights: advisory + escalation (default) / other per Decision-Rights Map
+- decision log: `decision-log.md`
 - Planning Review status: pending / completed / skipped
 - researcher-agent response status: pending / completed / not applicable
 - user Planning Gate status: pending / approved / revise / backtrack / terminate
@@ -188,15 +194,40 @@ Inspect 2-5 recent structurally similar articles from the selected or candidate 
 Complete this section after literature, candidate-route discussion,
 feasibility, and venue/output calibration.
 
-| Route element | Selected value | Evidence or reason | User confirmation status |
-|---|---|---|---|
-| working research question |  |  | confirmed / provisional / needs decision |
-| intended output and claim level |  |  | confirmed / provisional / needs decision |
-| data/source strategy |  |  | confirmed / provisional / needs decision |
-| method family |  |  | confirmed / provisional / needs decision |
-| feasibility status and fallback |  |  | confirmed / provisional / needs decision |
-| target venue/audience/output mode |  |  | confirmed / provisional / needs decision |
-| future-work boundary |  |  | confirmed / provisional / needs decision |
+| Route element | Selected value | Evidence or reason | User confirmation status | Decision ID |
+|---|---|---|---|---|
+| working research question |  |  | confirmed / provisional / needs decision |  |
+| intended output and claim level |  |  | confirmed / provisional / needs decision |  |
+| data/source strategy |  |  | confirmed / provisional / needs decision |  |
+| method family |  |  | confirmed / provisional / needs decision |  |
+| feasibility status and fallback |  |  | confirmed / provisional / needs decision |  |
+| target venue/audience/output mode |  |  | confirmed / provisional / needs decision |  |
+| future-work boundary |  |  | confirmed / provisional / needs decision |  |
+
+## Decision-Rights Map
+
+Copy the default map from `docs/decision-rights.md` and adjust it. This map is
+a Tier 1 decision; changes after approval are reconfigurations recorded in the
+decision log.
+
+| Decision class | Performed by | Authority | Tier | Domain judgment supplied by | Notes |
+|---|---|---|---|---|---|
+| research purpose, question, claim level | researcher proposes | user | 1 (2 at gate) |  |  |
+| prior-work / novelty depth, skip or defer | researcher proposes | user | 1 |  |  |
+| data source and acquisition success rule | researcher proposes | user | 1 |  |  |
+| labels, event definitions, inclusion/exclusion rules | researcher proposes | user | 1 |  | lock before results |
+| method family, model search space, metrics, validation split | researcher proposes | user | 1 |  | lock before results |
+| analysis execution and repair within locked contract | researcher | researcher | 0 |  |  |
+| interpretation, causal or domain claims | researcher proposes | user | 1 |  |  |
+| response to blocker/major findings (defer or reject) | researcher proposes | user | 1 |  |  |
+| output route, venue, audience | researcher proposes | user | 1 |  |  |
+| stage transition, backtrack, release, terminate | researcher proposes | user | 2 |  |  |
+| workflow mode, reviewer strategy, this map | anyone proposes | user | 1 |  |  |
+
+- reviewer rights: advisory + escalation / other:
+- stages using blind review: Reviewing / other:
+- domain expert involvement: none / named expert for decision classes:
+- decision ID confirming this map:
 
 ## External Tool and Skill Scan
 
@@ -229,9 +260,9 @@ candidates. Do not create cards for every screened source.
 
 Use this section before the user Planning Gate. The reviewer agent should be separate from the researcher agent when available and approved by the user. The reviewer critiques only unless the user explicitly authorizes edits.
 
-| Finding ID | Reviewer concern | Severity | Evidence or reasoning | Route |
-|---|---|---|---|---|
-| PR-1 |  | blocker / major / minor / suggestion / accepted limitation |  | Planning fix / Modeling constraint / user decision / accepted limitation / terminate |
+| Finding ID | Severity | Concern | Evidence or reasoning | Route | Blocks gate? | Recommended action |
+|---|---|---|---|---|---|---|
+| PR-1 | blocker / major / minor / suggestion / accepted limitation |  |  | Planning / Modeling / Reporting / Reviewing / Terminate / user decision | yes / no |  |
 
 If external Planning Review was skipped, record why:
 
@@ -243,9 +274,13 @@ If external Planning Review was skipped, record why:
 
 The researcher agent must respond to reviewer findings before the user Planning Gate.
 
-| Finding ID | Response status | Change made or planned | Blocks Planning Gate? | Notes |
-|---|---|---|---|---|
-| PR-1 | accepted and fixed / accepted but deferred / rejected with reason / needs user decision |  | yes / no |  |
+Blocker and major findings that are deferred or rejected are escalated: add
+them to the decision log's Open Escalations and quote them at the gate. Only the
+user can uphold the response.
+
+| Finding ID | Response status | Change made or planned | Blocks gate? | Escalated to user? | User ruling | Notes |
+|---|---|---|---|---|---|---|
+| PR-1 | accepted and fixed / accepted but deferred / rejected with reason / needs user decision |  | yes / no | yes / no | upheld / overturned / pending / n.a. |  |
 
 ## Approved Research Question
 
@@ -302,6 +337,10 @@ The researcher agent must respond to reviewer findings before the user Planning 
 - decision: approve for Modeling / revise Planning / request another Planning Review / backtrack / terminate
 - gate mode: real user gate / synthetic gate / mixed
 - decision maker:
+- decision-log ID:
+- approval quality: substantive / nominal (what was missing) / synthetic
+- escalated findings ruled on: finding ID -> upheld / overturned
+- open objections carried forward:
 - date:
 - required changes before Modeling:
 - accepted limitations:
@@ -320,7 +359,8 @@ The Model stage can begin only if:
 - the selected method is feasible under the user's constraints
 - expected runtime and API/token cost are acceptable or capped
 - the core assumptions are explicit
+- the Decision-Rights Map is confirmed and the analysis choices to lock before results are listed
 - expected figures or tables are defined
 - unresolved risks are either mitigated or accepted by the user
-- Planning Reviewer findings are fixed, deferred with triggers, rejected with reasons, or escalated for user decision
+- Planning Reviewer findings are fixed, deferred with triggers, rejected with reasons, or escalated for user decision, and the user has ruled on every escalated blocker or major
 - the user has approved the Planning Gate after the researcher-agent response to Planning Review

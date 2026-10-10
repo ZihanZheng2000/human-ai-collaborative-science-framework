@@ -25,7 +25,7 @@ Recommended external research skills are listed in `../docs/skill-strategy.md#re
 | `figure-table-narrative/` | Plan visual evidence, claim alignment, placement, and caption limits around Reporting deliverables | Hands method/conceptual visuals to CCF-Figure or diagram tools; hands empirical visuals to Model/plotting tools |
 | `claim-evidence-mapper/` | Tie claims to citations, model artifacts, limitations, or approved user knowledge | May use citation, retrieval, or metadata tools, but keeps the final map internal |
 | `route-aware-reviewer/` | Review evidence packages or deliverables and route findings to Planning, Modeling, Reporting, Reviewing, or termination | May use reviewer simulation or checklists, but keeps routing decisions internal |
-| `gate-manager/` | Record human gate decisions and manage stage advancement or backtracking | Mostly framework-native; not replaced by external tools |
+| `gate-manager/` | Present gates and Tier 1 checkpoints substantively, record decisions in the decision log, and manage stage advancement, backtracking, or reconfiguration | Mostly framework-native; not replaced by external tools |
 
 In short: external tools perform research operations; internal skills preserve the framework's control logic, evidence records, handoffs, and gates.
 
@@ -43,4 +43,4 @@ When a skill uses or recommends an external tool, the stage package should recor
 
 ## Project-Specific Skills
 
-Project-specific skills should usually live in the project or run artifacts while they are being tested, for example `artifacts/<run_id>/agent/` in a worked example. They can be promoted into `skills/` only when they are reusable across projects, documented, and clearly add workflow value beyond external tools.
+Project-specific skills should usually live in the project or run artifacts while they are being tested, for example `<run_dir>/agent/` (see `../docs/stage-handoffs.md`). They can be promoted into `skills/` only when they are reusable across projects, documented, and clearly add workflow value beyond external tools.

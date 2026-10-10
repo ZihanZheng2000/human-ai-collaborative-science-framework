@@ -117,7 +117,7 @@ Current internal skills fall into two practical groups:
 
 These are narrow skills created for one project or domain, such as a water-science manuscript-revision skill.
 
-Project-specific skills should usually live inside the project folder or a run-specific agent artifact folder, such as `artifacts/<run_id>/agent/`, until they have been reused across more than one project. A project-specific skill can be promoted to `skills/` only when it is general enough, documented, and useful beyond the original case.
+Project-specific skills should usually live inside the project folder or a run-specific agent artifact folder, such as `<run_dir>/agent/` (see `docs/stage-handoffs.md`), until they have been reused across more than one project. A project-specific skill can be promoted to `skills/` only when it is general enough, documented, and useful beyond the original case.
 
 ## Decision Rules
 

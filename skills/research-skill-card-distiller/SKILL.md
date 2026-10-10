@@ -24,7 +24,7 @@ description: Use during Plan to convert retrieved papers OR user-supplied domain
 **From user-supplied domain materials (step 0 Domain Onboarding):**
 - papers, institutional reports, policy documents, field notes, data
   dictionaries, codebooks, or prior project materials provided by the user
-- folder path: `artifacts/<run_id>/domain-materials/` by convention
+- folder path: `research/<research-name>/artifacts/input/domain-materials/` by convention (`artifacts/<run_id>/domain-materials/` for smoke tests)
 - domain area and research intent stated by the user
 
 ## Procedure

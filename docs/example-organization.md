@@ -9,6 +9,7 @@ Each example should use this structure unless there is a clear reason to deviate
 ```text
 examples/<example-name>/
   README.md
+  decision-log.md
   run-notes.md
   packages/
     planning-package.md
@@ -46,7 +47,8 @@ examples/<example-name>/
 | Location | Purpose | Examples |
 |---|---|---|
 | `README.md` | Stable orientation for the example | goal, status, how to rerun, main outputs |
-| `run-notes.md` | Provisional lessons from one run | friction, decisions, follow-up rules |
+| `decision-log.md` | Shared research state for decisions | Tier 1 checkpoints, gates, escalations, reconfigurations |
+| `run-notes.md` | Provisional lessons and workflow evaluation for one run | friction, evaluation measures, follow-up rules |
 | `packages/` | Approved stage handoff packages | planning, modeling, reporting, reviewing packages |
 | `deliverables/` | Reader-facing final or near-final outputs | manuscript, revised draft, report, reusable skill |
 | `notes/` | Working notes that inform packages but are not packages | literature review, feasibility notes, method sketches |
@@ -75,6 +77,7 @@ examples/<example-name>/
 The example root should stay sparse. In normal use it should contain only:
 
 - `README.md`
+- `decision-log.md`
 - `run-notes.md`
 - `packages/`
 - `deliverables/`

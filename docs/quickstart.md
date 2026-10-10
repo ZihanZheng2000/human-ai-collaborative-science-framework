@@ -22,6 +22,10 @@ Planning begins.
 | Use reviewer | Run review-request -> reviewer-critique -> researcher response before each user gate. |
 | Skip reviewer | Record skipped-review reason, accepted risk, and revisit trigger before the user gate. |
 
+4. For a real project, create `research/<research-name>/` with `README.md`
+   (status block), `decision-log.md`, and `run-notes.md`, and record these
+   setup choices as `D-1`.
+
 For real research, recommend **Step-by-step discussion** and **Use reviewer**.
 For smoke tests, recommend **Auto-until-needed** with synthetic gates.
 
@@ -60,7 +64,7 @@ Use this to test the framework on a small public-data task.
 
 1. Start from `templates/smoke-test-package.md`.
 2. Select a small question and public dataset.
-3. Use synthetic gates and label them as synthetic.
+3. Use synthetic gates and label them as synthetic. Record decisions in the smoke-test package's Decision Notes table.
 4. Download or read real usable data.
 5. Run a minimal executable analysis.
 6. Generate at least one table and one figure.
@@ -80,6 +84,10 @@ For any mode:
   before the full Planning Package is gate-ready, unless the user explicitly
   accepts a skip/defer rationale and revisit trigger.
 - Each stage gate should happen after reviewer-agent critique and researcher-agent response, or after an explicit skipped-review rationale is recorded.
+- Consequential in-stage choices are Tier 1 decision checkpoints: the researcher proposes, the user decides, and the decision goes in the decision log (`docs/decision-rights.md`).
+- Reviewer blockers and majors that the researcher defers or rejects are escalated to the user.
+- Gates are presented substantively: evidence paths, open objections in the reviewer's wording, alternatives, and consequences (`docs/coordination.md`).
+- Each substantial run records workflow evaluation measures in `run-notes.md` (`docs/workflow-evaluation.md`).
 - Data count only when usable under the acquisition success rule.
 - Raw data host, official source, documentation source, version/access date, and license/access status should be recorded.
 - Environment failures should trigger an environment repair decision.
@@ -92,7 +100,7 @@ For any mode:
 
 Run a smoke test with a small public CSV dataset and organize it according to `docs/example-organization.md`.
 
-## Suggested Prompt for a New Codex Session
+## Suggested Prompt for a New Researcher Session
 
 ```text
 Please run a complete smoke test of this repository's workflow.

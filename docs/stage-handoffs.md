@@ -2,6 +2,21 @@
 
 This document summarizes how the workflow stages connect. Each stage outputs one compact package. Downstream stages should read the approved package rather than reconstructing context from scattered notes.
 
+## Framework Layers
+
+The four stages say *what work* happens and in what order. Three cross-cutting
+documents say how the human–AI research system around those stages is
+organized, kept coherent, and evaluated:
+
+| Layer | Document | What it governs |
+|---|---|---|
+| Organization | [decision-rights.md](decision-rights.md) | who performs each activity, who authorizes each decision class, decision tiers, reviewer rights, substantive vs nominal approval |
+| Coordination | [coordination.md](coordination.md) | shared research state (README status + decision log + packages), the accountability loop, escalation, blind review, gate presentation, adaptive reconfiguration |
+| Evaluation | [workflow-evaluation.md](workflow-evaluation.md) | how each run measures outcome, collaboration process, accountability, and human effort |
+
+Stage gates are the Tier 2 decisions in this design. Tier 1 decision checkpoints
+happen inside stages; Tier 0 routine choices are made by the researcher.
+
 ## Pre-Planning Session Setup
 
 Before the workflow enters Planning, the researcher agent should run a short
@@ -31,6 +46,10 @@ Recommended default for real research: **Step-by-step discussion** plus
 **Use reviewer**. Recommended default for smoke tests: **Auto-until-needed** plus
 synthetic gates and either skipped reviewer with recorded risk or a clearly
 labeled synthetic reviewer pass.
+
+For a real project, record the setup choices as the first entry (`D-1`) in
+`research/<research-name>/decision-log.md`. Changing either choice later is a
+reconfiguration and gets its own entry.
 
 After the setup gate, the researcher begins Planning orientation using the
 selected mode.
@@ -129,11 +148,42 @@ Researcher agent produces or revises the stage package
 -> User gate
 ```
 
-Reviewer agents critique only by default. They should not modify files unless
-the user explicitly authorizes edits. Reviewer findings should be recorded in
-the stage package or linked as an agent artifact. The researcher-agent response
-must classify each finding as accepted and fixed, accepted but deferred,
-rejected with reason, or needing user decision.
+Reviewer agents critique and may escalate; they do not approve gates and do not
+modify files unless the user explicitly authorizes an edit. Reviewer findings
+should be recorded in the stage package or linked as an agent artifact. The
+researcher-agent response must classify each finding as accepted and fixed,
+accepted but deferred, rejected with reason, or needing user decision.
+
+A `blocker` or `major` finding that the researcher defers or rejects is
+escalated: it is added to the decision log's Open Escalations and shown to the
+user at the gate in the reviewer's original wording. Only the user can uphold
+the researcher's response. See [decision-rights.md](decision-rights.md#reviewer-rights).
+
+The Reviewing stage uses **blind** review mode by default; other stages use
+**standard** mode unless the user or the Decision-Rights Map says otherwise.
+See [coordination.md](coordination.md#reviewer-information-modes).
+
+## Decision Checkpoints Inside Stages
+
+Stage gates are not the only place the user decides. Consequential choices made
+inside a stage are **Tier 1 decision checkpoints**: the researcher proposes
+(with evidence, alternatives, and known objections), the user decides, and the
+decision is appended to `decision-log.md`. Typical checkpoints:
+
+- Planning: research question and claim level, literature-scan depth or skip,
+  source strategy, labels/event definitions, method family, output route, the
+  Decision-Rights Map itself
+- Modeling: acquired data and exclusions, model search space and metrics
+  (locked before results are seen), interpretation of results, scale-up from
+  demo to full study
+- Reporting: claim level in the deliverable, inclusion of preliminary findings
+- Any stage: skipping a planned check, changing workflow mode or reviewer
+  strategy, reconfiguration
+
+Checkpoints are lighter than gates: no reviewer pass is required. They still
+need the substantive presentation items in
+[decision-rights.md](decision-rights.md#substantive-versus-nominal-approval).
+Stage packages cite the decision IDs rather than restating the history.
 
 If a reviewer-agent pass is skipped for any stage, the stage package must record
 the reason, accepted risk, and revisit trigger before the user gate is presented
@@ -156,6 +206,12 @@ Backtracking is normal. It is not a system failure.
 | manuscript, slide, web, dashboard, or software-package argument is weak or report-like | Reviewing -> Reporting |
 | project is infeasible, noncompliant, or misleading | Any stage -> Terminate |
 
+Backtracking changes the inquiry. When the problem is instead *who* is doing or
+deciding something (repeated domain corrections, repeated escalations of the
+same decision class, a changed research object), propose a **reconfiguration**
+of the Decision-Rights Map. See
+[coordination.md](coordination.md#adaptive-reconfiguration).
+
 ## Package Discipline
 
 The workflow should avoid creating many unreviewed side artifacts. Extra files can exist for code, data, figures, validation outputs, working notes, and drafts, but each stage should summarize them in its package.
@@ -166,6 +222,10 @@ For real research projects, create a dedicated project folder under
 belong in `research/<research-name>/packages/`; detailed notes belong in
 `research/<research-name>/notes/`; run-scoped review requests, critiques,
 manifests, and logs belong in `research/<research-name>/artifacts/<run_id>/`.
+
+Each real project also keeps `research/<research-name>/decision-log.md`
+(template: `templates/decision-log.md`) and a status block in its `README.md`.
+Together with the stage packages, these are the project's shared research state.
 
 For discussion-first projects, do not force all work into the stage package at
 once. Use supporting notes or matrices for detailed exploration, and keep the
@@ -188,8 +248,10 @@ Required packages:
 
 Supporting templates:
 
+- `templates/decision-log.md`
 - `templates/research-skill-card.md`
 - `templates/smoke-test-package.md`
+- `templates/example-run-notes.md`
 
 Worked examples should not keep every file in the example root. Use the layout in [example-organization.md](example-organization.md):
 
@@ -203,15 +265,18 @@ The example root should usually contain only `README.md`, `run-notes.md`, and th
 
 ## Run Logs and Agent Artifacts
 
+`<run_dir>` is `research/<research-name>/artifacts/<run_id>/` for real projects
+and `artifacts/<run_id>/` for smoke tests or legacy runs.
+
 For substantial runs, especially exploratory demos that may later scale up, maintain:
 
-- `artifacts/<run_id>/run_manifest.json` for version, scope, inputs, outputs, tools, and status
-- `artifacts/<run_id>/run_log.md` for chronological decisions, failures, repairs, and gate notes
-- `artifacts/<run_id>/run_summary.md` for the human-readable summary of what the run proved
+- `<run_dir>/run_manifest.json` for version, scope, inputs, outputs, tools, and status
+- `<run_dir>/run_log.md` for chronological execution events, Tier 0 decisions, failures, repairs, and gate notes
+- `<run_dir>/run_summary.md` for the human-readable summary of what the run proved
 
 If agent-specific skills, prompts, critiques, or coordination notes are created during a run, store them under:
 
-- `artifacts/<run_id>/agent/`
+- `<run_dir>/agent/`
 
 Promote only reusable, evidence-backed agent methods into `skills/`. Keep run-specific agent material in artifacts.
 
@@ -222,6 +287,12 @@ Each gate should answer three questions:
 1. Is the stage output scientifically acceptable for its stated claim level?
 2. What must be changed before downstream use?
 3. Should the workflow proceed, revise locally, backtrack, scale up, finalize, release, archive, or terminate?
+
+A gate approval counts as substantive human oversight only when the user was
+shown the proposal, the evidence paths, alternatives, open objections (including
+escalated reviewer findings verbatim), consequences, and the option to ask for
+more checks or override. Otherwise the decision log records the approval as
+**nominal** with what was missing.
 
 For autonomous framework tests, gate decisions must be labeled as **synthetic gates** rather than real user approvals. Synthetic gates are acceptable for smoke tests and QA runs, but they do not replace user, domain-owner, or expert approval in a real research project.
 
@@ -269,18 +340,28 @@ If a stage is approved but the next stage cannot begin, the package should state
 
 ## Gate Language
 
-At each gate, Codex should guide the user with a short decision prompt:
+At each gate, the researcher agent guides the user with the substantive gate
+presentation from [coordination.md](coordination.md#substantive-gate-presentation):
 
-- current stage and package produced
-- what was completed
-- what decision is needed
-- what will happen if the user approves
-- what alternative routes are available
-- structured clickable choices when available, with a free-form path for
-  conditions or corrections
+- decision needed and the recommended choice
+- what was completed and the package path
+- three to five evidence paths worth opening
+- open objections: escalated reviewer findings in the reviewer's wording,
+  deferred items and their triggers, and whether the reviewer pass was skipped
+- alternative routes and what each would cause
+- what will happen if the user approves, and how it could be reversed
+- structured clickable choices when available, including "ask for more checks",
+  with a free-form path for conditions or corrections
 
 Use concrete language such as:
 
 ```text
-This completes the Modeling package. The exploratory demo phase has been incorporated into the Modeling evidence and revision notes. If you approve the Modeling Gate, I will move to Reporting / Output Packaging. Alternative routes are: revise Modeling, narrow the scope, or return to Planning.
+This completes the Modeling package (packages/modeling-package.md). Evidence to
+open: artifacts/tables/main_results.csv, artifacts/figures/fig2.png,
+artifacts/validation/rerun_check.md. The reviewer raised MR-3 (major): "the
+exclusion rule was tightened after the first results were visible." I deferred
+it because the change is logged as D-14; you need to uphold or overturn that.
+If you approve the Modeling Gate, I will move to Reporting and carry the
+exclusion change as a disclosed limitation. Alternatives: revise Modeling to
+rerun with the original rule, or return to Planning.
 ```
