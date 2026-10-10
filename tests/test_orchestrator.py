@@ -270,6 +270,92 @@ class ConfigSnapshotTest(unittest.TestCase):
             sb.close()
 
 
+class ExternalProjectTest(unittest.TestCase):
+    def test_project_outside_framework_repo(self):
+        sb = Sandbox()
+        outside = Path(tempfile.mkdtemp(prefix="my-study-"))
+        try:
+            sb.project = outside / "study"
+            eng = sb.engine(config("synthetic"), interactive=False)
+            eng.init_project("t", run_id="r1")
+            self.assertEqual(eng.run(max_steps=60), DONE)
+            self.assertTrue((sb.project / "packages/reviewing-package.md").exists())
+            pointer = (sb.project / "CLAUDE.md").read_text()
+            self.assertIn(str(sb.root), pointer)
+            self.assertIn("inbox/answered/", sb.log())  # evidence paths are project-relative
+        finally:
+            sb.close()
+            shutil.rmtree(outside, ignore_errors=True)
+
+    def test_existing_instruction_file_not_overwritten(self):
+        sb = Sandbox()
+        outside = Path(tempfile.mkdtemp(prefix="my-study-"))
+        try:
+            sb.project = outside / "study"
+            sb.project.mkdir()
+            (sb.project / "CLAUDE.md").write_text("mine")
+            sb.engine(config("synthetic"), interactive=False).init_project("t", run_id="r1")
+            self.assertEqual((sb.project / "CLAUDE.md").read_text(), "mine")
+        finally:
+            sb.close()
+            shutil.rmtree(outside, ignore_errors=True)
+
+
+class ReviewerGuardTest(unittest.TestCase):
+    def test_reviewer_editing_files_is_stopped(self):
+        sb = Sandbox()
+        try:
+            with env(FAKE_VANDAL="reviewer", FAKE_CHECKPOINT="0"):
+                eng = sb.engine(config("real"), interactive=False)
+                eng.init_project("t", run_id="r1", use_config_defaults=True)
+                self.assertEqual(eng.run(), WAITING)
+            stuck = [p for p in inbox.pending(sb.project / "inbox") if p.name.startswith("STUCK")]
+            self.assertEqual(len(stuck), 1)
+            self.assertIn("planning-package.md", stuck[0].read_text())
+            self.assertEqual(eng.state["step"], "review")
+        finally:
+            sb.close()
+
+
+class SessionContinuityTest(unittest.TestCase):
+    def test_researcher_session_resumed_within_stage_only(self):
+        sb = Sandbox()
+        try:
+            cfg = config("synthetic")
+            cfg["agents"]["fake-researcher"]["session"] = {
+                "within": "stage", "start_args": ["--output-format", "json"],
+                "resume_args": ["--resume", "{session_id}"]}
+            eng = sb.engine(cfg, interactive=False)
+            eng.init_project("t", run_id="r1")
+            eng.run(max_steps=60)
+            calls = (sb.project / ".fake-sessions.log").read_text().splitlines()
+            self.assertEqual(calls[0], "researcher resume=")          # first planning call
+            self.assertEqual(calls[1], "researcher resume=sess-1")    # after the checkpoint, same stage
+            stages = [h for h in eng.state["history"] if "running: work" in h]
+            modeling_first = next(i for i, h in enumerate(stages) if "modeling/" in h)
+            self.assertNotIn("resuming", stages[modeling_first])      # new stage, new session
+        finally:
+            sb.close()
+
+
+class ReviewOnlyTest(unittest.TestCase):
+    def test_review_command_on_manual_project(self):
+        sb = Sandbox()
+        try:
+            run = sb.project / "artifacts" / "m1"
+            run.mkdir(parents=True)
+            (sb.project / "packages").mkdir()
+            (sb.project / "packages/planning-package.md").write_text("pkg")
+            (run / "review-request-planning.md").write_text("# Review Request\n\n## Artifacts to Inspect\n\n- packages/planning-package.md\n")
+            (run / "review-framing-planning.md").write_text("framing")
+            eng = sb.engine(config("real"), interactive=False)
+            critique = eng.review_only("planning", run_id="m1")
+            self.assertTrue(critique.exists())
+            self.assertFalse((sb.project / ".workflow/state.json").exists())
+        finally:
+            sb.close()
+
+
 class ConfigTest(unittest.TestCase):
     def test_api_researcher_rejected(self):
         cfg = config()

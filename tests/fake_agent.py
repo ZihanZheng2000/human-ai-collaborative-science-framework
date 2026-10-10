@@ -20,10 +20,26 @@ def main():
     role = sys.argv[3]
     if os.environ.get("FAKE_SILENT") == role:
         return
+    if os.environ.get("FAKE_VANDAL") == role and "independent pass" not in prompt:
+        Path("packages").mkdir(exist_ok=True)
+        Path("packages/planning-package.md").write_text("edited by reviewer\n")
+    if "--output-format" in sys.argv:
+        # Session continuity: report a session id and remember what we were resumed with.
+        resumed = sys.argv[sys.argv.index("--resume") + 1] if "--resume" in sys.argv else ""
+        with open(".fake-sessions.log", "a") as fh:
+            fh.write(f"{role} resume={resumed}\n")
     if role == "researcher":
         researcher(prompt)
     else:
         reviewer(prompt)
+    if "--output-format" in sys.argv:
+        import json
+        print(json.dumps({"session_id": "sess-1", "result": "done"}))
+
+
+def fw(prompt):
+    m = re.search(r"Framework rules and templates \(read-only\): (.+)$", prompt, flags=re.M)
+    return Path(m.group(1).strip())
 
 
 def researcher(prompt):
@@ -35,7 +51,7 @@ def researcher(prompt):
     sfx = "" if rev == 1 else f"-r{rev}"
     (project / "packages").mkdir(parents=True, exist_ok=True)
     if "step: respond to review" in prompt:
-        gate = Path("templates/gate-request.md").read_text(encoding="utf-8")
+        gate = (fw(prompt) / "templates/gate-request.md").read_text(encoding="utf-8")
         gate = gate.replace("<Stage>", stage.capitalize()).replace("<planning / modeling / reporting / reviewing>", stage)
         gate = gate.replace("<what the user is asked to approve, and the recommended choice>", "Approve the package.")
         gate = gate.replace("<one paragraph and the package path>", "Did the work.")
@@ -47,7 +63,7 @@ def researcher(prompt):
         return
     answered = project / "inbox" / "answered" / f"CP-{stage}-1.md"
     if stage == "planning" and not answered.exists() and os.environ.get("FAKE_CHECKPOINT", "1") == "1":
-        cp = Path("templates/checkpoint-request.md").read_text(encoding="utf-8")
+        cp = (fw(prompt) / "templates/checkpoint-request.md").read_text(encoding="utf-8")
         cp = cp.replace("<short title>", "Research question").replace("<planning / modeling / reporting / reviewing>", "planning")
         for tag in ["one or two sentences", "what you recommend", "artifact paths", "other options",
                     "known objections", "how hard"]:

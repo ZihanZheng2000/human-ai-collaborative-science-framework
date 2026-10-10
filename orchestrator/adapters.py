@@ -12,6 +12,7 @@ these adapters:
 - human: a person performs the role; the task is written to the inbox.
 """
 
+import json
 import os
 import shlex
 import subprocess
@@ -27,6 +28,7 @@ class AgentError(Exception):
 class AgentResult:
     text: str
     returncode: int = 0
+    session_id: str = None
 
 
 class CliAdapter:
@@ -39,15 +41,31 @@ class CliAdapter:
     def command_for(self, role: str) -> list:
         return self.spec.get("role_commands", {}).get(role) or self.spec["command"]
 
-    def run_task(self, prompt: str, role: str, cwd: Path, log_path: Path) -> AgentResult:
-        template = self.command_for(role)
+    def run_task(self, prompt: str, role: str, cwd: Path, log_path: Path,
+                 session_id: str = None, framework_dir: Path = None) -> AgentResult:
+        """Run one agent session with `cwd` (the project folder) as working directory.
+
+        Placeholders in the command: {prompt}, {prompt_file}, {project_dir},
+        {framework_dir}. With a "session" spec (researcher only), the session id
+        is read from the agent's JSON output and the next call in the same stage
+        resumes it.
+        """
+        template = list(self.command_for(role))
+        session_spec = self.spec.get("session") if role == "researcher" else None
+        if session_spec:
+            template += session_spec.get("start_args", [])
+            if session_id:
+                template += [a.replace("{session_id}", session_id) for a in session_spec.get("resume_args", [])]
         prompt_file = log_path.with_suffix(".prompt.md")
         prompt_file.parent.mkdir(parents=True, exist_ok=True)
         prompt_file.write_text(prompt, encoding="utf-8")
-        argv = [
-            part.replace("{prompt_file}", str(prompt_file)).replace("{prompt}", prompt)
-            for part in template
-        ]
+        subs = {"{prompt_file}": str(prompt_file), "{project_dir}": str(cwd),
+                "{framework_dir}": str(framework_dir or cwd)}
+        argv = []
+        for part in template:
+            for key, val in subs.items():
+                part = part.replace(key, val)
+            argv.append(part.replace("{prompt}", prompt))
         stdin = prompt if self.spec.get("stdin") else None
         env = {**os.environ, **self.spec.get("env", {})}
         try:
@@ -64,12 +82,21 @@ class CliAdapter:
             raise AgentError(f"agent '{self.name}': command not found: {argv[0]}") from exc
         except subprocess.TimeoutExpired as exc:
             raise AgentError(f"agent '{self.name}': timed out after {exc.timeout}s") from exc
+        shown = [a if a != prompt else "<prompt>" for a in argv]
         log_path.write_text(
-            f"$ {shlex.join(argv[:1])} ... (prompt in {prompt_file.name})\n"
+            f"$ {shlex.join(shown)}\n(prompt in {prompt_file.name})\n"
             f"returncode: {proc.returncode}\n\n--- stdout ---\n{proc.stdout}\n--- stderr ---\n{proc.stderr}\n",
             encoding="utf-8",
         )
-        return AgentResult(proc.stdout, proc.returncode)
+        text, sid = proc.stdout, None
+        if session_spec:
+            try:
+                data = json.loads(proc.stdout.strip().splitlines()[-1])
+                sid = data.get(session_spec.get("id_key", "session_id"))
+                text = data.get(session_spec.get("text_key", "result"), proc.stdout)
+            except (ValueError, IndexError, AttributeError):
+                pass  # no JSON: run continues without session continuity
+        return AgentResult(text, proc.returncode, sid)
 
 
 class AnthropicAdapter:

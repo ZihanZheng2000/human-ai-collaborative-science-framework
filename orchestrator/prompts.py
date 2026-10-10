@@ -18,11 +18,11 @@ CHECKPOINT_PROTOCOL = """\
 ## How to ask the user (Tier 1 decision checkpoints)
 
 You cannot talk to the user directly. Every Tier 1 decision class in
-docs/decision-rights.md that you settle needs the user, including choices to
+{fw}/docs/decision-rights.md that you settle needs the user, including choices to
 skip, defer, or lighten a planned check (prior-work depth, venue calibration,
 tool scan) and the output route. Write one file per decision (closely related
 minor choices may share one file) to
-`{inbox}/pending/CP-{stage}-<n>.md` using `templates/checkpoint-request.md`
+`{inbox}/pending/CP-{stage}-<n>.md` using `{fw}/templates/checkpoint-request.md`
 (sections: Decision needed, Proposal, Evidence, Alternatives, Open objections,
 Reversibility, Options with the recommended option first, and an empty
 Decision section). Then stop. The orchestrator will collect the answer, record
@@ -59,23 +59,25 @@ def researcher_work(ctx: dict) -> str:
     f = _files(stage, ctx["revision"])
     handoff = (
         f"When the package is ready for review, write `{ctx['run_dir']}/{f['request']}` and "
-        f"`{ctx['run_dir']}/{f['framing']}` (format: docs/reviewer-agents/cross-agent-handoff.md), "
+        f"`{ctx['run_dir']}/{f['framing']}` (format: {ctx['fw']}/docs/reviewer-agents/cross-agent-handoff.md), "
         "update the README status block, and stop."
         if ctx["reviewer"] == "use"
         else f"The reviewer pass is skipped for this run. When the package is ready, record the skip "
         f"(reason, accepted risk, revisit trigger) in the package, write the gate request "
-        f"`{ctx['run_dir']}/{f['gate']}` using `templates/gate-request.md`, and stop."
+        f"`{ctx['run_dir']}/{f['gate']}` using `{ctx['fw']}/templates/gate-request.md`, and stop."
     )
     notes = ctx.get("notes") or "none"
     return f"""You are the RESEARCHER agent in the Human-AI Collaborative Science Framework.
-You were started by the workflow orchestrator. Follow docs/agent-roles/researcher-role.md.
+You were started by the workflow orchestrator. Follow {ctx['fw']}/docs/agent-roles/researcher-role.md.
 
-Project folder: {ctx['project_dir']}
+Working directory: the project folder ({ctx['project_abs']}). Paths without a
+leading / are relative to it. Framework rules and templates (read-only): {ctx['fw']}
+Project folder: .
 Run directory: {ctx['run_dir']}
 Current stage: {stage} (revision {ctx['revision']})
-Stage specification: {spec}
-Package template: {template}
-Package to create or revise: {ctx['project_dir']}/packages/{package}
+Stage specification: {ctx['fw']}/{spec}
+Package template: {ctx['fw']}/{template}
+Package to create or revise: packages/{package}
 Gate mode: {ctx['gates']} gates
 Agent assignment for this run: {ctx.get('config', 'workflow.config.json')} (this
 snapshot, not the repository's workflow.config.json, is what this run uses)
@@ -90,7 +92,7 @@ research state; you have no memory of earlier sessions.
 Messages from the user or orchestrator for this session:
 {notes}
 
-{CHECKPOINT_PROTOCOL.format(inbox=ctx['project_dir'] + '/inbox', stage=stage, mode_rule=MODE_RULES[ctx['mode']])}
+{CHECKPOINT_PROTOCOL.format(inbox='inbox', fw=ctx['fw'], stage=stage, mode_rule=MODE_RULES[ctx['mode']])}
 ## Your task now
 
 Do the {stage} stage work. Before any review request, check every sentence of
@@ -104,9 +106,11 @@ def researcher_triage(ctx: dict) -> str:
     _, _, package = STAGE_DOCS[stage]
     f = _files(stage, ctx["revision"])
     return f"""You are the RESEARCHER agent in the Human-AI Collaborative Science Framework.
-You were started by the workflow orchestrator. Follow docs/agent-roles/researcher-role.md.
+You were started by the workflow orchestrator. Follow {ctx['fw']}/docs/agent-roles/researcher-role.md.
 
-Project folder: {ctx['project_dir']}
+Working directory: the project folder ({ctx['project_abs']}). Paths without a
+leading / are relative to it. Framework rules and templates (read-only): {ctx['fw']}
+Project folder: .
 Run directory: {ctx['run_dir']}
 Current stage: {stage} (revision {ctx['revision']}), step: respond to review
 
@@ -115,11 +119,11 @@ Read the README status block, decision-log.md, and the reviewer critique
 
 1. Triage every finding (accepted and fixed / accepted but deferred / rejected
    with reason / needs user decision) in the package's response section of
-   `{ctx['project_dir']}/packages/{package}`. Fix what you accept.
+   `packages/{package}`. Fix what you accept.
 2. Add every deferred or rejected blocker or major finding to the decision
    log's Open Escalations table, quoting the reviewer's wording.
 3. Write the gate request `{ctx['run_dir']}/{f['gate']}` using
-   `templates/gate-request.md`: decision needed and recommendation, what was
+   `{ctx['fw']}/templates/gate-request.md`: decision needed and recommendation, what was
    done, evidence to inspect, open objections (escalated findings verbatim),
    alternatives, consequence of approval, and options with the recommended
    option first. Leave the Decision section empty.
@@ -128,13 +132,13 @@ Read the README status block, decision-log.md, and the reviewer critique
 If a fix needs a Tier 1 decision first, use the checkpoint protocol below and
 stop instead of writing the gate request.
 
-{CHECKPOINT_PROTOCOL.format(inbox=ctx['project_dir'] + '/inbox', stage=stage, mode_rule=MODE_RULES[ctx['mode']])}"""
+{CHECKPOINT_PROTOCOL.format(inbox='inbox', fw=ctx['fw'], stage=stage, mode_rule=MODE_RULES[ctx['mode']])}"""
 
 
 def reviewer_cli(ctx: dict, blind_pass: str) -> str:
     stage = ctx["stage"]
     f = _files(stage, ctx["revision"])
-    reviewer_file = f"docs/reviewer-agents/{stage}-reviewer-agent.md"
+    reviewer_file = f"{ctx['fw']}/docs/reviewer-agents/{stage}-reviewer-agent.md"
     if blind_pass == "independent":
         framing_rule = (
             "This is a BLIND review, independent pass. The researcher's framing file is withheld. "
@@ -156,18 +160,21 @@ def reviewer_cli(ctx: dict, blind_pass: str) -> str:
         else "Print the complete critique markdown to standard output; the orchestrator saves it."
     )
     return f"""You are the REVIEWER agent in the Human-AI Collaborative Science Framework.
-You were started by the workflow orchestrator. Follow docs/agent-roles/reviewer-role.md.
+You were started by the workflow orchestrator. Follow {ctx['fw']}/docs/agent-roles/reviewer-role.md.
+
+Working directory: the project folder ({ctx['project_abs']}). Paths without a
+leading / are relative to it. Framework rules and templates (read-only): {ctx['fw']}
 
 Stage: {stage} (revision {ctx['revision']})
 Agent assignment for this run: {ctx.get('config', 'workflow.config.json')}
 Review request: {ctx['run_dir']}/{f['request']}
 Stage reviewer file: {reviewer_file}
-Decision log: {ctx['project_dir']}/decision-log.md
+Decision log: decision-log.md
 
 {framing_rule}
 
-Read docs/decision-rights.md, docs/coordination.md, and
-docs/reviewer-agents/cross-agent-handoff.md, then the request, the stage
+Read {ctx['fw']}/docs/decision-rights.md, {ctx['fw']}/docs/coordination.md, and
+{ctx['fw']}/docs/reviewer-agents/cross-agent-handoff.md, then the request, the stage
 package, the decision log, and the listed artifacts. {output_rule}
 Do not modify any other file.
 """

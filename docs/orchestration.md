@@ -13,10 +13,19 @@ SDK (`pip install anthropic` or `pip install openai`).
 ## Quick Start
 
 ```bash
-cp workflow.config.example.json workflow.config.json   # then edit agents and roles
-python -m orchestrator init research/my-project --topic "what I want to study, in my own words"
-python -m orchestrator run research/my-project
+# from the framework folder; edit workflow.config.json first if you want other agents
+python -m orchestrator init ~/papers/my-study --topic "what I want to study, in my own words"
+python -m orchestrator run ~/papers/my-study
 ```
+
+The project folder can be anywhere: inside this repository (for example
+`research/my-project`) or any folder on your computer, including one that
+already holds your data. Agents are started **inside the project folder**, the
+way you would open Claude Code or Codex there yourself, and read the framework's
+rules from this repository (Claude Code via `--add-dir {framework_dir}`). For a
+project outside the repository, `init` also writes small `CLAUDE.md`,
+`AGENTS.md`, and `GEMINI.md` pointer files (never overwriting existing ones) so
+an agent opened there by hand finds the framework too.
 
 `run` keeps going until it needs you. At the terminal it shows the decision and
 its options; type a number or your own answer. Type `later` (or run with
@@ -31,6 +40,7 @@ again. `python -m orchestrator status research/my-project` shows where things st
 | `run <project> --until planning` | Stops once that stage's gate is approved |
 | `run <project> --inbox-only` | Never asks at the terminal; for long or unattended runs |
 | `status <project>` | Stage, step, pending decisions, open escalations |
+| `review <project> --stage S [--revision N] [--run-id R]` | Runs only the reviewer pass on an existing `review-request-<stage>.md`. For manual runs: you work with an agent in a chat session and hand only the review to the configured reviewer. Does not advance the workflow. |
 
 ## When You Are Asked
 
@@ -67,9 +77,34 @@ With `"reviewer": "skip"`, `work` ends with the gate request and there is no
 review or triage step. A revision or backtrack reuses the same run directory
 with `-r2`, `-r3` file names.
 
-Every agent session starts fresh. Continuity comes from the shared research
-state the prompt tells the agent to read first: the project README status block,
-`decision-log.md`, the stage packages, and `inbox/answered/`.
+Every agent session starts fresh by default. Continuity comes from the shared
+research state the prompt tells the agent to read first: the project README
+status block, `decision-log.md`, the stage packages, and `inbox/answered/`.
+
+### Session continuity
+
+Starting fresh costs time and tokens (each session re-reads the project), but it
+keeps everything the next step needs in files that you, the reviewer, and any
+replacement agent can read. For CLI agents that can resume a conversation, the
+researcher can instead keep **one conversation per stage**:
+
+```json
+"session": {
+  "within": "stage",
+  "start_args": ["--output-format", "json"],
+  "resume_args": ["--resume", "{session_id}"],
+  "id_key": "session_id",
+  "text_key": "result"
+}
+```
+
+These values are for Claude Code. The orchestrator reads the session id from the
+agent's JSON output, resumes it for the next researcher step in the same stage
+(after a checkpoint answer, or for triage), and starts a new conversation at the
+next stage. Set `"within": "off"` to disable. Reviewers always start fresh so
+earlier conversations cannot steer them. Trade-off: with continuity on, some of
+what the researcher "knows" is in its conversation rather than in the shared
+state, so the rule to write reasoning into `notes/` and packages matters more.
 
 ## Who Writes the Decision Log
 
@@ -91,10 +126,20 @@ the orchestrator lists open escalations in every gate it presents.
 
 | Kind | What it is | Roles |
 |---|---|---|
-| `cli` | Any command-line agent: Claude Code, Codex, Gemini CLI, Aider, or your own script. `command` is the argument list; `{prompt}` is replaced by the prompt text and `{prompt_file}` by a file holding it. `role_commands` gives a different command per role (for example tighter tool permissions for the reviewer). `"stdin": true` sends the prompt on standard input. `"reviewer_output": "stdout"` lets a read-only reviewer print its critique for the orchestrator to save. | researcher, reviewer |
+| `cli` | Any command-line agent: Claude Code, Codex, Gemini CLI, Aider, or your own script. `command` is the argument list; `{prompt}` is replaced by the prompt text, `{prompt_file}` by a file holding it, `{project_dir}` by the project folder, and `{framework_dir}` by this repository. `role_commands` gives a different command per role (for example tighter tool permissions for the reviewer). `"stdin": true` sends the prompt on standard input. `"reviewer_output": "stdout"` lets a read-only reviewer print its critique for the orchestrator to save. | researcher, reviewer |
 | `anthropic` | Claude through the official Anthropic SDK. The orchestrator sends the review request, the listed artifacts, and the framework docs, and saves the reply as the critique. Uses adaptive thinking, the configured `effort`, and server-side refusal fallbacks. | reviewer |
 | `openai_compatible` | Any endpoint that speaks the OpenAI chat-completions API (hosted or local, set `base_url`). Same read-only pattern as `anthropic`. | reviewer |
 | `human` | A person fills the role. Tasks arrive in the inbox as `TASK-...md`. | researcher, reviewer |
+
+**Codex CLI** can sign in with a ChatGPT account or use an API key; as a `cli`
+agent it can open files and rerun code itself, which makes it a stronger
+reviewer than an API model that only sees the files sent to it.
+
+**Reviewer guard.** Before and after a CLI reviewer runs, the orchestrator
+records the size and modification time of every file in the project (and in
+this repository). If the reviewer changed anything besides its critique, the run
+stops with a `STUCK` item listing the files, so a reviewer with write access
+cannot silently edit the work it reviews.
 
 The researcher must be a `cli` or `human` agent because it edits files and runs
 code. API agents can be reviewers; an API researcher would need a tool-using
@@ -146,6 +191,8 @@ config values as a nominal approval.
 - The orchestrator cannot judge whether an agent's work is good; that is what
   the reviewer and the gates are for. It only checks that each step produced its
   handoff file.
+- The reviewer guard detects changes; it does not prevent them. Undo unwanted
+  changes from version control or the agent log before continuing.
 - CLI flags for third-party agents change between versions. The example config
   lists commands that worked when written; check them against your installed
   version.

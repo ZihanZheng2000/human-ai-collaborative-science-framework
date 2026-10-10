@@ -1,25 +1,38 @@
 {
-  "_comment": "Active configuration. See workflow.config.example.json for more agent types (APIs, other CLIs, human roles) and docs/orchestration.md.",
+  "_comment": "Active configuration: Claude Code as researcher, Codex CLI as reviewer. See workflow.config.example.json for API reviewers, other CLIs, and human roles, and docs/orchestration.md.",
 
   "agents": {
-    "codex": {
-      "kind": "cli",
-      "command": ["codex", "exec", "--sandbox", "workspace-write", "{prompt}"],
-      "timeout_seconds": 3600
-    },
     "claude-code": {
       "kind": "cli",
+      "_comment": "Runs inside the project folder; --add-dir lets it read the framework's docs and templates. Set session.within to \"stage\" to keep one Claude Code conversation per stage (see docs/orchestration.md#session-continuity).",
       "role_commands": {
-        "researcher": ["claude", "-p", "{prompt}", "--permission-mode", "acceptEdits", "--allowedTools", "Read,Write,Edit,Glob,Grep,Bash"],
-        "reviewer": ["claude", "-p", "{prompt}", "--permission-mode", "acceptEdits", "--allowedTools", "Read,Glob,Grep,Write"]
+        "researcher": ["claude", "-p", "{prompt}", "--permission-mode", "acceptEdits",
+                       "--allowedTools", "Read,Write,Edit,Glob,Grep,Bash",
+                       "--add-dir", "{framework_dir}"],
+        "reviewer": ["claude", "-p", "{prompt}", "--permission-mode", "acceptEdits",
+                     "--allowedTools", "Read,Glob,Grep,Write",
+                     "--add-dir", "{framework_dir}"]
       },
+      "session": {
+        "within": "off",
+        "start_args": ["--output-format", "json"],
+        "resume_args": ["--resume", "{session_id}"],
+        "id_key": "session_id",
+        "text_key": "result"
+      },
+      "timeout_seconds": 3600
+    },
+    "codex": {
+      "kind": "cli",
+      "_comment": "OpenAI Codex CLI, signed in with your ChatGPT account or an API key. Check the flags with `codex exec --help` for your version. The orchestrator stops the run if the reviewer changes any file other than its critique.",
+      "command": ["codex", "exec", "--sandbox", "workspace-write", "--skip-git-repo-check", "{prompt}"],
       "timeout_seconds": 3600
     }
   },
 
   "roles": {
-    "researcher": "codex",
-    "reviewer": "claude-code"
+    "researcher": "claude-code",
+    "reviewer": "codex"
   },
 
   "workflow": {

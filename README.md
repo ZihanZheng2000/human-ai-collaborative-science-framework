@@ -101,13 +101,14 @@ runtime is special.
 asks you only at setup, Tier 1 decision checkpoints, and stage gates.
 
 ```bash
-cp workflow.config.example.json workflow.config.json   # choose your agents
-python -m orchestrator init research/my-project --topic "what I want to study"
-python -m orchestrator run research/my-project         # answers at the terminal
-python -m orchestrator run research/my-project --inbox-only   # or answer files later
+# default agents: Claude Code researcher, Codex CLI reviewer (edit workflow.config.json to change)
+python -m orchestrator init ~/papers/my-study --topic "what I want to study"
+python -m orchestrator run ~/papers/my-study                  # answers at the terminal
+python -m orchestrator run ~/papers/my-study --inbox-only     # or answer files later
 ```
 
-See [docs/orchestration.md](docs/orchestration.md).
+The project folder can be anywhere on your computer; agents are started inside
+it. See [docs/orchestration.md](docs/orchestration.md).
 
 **For users:** read [USER_NOTE.md](USER_NOTE.md): what you will be asked, what a
 substantive gate looks like, and how to answer.

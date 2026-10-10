@@ -30,7 +30,12 @@ class Engine:
         self.root = repo_root.resolve()
         self.cfg = config
         self.project = project_dir.resolve()
-        self.rel_project = str(self.project.relative_to(self.root))
+        # For messages to the user only. Agents run inside the project folder and
+        # get project-relative paths; framework files are given as absolute paths.
+        try:
+            self.rel_project = str(self.project.relative_to(Path.cwd()))
+        except ValueError:
+            self.rel_project = str(self.project)
         self.interactive = interactive
         self.input_fn = input_fn
         self.print = print_fn
@@ -53,6 +58,7 @@ class Engine:
         run_id = run_id or f"{slug}-run1"
         (p / "artifacts" / run_id / "agent").mkdir(parents=True, exist_ok=True)
         decision_log.ensure(p / "decision-log.md", self.root / "templates/decision-log.md", slug)
+        self._write_pointer_files()
         if not (p / "run-notes.md").exists():
             shutil.copy(self.root / "templates/example-run-notes.md", p / "run-notes.md")
         if not (p / "README.md").exists():
@@ -76,13 +82,33 @@ class Engine:
             self._log("Pre-Planning", "tier-1 checkpoint",
                       f"Setup from {self.config_source}: mode={self.state['settings']['mode']}, "
                       f"reviewer={self.state['settings']['reviewer']}, gates={self.state['settings']['gates']}",
-                      "orchestrator", f"{self.config_source} (snapshot: {self.rel_project}/.workflow/config.json)",
+                      "orchestrator", f"{self.config_source} (snapshot: .workflow/config.json)",
                       "synthetic" if synthetic else "user (config file)",
                       "synthetic" if synthetic else "nominal: setup taken from the config file, not presented")
             self.state["step"] = "work"
         else:
             self._write_setup_questions()
         self._save()
+
+    def _write_pointer_files(self) -> None:
+        """Point agents started in a project outside the framework repo at the framework."""
+        try:
+            self.project.relative_to(self.root)
+            return  # inside the repo: the repo's own CLAUDE.md / AGENTS.md / GEMINI.md apply
+        except ValueError:
+            pass
+        text = (f"# Project using the Human–AI Collaborative Science Framework\n\n"
+                f"The framework (rules, templates, role instructions) is at:\n\n    {self.root}\n\n"
+                f"Read {self.root}/CLAUDE.md (identical to AGENTS.md and GEMINI.md there) and follow your role. "
+                "Framework files are read-only for this project. Project state: README.md status block, "
+                "decision-log.md, packages/, inbox/.\n")
+        for name in ("CLAUDE.md", "AGENTS.md", "GEMINI.md"):
+            target = self.project / name
+            if target.exists():
+                self.print(f"[orchestrator] {name} already exists in the project; not overwritten. "
+                           f"Add a pointer to {self.root}/CLAUDE.md yourself if agents should find the framework.")
+            else:
+                target.write_text(text, encoding="utf-8")
 
     def _write_snapshot(self) -> None:
         """Keep the config this project actually runs with inside the project."""
@@ -100,7 +126,7 @@ class Engine:
         self._log(self.state["stage"].capitalize(), "reconfiguration",
                   f"Agent configuration changed between runs: roles {json.dumps(old.get('roles'))} -> "
                   f"{json.dumps(self.cfg.get('roles'))} (source {self.config_source})",
-                  "user (edited config)", f"{self.rel_project}/.workflow/config.json", "user (config file)",
+                  "user (edited config)", ".workflow/config.json", "user (config file)",
                   "nominal: change made in the config file, not presented as a decision")
         self._write_snapshot()
 
@@ -136,7 +162,8 @@ class Engine:
 
     @property
     def rel_run_dir(self) -> str:
-        return str(self.run_dir.relative_to(self.root))
+        """Run directory relative to the project folder (the agents' working directory)."""
+        return str(self.run_dir.relative_to(self.project))
 
     def _next_revision(self, stage: str) -> int:
         """1 + the highest revision already used for this stage's handoff files."""
@@ -199,11 +226,12 @@ class Engine:
     def _ctx(self, reviewer_spec: dict = None) -> dict:
         s = self.state
         return {
-            "stage": s["stage"], "revision": s["revision"], "project_dir": self.rel_project,
+            "stage": s["stage"], "revision": s["revision"], "project_dir": ".",
+            "project_abs": str(self.project), "fw": str(self.root),
             "run_dir": self.rel_run_dir, "mode": s["settings"]["mode"], "reviewer": s["settings"]["reviewer"],
             "gates": s["settings"]["gates"], "notes": "\n".join(s["notes"]), "topic": s.get("topic", ""),
             "reviewer_output": (reviewer_spec or {}).get("reviewer_output", "file"),
-            "config": f"{self.rel_project}/.workflow/config.json",
+            "config": ".workflow/config.json",
         }
 
     def _log_path(self, label: str) -> Path:
@@ -278,7 +306,7 @@ class Engine:
         who = "synthetic" if synthetic else "user"
         stage_label = self.state["stage"].capitalize()
         title = text.splitlines()[0].lstrip("# ").strip()
-        evidence = f"{self.rel_project}/inbox/answered/{path.name}"
+        evidence = f"inbox/answered/{path.name}"
         archived = inbox.archive(path)
 
         if kind == "setup":
@@ -368,8 +396,16 @@ class Engine:
         adapter = self._adapter(name)
         if adapter.kind == "human":
             return self._human_task("researcher", label, prompt)
-        self._event(f"researcher ({name}) running: {label}")
-        adapter.run_task(prompt, "researcher", self.root, self._log_path(f"researcher-{label}"))
+        session = None
+        if adapter.kind == "cli" and adapter.spec.get("session", {}).get("within") == "stage":
+            prev = self.state.setdefault("sessions", {}).get("researcher")
+            if prev and prev.get("stage") == self.state["stage"]:
+                session = prev["id"]
+        self._event(f"researcher ({name}) running: {label}" + (f" [resuming session {session}]" if session else ""))
+        res = adapter.run_task(prompt, "researcher", self.project, self._log_path(f"researcher-{label}"),
+                               session_id=session, framework_dir=self.root)
+        if res.session_id:
+            self.state.setdefault("sessions", {})["researcher"] = {"stage": self.state["stage"], "id": res.session_id}
         return True
 
     def _human_task(self, role: str, label: str, prompt: str) -> bool:
@@ -416,6 +452,7 @@ class Engine:
         mode = review_mode_for(self.cfg, stage)
         critique = self.run_dir / f["critique"]
         self._event(f"reviewer ({name}, {mode}) running")
+        guard = self._fingerprint() if adapter.kind == "cli" else None
         if adapter.kind == "human":
             if not self._human_task("reviewer", "review", prompts.reviewer_cli(self._ctx(spec), "standard")):
                 return
@@ -423,18 +460,54 @@ class Engine:
             self._review_api(adapter, mode, critique)
         else:
             self._review_cli(adapter, spec, mode, critique)
+        if guard is not None:
+            changed = self._changed_since(guard)
+            if changed:
+                self._raise_stuck(f"reviewer {name} modified files it should only read: " + ", ".join(changed[:20]) +
+                                  ". Check them (git diff, or the agent log) before continuing.")
+                return
         if critique.exists():
             self.state.update(step="triage", attempts=0)
         else:
             self._raise_stuck(f"reviewer {name} finished without writing {f['critique']}")
+
+    def _guard_roots(self) -> list:
+        try:
+            self.project.relative_to(self.root)
+            return [self.root]  # the project is inside the framework repo
+        except ValueError:
+            return [self.project, self.root]
+
+    def _fingerprint(self) -> dict:
+        """Size and mtime of every file a reviewer might touch, minus the files it is allowed to write."""
+        f = self._files()
+        allowed = {(self.run_dir / f["critique"]).resolve(), (self.run_dir / f["framing"]).resolve()}
+        skip_dirs = {".git", ".workflow", "__pycache__"}
+        agent_dir = (self.run_dir / "agent").resolve()
+        out = {}
+        for root in self._guard_roots():
+            for p in root.rglob("*"):
+                if not p.is_file() or any(part in skip_dirs for part in p.parts):
+                    continue
+                rp = p.resolve()
+                if rp in allowed or agent_dir in rp.parents:
+                    continue
+                st = p.stat()
+                out[str(rp)] = (st.st_size, st.st_mtime_ns)
+        return out
+
+    def _changed_since(self, before: dict) -> list:
+        after = self._fingerprint()
+        changed = [p for p in set(before) | set(after) if before.get(p) != after.get(p)]
+        return sorted(changed)
 
     def _review_cli(self, adapter, spec, mode, critique: Path) -> None:
         f = self._files()
         framing = self.run_dir / f["framing"]
         ctx = self._ctx(spec)
         if mode != "blind":
-            res = adapter.run_task(prompts.reviewer_cli(ctx, "standard"), "reviewer", self.root,
-                                   self._log_path("reviewer"))
+            res = adapter.run_task(prompts.reviewer_cli(ctx, "standard"), "reviewer", self.project,
+                                   self._log_path("reviewer"), framework_dir=self.root)
             if ctx["reviewer_output"] == "stdout":
                 critique.write_text(res.text, encoding="utf-8")
             return
@@ -445,8 +518,8 @@ class Engine:
             held = hold / framing.name
             shutil.move(str(framing), held)
         try:
-            res = adapter.run_task(prompts.reviewer_cli(ctx, "independent"), "reviewer", self.root,
-                                   self._log_path("reviewer-independent"))
+            res = adapter.run_task(prompts.reviewer_cli(ctx, "independent"), "reviewer", self.project,
+                                   self._log_path("reviewer-independent"), framework_dir=self.root)
             if ctx["reviewer_output"] == "stdout":
                 critique.write_text(res.text, encoding="utf-8")
         finally:
@@ -455,8 +528,8 @@ class Engine:
             shutil.rmtree(hold, ignore_errors=True)
         if not critique.exists():
             return
-        res = adapter.run_task(prompts.reviewer_cli(ctx, "follow-up"), "reviewer", self.root,
-                               self._log_path("reviewer-follow-up"))
+        res = adapter.run_task(prompts.reviewer_cli(ctx, "follow-up"), "reviewer", self.project,
+                               self._log_path("reviewer-follow-up"), framework_dir=self.root)
         if ctx["reviewer_output"] == "stdout":
             critique.write_text(replace_followup(critique.read_text(encoding="utf-8"), res.text),
                                 encoding="utf-8")
@@ -487,17 +560,20 @@ class Engine:
             if m:
                 paths.append(m.group(1))
         for extra in ["decision-log.md", f"packages/{prompts.STAGE_DOCS[self.state['stage']][2]}"]:
-            paths.append(f"{self.rel_project}/{extra}")
+            paths.append(extra)
         seen, out, total = set(), [], 0
         limit = self.cfg.get("workflow", {}).get("max_review_context_chars", 1_500_000)
         for rel in paths:
-            p = (self.root / rel).resolve()
+            p = (self.project / Path(rel).expanduser()).resolve()
             files = sorted(x for x in p.rglob("*") if x.is_file()) if p.is_dir() else [p]
             for fp in files:
                 if fp in seen or fp in exclude or not fp.exists():
                     continue
                 seen.add(fp)
-                name = str(fp.relative_to(self.root))
+                try:
+                    name = str(fp.relative_to(self.project))
+                except ValueError:
+                    name = str(fp)
                 if fp.suffix not in TEXT_SUFFIXES:
                     out.append((name, f"[binary or non-text file, not included: {fp.stat().st_size} bytes]"))
                     continue
@@ -543,6 +619,7 @@ class Engine:
 
     def _raise_stuck(self, reason: str) -> None:
         sid = f"STUCK-{self.state['stage']}-{len(self.state['history'])}"
+        (self.project / "inbox/pending").mkdir(parents=True, exist_ok=True)
         (self.project / "inbox/pending" / f"{sid}.md").write_text(
             f"# The workflow is stuck\n\n- Type: stuck\n- Stage: {self.state['stage']}\n- Step: {self.state['step']}\n\n"
             f"## Decision needed\n\n{reason}\n\nAgent logs: {self.rel_run_dir}/agent/\n\n"
@@ -551,6 +628,45 @@ class Engine:
             "3. stop: end the run here\n\n"
             f"## Decision\n\n{inbox.DECISION_HINT}\n", encoding="utf-8")
         self.state["attempts"] = 0
+
+    # ------------------------------------------------------------------ review only
+
+    def review_only(self, stage: str, revision: int = 1, run_id: str = None) -> Path:
+        """Run just the reviewer pass for an existing review request (manual runs).
+
+        Does not advance the workflow; returns the critique path.
+        """
+        saved = None if self.state is None else json.loads(json.dumps(self.state))
+        if self.state is None:
+            if not run_id:
+                raise RuntimeError("this folder has no orchestrator state; pass --run-id")
+            wf = self.cfg.get("workflow", {})
+            self.state = {"run_id": run_id, "stage": stage, "step": "review", "revision": revision,
+                          "attempts": 0, "notes": [], "human_tasks_done": [], "history": [],
+                          "settings": {"mode": wf.get("mode", "step-by-step"), "reviewer": "use",
+                                       "gates": wf.get("gates", "real")}}
+        else:
+            self.state.update(stage=stage, step="review", revision=revision,
+                              run_id=run_id or self.state["run_id"])
+        f = self._files()
+        if not (self.run_dir / f["request"]).exists():
+            raise RuntimeError(f"no review request at {self.run_dir / f['request']}")
+        (self.run_dir / "agent").mkdir(parents=True, exist_ok=True)
+        try:
+            self._step_review()
+        except AgentError as exc:
+            raise RuntimeError(str(exc)) from exc
+        critique = self.run_dir / f["critique"]
+        stuck = [p.name for p in inbox.pending(self.project / "inbox") if p.name.startswith("STUCK")] \
+            if (self.project / "inbox").exists() else []
+        if saved is not None:
+            history = self.state["history"]
+            self.state = saved
+            self.state["history"].extend(history[len(saved["history"]):])
+            self._save()
+        if stuck:
+            self.print(f"[orchestrator] review raised {', '.join(stuck)}; see inbox/pending/")
+        return critique
 
     # ------------------------------------------------------------------ status
 

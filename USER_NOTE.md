@@ -77,9 +77,13 @@ decision is yours to make.
 2. Start a project, describing the topic in your own words:
 
 ```text
-python -m orchestrator init research/my-project --topic "describe your question, problem, or research idea in plain language"
-python -m orchestrator run research/my-project
+python -m orchestrator init ~/papers/my-study --topic "describe your question, problem, or research idea in plain language"
+python -m orchestrator run ~/papers/my-study
 ```
+
+Run these from the framework folder. The project folder (`~/papers/my-study`
+here) can be anywhere, including a folder that already has your data; the
+agents work inside it.
 
 3. You are asked three setup questions (workflow mode, reviewer strategy, gate
    mode). After that the agents work on their own. The run stops and asks you
@@ -95,6 +99,15 @@ Every decision you make is written to the project's `decision-log.md` by the
 orchestrator itself, so the agents cannot record an approval you did not give.
 
 ### Manual (talking to an agent directly)
+
+You can also open Claude Code (or any agent) in your project folder and work
+with it in conversation. When a stage package is ready for review, hand just
+the review to the configured reviewer:
+
+```text
+python -m orchestrator review ~/papers/my-study --stage planning --run-id <run_id>
+```
+
 
 Open a new session with any AI agent and say only two things: what you want to
 do, and what the topic is.

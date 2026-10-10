@@ -3,6 +3,11 @@
   init <project-dir>      create a project folder and ask the setup questions
   run <project-dir>       run the workflow until it needs a person or finishes
   status <project-dir>    show stage, step, pending decisions, open escalations
+  review <project-dir> --stage S
+                          run only the reviewer pass on an existing review request
+                          (for manual runs; does not advance the workflow)
+
+The project folder can be anywhere; agents run inside it.
 
 Exit codes for `run`: 0 finished, 2 waiting for a person, 1 error.
 """
@@ -39,6 +44,11 @@ def main(argv=None) -> int:
                        help="stop once this stage's gate is approved")
     p_status = sub.add_parser("status")
     p_status.add_argument("project", type=Path)
+    p_review = sub.add_parser("review")
+    p_review.add_argument("project", type=Path)
+    p_review.add_argument("--stage", required=True, choices=["planning", "modeling", "reporting", "reviewing"])
+    p_review.add_argument("--revision", type=int, default=1)
+    p_review.add_argument("--run-id", help="needed if the project was not started with `init`")
     args = ap.parse_args(argv)
 
     try:
@@ -46,7 +56,8 @@ def main(argv=None) -> int:
     except ConfigError as exc:
         print(f"config error: {exc}", file=sys.stderr)
         return 1
-    project = args.project if args.project.is_absolute() else (Path.cwd() / args.project)
+    project = args.project.expanduser()
+    project = project if project.is_absolute() else (Path.cwd() / project)
     interactive = args.cmd == "run" and not args.inbox_only and sys.stdin.isatty()
     try:
         source = str(args.config.resolve().relative_to(REPO_ROOT))
@@ -61,6 +72,14 @@ def main(argv=None) -> int:
         engine.init_project(args.topic, run_id=args.run_id, use_config_defaults=args.use_config_defaults)
         print(f"initialized {engine.rel_project}. Next: python -m orchestrator run {args.project}")
         return 0
+    if args.cmd == "review":
+        try:
+            critique = engine.review_only(args.stage, args.revision, args.run_id)
+        except RuntimeError as exc:
+            print(f"review failed: {exc}", file=sys.stderr)
+            return 1
+        print(f"critique: {critique}" if critique.exists() else "no critique was written; see inbox/pending/")
+        return 0 if critique.exists() else 2
     if engine.state is None:
         print(f"{args.project} is not initialized; run `init` first.", file=sys.stderr)
         return 1

@@ -22,6 +22,16 @@ Added:
 - `GEMINI.md`; `CLAUDE.md`, `AGENTS.md`, and `GEMINI.md` are identical,
   generated from `docs/agent-roles/`.
 
+- Projects can live anywhere; agents run inside the project folder and read
+  the framework through `{framework_dir}` (Claude Code `--add-dir`). `init`
+  writes pointer instruction files in external projects.
+- `review` command: run only the reviewer pass (manual runs).
+- Optional researcher session continuity within a stage (`session.within:
+  "stage"`; tested with Claude Code `--output-format json` / `--resume`).
+- Reviewer guard: the run stops if a CLI reviewer changes any file besides its
+  critique.
+- Default configuration: Claude Code researcher, Codex CLI reviewer.
+
 Changed:
 
 - Roles are no longer tied to products: Config A/B and `WORKFLOW-CONFIG.md`
