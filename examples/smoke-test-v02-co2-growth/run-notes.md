@@ -46,8 +46,8 @@
 |---|---|---|
 | Tier 1 / Tier 2 decisions logged | 17 rows (4 gates, 1 reconfiguration, 1 disclosure, 1 skip-defer) | `decision-log.md` |
 | rows with proposer, evidence, objections, authorizer | 17 / 17 | but authorizer is "synthetic" for most |
-| approvals: substantive / nominal / synthetic / pending | 0 / 1 / 15 / 1 | D-8 pending |
-| escalations raised / upheld / overturned | 2 / 0 / 0 | E-1, E-2 pending real user |
+| approvals: substantive / nominal / synthetic | 2 / 1 / 15 | substantive = the two real-user rulings D-18, D-19 |
+| escalations raised / upheld / replaced | 2 / 1 / 1 | E-1 upheld for smoke test only (D-18); E-2: D-14 replaced by reviewer claim audit (D-19) |
 | decisions reopened or superseded | 1 superseded (D-1); 1 post-visibility change (D-12) | |
 | reviewer-triage closure rate | 38 / 40 closed by researcher or accepted; 2 escalated | |
 
@@ -55,7 +55,7 @@
 
 | Measure | Value | Notes |
 |---|---|---|
-| checkpoints and gates presented to the real user | 0 during the run; 2 escalations at the end | synthetic run |
+| checkpoints and gates presented to the real user | 0 during the run; 2 escalations at the end, answered in one structured question | synthetic run |
 | user domain corrections | 0 | |
 | re-runs or rewrites requested by the user | 0 | |
 | reviewer runtime | about 1-2 minutes per pass | headless process |

@@ -10,11 +10,11 @@ workflow.
 - current stage: archived (internal smoke-test output, D-17)
 - active package: none
 - last decision: D-17 (2026-10-10) — Reviewing Gate: archive (synthetic); D-16 seeded-fault disclosure
-- open escalations: E-1 (role override, PR-1) and E-2 (confirm D-14) — for the real user
+- open escalations: none (E-1 → D-18, E-2 → D-19, ruled by the real user)
 - deferred items due soon: none
 - current workflow mode and reviewer strategy: Auto-until-needed; Use reviewer (headless Claude Code)
-- next action: real user rules on E-1 and E-2
-- user decision needed now: E-1, E-2
+- next action: none (archived)
+- user decision needed now: none
 
 ## Layout
 

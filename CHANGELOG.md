@@ -52,7 +52,9 @@ Fixed after the v0.2 smoke test (`examples/smoke-test-v02-co2-growth/`):
 - seeded-fault protocol in `docs/workflow-evaluation.md`
 - Review Package recommendation must name a concrete option and permitted use;
   run notes filled before the Reviewing review request
-- researcher runs a sentence-by-sentence claim check before each review request
+- researcher runs a sentence-by-sentence claim check before each review request,
+  and the Reporting reviewer has a required claim audit of every deliverable
+  sentence (user ruling D-19 in the smoke test)
 - `.gitignore` anchored `/notes/` and `/research/` so example `notes/` folders
   are tracked
 

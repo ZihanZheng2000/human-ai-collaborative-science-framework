@@ -35,6 +35,7 @@ Check:
 - web/dashboard outputs have provenance, interaction, readability, and public-sharing risk checks
 - software/tool outputs include README, examples, license/dependency notes, validation status, and support boundaries
 - the deliverable does not present a claim level or interpretation stronger than the one authorized in the decision log
+- **claim audit (required)**: map every substantive sentence of each deliverable to a row of the claim-evidence map; list any sentence with no row, or above the authorized claim level, as a finding (at least `major` if it is above the claim level)
 
 Accountability checks (all stages):
 

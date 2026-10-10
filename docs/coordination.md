@@ -148,7 +148,7 @@ need for one, when any of these occur:
 |---|---|
 | the same decision class is escalated or reopened two or more times | raise its tier, or assign a domain expert to it |
 | the user corrects the researcher's domain judgment on the same topic two or more times | require Domain Onboarding materials or a domain-expert reviewer for that decision class; downgrade researcher proposals there to "options only" |
-| a reviewer raises blockers or majors in the same area across two passes | strengthen authority there: give the reviewer an explicit audit duty for that area, switch to blind review, add an expert, or have the user co-sign that decision class. A researcher self-check alone is a mitigation, not a reconfiguration. |
+| a reviewer raises blockers or majors in the same area across two passes | strengthen authority there: give the reviewer an explicit audit duty for that area, switch to blind review, add an expert, or have the user co-sign that decision class. A researcher self-check alone is a mitigation, not a reconfiguration. (Default already in place for claims: the Reporting reviewer audits every deliverable sentence against the claim map.) |
 | the research object or claim level changes (for example, the case study becomes a test fixture for a workflow) | revise the Decision-Rights Map and re-check which stage packages need re-review |
 | irreversible cost, safety, privacy, or public-release consequences appear | raise to Tier 1 or 2 and require substantive approval |
 | a skipped check (reviewer, literature, validation) hits its revisit trigger | re-enable the check |
