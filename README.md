@@ -162,8 +162,9 @@ Place domain materials in `research/<research-name>/artifacts/input/domain-mater
 
 The researcher and reviewer agents communicate through two files written to the run directory (`research/<research-name>/artifacts/<run_id>/`, or `artifacts/<run_id>/` for smoke tests):
 
-- `review-request.md` — written by the researcher; declares the stage, gate mode, review mode (standard or blind), and the reviewer assignment
-- `reviewer-critique.md` — written by the reviewer with a structured findings table
+- `review-request-<stage>.md` — written by the researcher; declares the stage, gate mode, review mode (standard or blind), and the reviewer assignment
+- `review-framing-<stage>.md` — the researcher's summary, risks, and questions, kept separate so a blind reviewer can read it last
+- `reviewer-critique-<stage>.md` — written by the reviewer with a structured findings table
 
 Blocker or major findings that the researcher defers or rejects are escalated to
 the user. The Reviewing stage uses blind review by default: the reviewer forms
@@ -178,7 +179,7 @@ workflows:
 - `scripts/run_reviewer_codex.ps1` lets a Claude Code researcher call Codex as reviewer under Config B.
 
 Both wrappers preserve the same file protocol: the researcher still writes
-`review-request.md`, the reviewer writes `reviewer-critique.md`, and the
+`review-request-<stage>.md`, the reviewer writes `reviewer-critique-<stage>.md`, and the
 researcher remains responsible for triage and gate presentation.
 
 ## Examples

@@ -16,7 +16,8 @@ $requestFullPath = (Resolve-Path -LiteralPath $ReviewRequestPath).Path
 
 if (-not $CritiquePath) {
     $requestDir = Split-Path -Parent $requestFullPath
-    $CritiquePath = Join-Path $requestDir "reviewer-critique.md"
+    $requestName = Split-Path -Leaf $requestFullPath
+    $CritiquePath = Join-Path $requestDir ($requestName -replace "^review-request", "reviewer-critique")
 }
 
 $critiqueFullPath = $ExecutionContext.SessionState.Path.GetUnresolvedProviderPathFromPSPath($CritiquePath)
@@ -33,11 +34,11 @@ $repoRoot
 Required behavior:
 1. Read AGENTS.md and follow the Reviewer role section.
 2. Read docs/decision-rights.md, docs/coordination.md, and docs/reviewer-agents/cross-agent-handoff.md.
-3. Read the Header and Artifacts to Inspect sections of this review request:
+3. Read this review request (header and artifact list only; the framing is in a separate review-framing-<stage>.md file named in the header):
 $requestFullPath
 4. Check the assignment. The request header is authoritative for this pass. If it names a reviewer other than Codex, or names Codex while WORKFLOW-CONFIG.md assigns a different reviewer and the header does not cite a user override decision, still write the critique, but make the assignment mismatch the first finding (severity major, route user decision).
 5. Read the relevant stage reviewer-agent file, the stage package, the decision log, and the listed artifacts.
-6. If the review mode is blind, write independent findings before reading the Researcher Framing section, then add follow-up findings in a separate block. If standard, read the Researcher Framing section before critiquing.
+6. If the review mode is blind, write independent findings before opening the framing file, then add follow-up findings in a separate block; if you open it early, say so at the top of the critique. If standard, read the framing file before critiquing.
 7. Write your critique to this exact path:
 $critiqueFullPath
 

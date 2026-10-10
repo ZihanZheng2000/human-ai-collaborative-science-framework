@@ -220,10 +220,15 @@ Possible decisions:
 - accept limitations and proceed
 - terminate
 
+The Review Package recommendation must be one of the concrete gate options,
+each with its consequence. "Approve limited" or "archive" must state what the
+output may and may not be used for while escalations remain open.
+
 ### Workflow Evaluation Record
 
-At the Reviewing Gate, fill the Workflow Evaluation section of the project's
-`run-notes.md` (see `workflow-evaluation.md`): claim-support audit, trajectory-
+Before writing the Reviewing-stage review request, fill the Workflow Evaluation
+section of the project's
+`run-notes.md` (see `workflow-evaluation.md`) so the reviewer can check it; update it after the gate: claim-support audit, trajectory-
 changing findings, decision traceability, nominal vs substantive approvals,
 escalations, and human effort. This evaluates the collaboration itself, not
 only the deliverable.

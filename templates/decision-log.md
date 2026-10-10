@@ -4,7 +4,9 @@ Project: `<research-name>`
 
 This is the shared research state for decisions. Record every Tier 1 decision
 checkpoint, Tier 2 stage gate, escalation, reconfiguration, and informal review.
-Tier 0 routine decisions go in the run log, not here. Append rows; never delete
+Tier 0 routine decisions go in the run log, not here. When the user's own words
+are the authority for a decision, quote them and state what they authorized.
+Record one decision per row; do not bundle several Tier 1 choices. Append rows; never delete
 them. When a decision is replaced, set its status to `superseded by D-<n>`.
 
 See `docs/decision-rights.md` for tiers and `docs/coordination.md` for the loop.
@@ -21,7 +23,7 @@ reconfigurations since it was approved.
 
 | ID | Date | Stage | Type | Decision | Proposed by | Evidence / artifacts | Alternatives considered | Open objections at decision time | Authorized by | Approval quality | Status |
 |---|---|---|---|---|---|---|---|---|---|---|---|
-| D-1 |  | Planning | tier-1 checkpoint / tier-2 gate / escalation / reconfiguration / informal review / skip-defer |  | researcher / reviewer / user / expert |  |  | none / finding IDs and summary | user / expert / researcher (Tier 0 only) / synthetic | substantive / nominal: what was missing / synthetic | active / reopened / superseded by D-n / deferred until <trigger> |
+| D-1 |  | Planning | tier-1 checkpoint / tier-2 gate / escalation / reconfiguration / mitigation / informal review / skip-defer / disclosure |  | researcher / reviewer / user / expert |  |  | none / finding IDs and summary | user / expert / researcher (Tier 0 only) / synthetic | substantive / nominal: what was missing / synthetic | active / reopened / superseded by D-n / deferred until <trigger> |
 
 ## Open Escalations
 

@@ -22,8 +22,9 @@ research/<research-name>/
   notes/
   artifacts/
     <run_id>/
-      review-request.md
-      reviewer-critique.md
+      review-request-<stage>.md
+      review-framing-<stage>.md
+      reviewer-critique-<stage>.md
       run_manifest.json
       run_log.md
       run_summary.md

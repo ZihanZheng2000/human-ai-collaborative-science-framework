@@ -8,6 +8,7 @@
 - review scope: evidence package / workflow demo / manuscript or paper / slide deck / web or dashboard / software package / submission package / other
 - gate mode: real user gates / synthetic gates / mixed
 - recommendation: approve for finalization or release / approve limited package / revise Reporting / request Model addendum / backtrack to Plan / terminate
+- permitted use while escalations are open (required for limited or archive): may / may not
 - Reviewing Researcher: researcher agent name or runtime
 - Reviewing Reviewer: reviewer agent name or runtime / skipped
 - reviewer file: `docs/reviewer-agents/reviewing-reviewer-agent.md`
@@ -43,8 +44,10 @@
 | usable evidence is distinguished from candidate material |  |  | Model |
 | Reporting separates supported/preliminary/uncertain/unsupported findings |  |  | Reporting |
 | limitations and failures remain visible |  |  | Reporting |
-| every Tier 1/2 decision in the decision log has proposer, evidence, objections, and authorizer |  |  | Review / user decision |
-| nominal approvals of consequential decisions are identified |  |  | user decision |
+| every Tier 1/2 decision in the decision log has proposer, evidence, objections, and authorizer (outcome may be pass / concern / synthetic) |  |  | Review / user decision |
+| nominal or synthetic approvals of consequential decisions are identified and counted |  |  | user decision |
+| seeded faults, if any, are disclosed in the decision log |  |  | Review |
+| run-notes.md Workflow Evaluation is filled |  |  | Review |
 | open escalations and deferred items are listed, none silently closed |  |  | user decision |
 | locked analysis choices were not changed after results without a logged decision |  |  | Model |
 

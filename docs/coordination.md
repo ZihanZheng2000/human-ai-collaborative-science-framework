@@ -148,7 +148,7 @@ need for one, when any of these occur:
 |---|---|
 | the same decision class is escalated or reopened two or more times | raise its tier, or assign a domain expert to it |
 | the user corrects the researcher's domain judgment on the same topic two or more times | require Domain Onboarding materials or a domain-expert reviewer for that decision class; downgrade researcher proposals there to "options only" |
-| a reviewer raises blockers or majors in the same area across two passes | strengthen authority there (blind review, expert review, or user co-performance) |
+| a reviewer raises blockers or majors in the same area across two passes | strengthen authority there: give the reviewer an explicit audit duty for that area, switch to blind review, add an expert, or have the user co-sign that decision class. A researcher self-check alone is a mitigation, not a reconfiguration. |
 | the research object or claim level changes (for example, the case study becomes a test fixture for a workflow) | revise the Decision-Rights Map and re-check which stage packages need re-review |
 | irreversible cost, safety, privacy, or public-release consequences appear | raise to Tier 1 or 2 and require substantive approval |
 | a skipped check (reviewer, literature, validation) hits its revisit trigger | re-enable the check |
@@ -157,7 +157,9 @@ need for one, when any of these occur:
 ### Procedure
 
 1. Propose the change as a Tier 1 decision: what moves, from whom, to whom,
-   and why (cite the triggering decision IDs).
+   and why (cite the triggering decision IDs and say which "area" the findings
+   share). A change that moves no activity or authority between actors is a
+   mitigation; log it as such, not as a reconfiguration.
 2. The user approves or rejects it.
 3. Record it in the decision log with type `reconfiguration`.
 4. Update the Decision-Rights Map in the Planning Package (or the current

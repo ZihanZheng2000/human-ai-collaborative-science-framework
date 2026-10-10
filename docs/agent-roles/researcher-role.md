@@ -86,7 +86,7 @@ Then ask whether to use the reviewer agent:
 
 | Reviewer option | Meaning |
 |---|---|
-| Use reviewer | Write `review-request.md`, wait for reviewer critique, triage findings, then present the user gate. |
+| Use reviewer | Write `review-request-<stage>.md`, wait for reviewer critique, triage findings, then present the user gate. |
 | Skip reviewer | Record skipped-review reason, accepted risk, and revisit trigger in the stage package and decision log before presenting the user gate. |
 
 Default recommendation for real research is **Step-by-step discussion** plus
@@ -232,10 +232,10 @@ Each stage uses a maker-checker loop before its user gate:
 ```text
 {RESEARCHER} (researcher agent)
   -> drafts or revises the stage package
-  -> writes <run_dir>/review-request.md
+  -> writes <run_dir>/review-request-<stage>.md and review-framing-<stage>.md
 {REVIEWER} (reviewer agent)
   -> reads the request and the package
-  -> writes <run_dir>/reviewer-critique.md
+  -> writes <run_dir>/reviewer-critique-<stage>.md
 {RESEARCHER} (researcher agent)
   -> triages each finding: accepted-and-fixed / accepted-but-deferred / rejected-with-reason / needs-user-decision
   -> escalates every deferred or rejected blocker/major to the user
@@ -259,12 +259,18 @@ trigger before asking for the stage gate decision.
 ### How to Write a Review Request
 
 When the stage package is ready for {REVIEWER} to review, write
-`<run_dir>/review-request.md` using the format in
+`<run_dir>/review-request-<stage>.md` using the format in
 `docs/reviewer-agents/cross-agent-handoff.md`. The header must name the stage,
 gate mode, review mode (standard or blind; Reviewing defaults to blind), package
 path, decision-log path, researcher and reviewer agents, and the assignment
-source. Keep the "Artifacts to Inspect" list free of commentary; put your
-summary, known risks, and questions under "Researcher Framing".
+source; cite the live decision ID, not a superseded one. Keep the request free
+of commentary; put your summary, known risks, and questions in the separate
+`<run_dir>/review-framing-<stage>.md`.
+
+Before every review request, check the deliverable or package sentence by
+sentence against its claim-evidence map and the authorized claim level. A
+sentence above the claim level is a Tier 1 checkpoint, not something to send
+for review.
 
 ### Gate Rules
 
@@ -346,9 +352,16 @@ Smoke-test package: `templates/smoke-test-package.md`
 
 For each substantial run, create or update `run-notes.md` in the project folder
 (or `examples/<run-name>/run-notes.md` for examples) using
-`templates/example-run-notes.md`. At the Reviewing Gate, or whenever the run
-stops, fill its Workflow Evaluation section from the decision log and packages
-(`docs/workflow-evaluation.md`).
+`templates/example-run-notes.md`. Fill its Workflow Evaluation section from the
+decision log and packages (`docs/workflow-evaluation.md`) **before** writing the
+Reviewing-stage review request, so the reviewer can check it, and update it
+after the Reviewing Gate.
+
+When the user's own words are the authority for a decision, quote them in the
+decision log and state what they authorized.
+
+If you seed faults to test the workflow, follow the seeded-fault protocol in
+`docs/workflow-evaluation.md`.
 
 Run notes do not override `docs/`, `templates/`, or `skills/`. At the end of a
 run, decide whether each lesson should stay for more evidence, be promoted to a

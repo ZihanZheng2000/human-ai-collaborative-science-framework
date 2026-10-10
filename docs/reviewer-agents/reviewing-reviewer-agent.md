@@ -42,7 +42,7 @@ Accountability checks (all stages):
 
 ## Output
 
-Write findings to `<run_dir>/reviewer-critique.md` using the format in
+Write findings to `<run_dir>/reviewer-critique-reviewing.md` using the format in
 `cross-agent-handoff.md`. The findings table is:
 
 | Finding ID | Severity | Concern | Evidence or reasoning | Route | Blocks gate? | Recommended action |

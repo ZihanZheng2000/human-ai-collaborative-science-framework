@@ -56,6 +56,21 @@ Seeded-error tasks (deliberately planting a data leak, a mislabeled event, or
 an unsupported causal claim) are the cheapest way to test whether critique and
 gates actually catch problems.
 
+### Seeded-fault protocol
+
+1. Before any analysis, write a sealed seed record (what will be planted, at
+   which stage, which reviewer check should catch it) outside the reviewer's
+   reach, for example in the session scratchpad.
+2. Do not label seeds anywhere a later reviewer can read (packages, responses,
+   decision log) until every seeded stage has been reviewed. Respond to a caught
+   seed as to any finding.
+3. After the last seeded stage, commit the seed record, add a `disclosure`
+   entry to the decision log, and mark decisions that responded to seeds.
+4. In run notes, report seeds caught at their own stage, caught later, and
+   missed, separately from unseeded findings. Reconfigurations triggered only by
+   seeds demonstrate the mechanism; they are not evidence of a real recurring
+   failure.
+
 ## Validation Without Ground Truth
 
 Say which kind of validation backs each evaluation claim:

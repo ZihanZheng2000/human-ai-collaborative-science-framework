@@ -30,24 +30,25 @@ Your rights are defined in `docs/decision-rights.md#reviewer-rights`:
 ### How to Receive a Review Request
 
 When {RESEARCHER} is ready for your critique, it writes
-`<run_dir>/review-request.md`, where `<run_dir>` is
+`<run_dir>/review-request-<stage>.md`, where `<run_dir>` is
 `research/<research-name>/artifacts/<run_id>/` for real projects or
 `artifacts/<run_id>/` for smoke tests.
 
-Read the request **Header** and **Artifacts to Inspect** first. Check the
+Read the request file first. It contains only the header and the artifact
+list; the researcher's framing is in a separate `review-framing-<stage>.md`. Check the
 assignment: if the request names a reviewer different from `WORKFLOW-CONFIG.md`
 and does not cite a user override in the decision log, still write the critique,
 but make the mismatch the first finding (major, route `user decision`).
 
-- **Standard mode**: read the Researcher Framing section, then the package and
-  artifacts.
+- **Standard mode**: read the framing file, then the package and artifacts.
 - **Blind mode**: read the package, artifacts, and decision log; write your
-  independent findings; only then read the Researcher Framing and add
-  follow-up findings in a separate block.
+  independent findings; only then open the framing file and add follow-up
+  findings in a separate block. If you opened the framing early, say so at the
+  top of the critique.
 
 ### How to Return Findings
 
-Write your critique to `<run_dir>/reviewer-critique.md` using the format in
+Write your critique to `<run_dir>/reviewer-critique-<stage>.md` using the format in
 `docs/reviewer-agents/cross-agent-handoff.md`:
 
 | Finding ID | Severity | Concern | Evidence or reasoning | Route | Blocks gate? | Recommended action |
@@ -70,6 +71,14 @@ escalations, or blockers in one area, and a short overall assessment.
   silently closed.
 - Approvals that look nominal (the user could not have seen the evidence or
   objections) are flagged.
+
+### Reconfiguration Thresholds
+
+Apply the documented triggers in `docs/coordination.md#adaptive-reconfiguration`
+as written; do not substitute your own threshold. In particular, a reviewer
+blocker or major in the same area across **two** passes is a trigger. Say which
+area you mean and why the findings belong to it. A proposed reconfiguration
+that only adds a researcher self-check does not move authority; say so.
 
 ### Guardrails
 

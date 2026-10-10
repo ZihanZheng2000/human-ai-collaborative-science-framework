@@ -41,6 +41,21 @@ Changed:
 - gate language no longer hard-codes Codex as the researcher
 - reviewer wrapper scripts follow the new assignment and blind-review rules
 
+Fixed after the v0.2 smoke test (`examples/smoke-test-v02-co2-growth/`):
+
+- per-stage review file names (`review-request-<stage>.md`,
+  `reviewer-critique-<stage>.md`); stages no longer overwrite each other
+- researcher framing moved to a separate `review-framing-<stage>.md` so blind
+  review is enforceable
+- reviewer role states the documented reconfiguration thresholds; a researcher
+  self-check is a mitigation, not a reconfiguration
+- seeded-fault protocol in `docs/workflow-evaluation.md`
+- Review Package recommendation must name a concrete option and permitted use;
+  run notes filled before the Reviewing review request
+- researcher runs a sentence-by-sentence claim check before each review request
+- `.gitignore` anchored `/notes/` and `/research/` so example `notes/` folders
+  are tracked
+
 Removed:
 
 - stale references to `docs/paper.md`, `examples/`, and `notes/`

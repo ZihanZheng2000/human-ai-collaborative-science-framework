@@ -408,7 +408,7 @@ The current stage package is at [path].
 If continuing after a reviewer critique:
 
 ```text
-The reviewer critique is at <run_dir>/reviewer-critique.md.
+The reviewer critique is at <run_dir>/reviewer-critique-<stage>.md.
 Please read it, triage each finding, update the stage package, and then
 present the gate to me.
 ```
@@ -511,9 +511,9 @@ You are the reviewer agent. Read WORKFLOW-CONFIG.md to confirm your role,
 then read AGENTS.md (or CLAUDE.md).
 
 Please review the [Planning / Modeling / Reporting / Reviewing] package.
-The review request is at <run_dir>/review-request.md.
+The review request is at <run_dir>/review-request-<stage>.md.
 Read the stage package and supporting artifacts listed there.
-Write your critique to <run_dir>/reviewer-critique.md.
+Write your critique to <run_dir>/reviewer-critique-<stage>.md.
 Critique only — do not modify any files.
 ```
 
@@ -600,8 +600,8 @@ off context explicitly. Use these scripts each time you switch.
 ```text
 You are the reviewer agent. Read WORKFLOW-CONFIG.md, then AGENTS.md (or CLAUDE.md).
 The researcher has completed the [stage] package.
-The review request is at <run_dir>/review-request.md.
-Please critique and write findings to <run_dir>/reviewer-critique.md.
+The review request is at <run_dir>/review-request-<stage>.md.
+Please critique and write findings to <run_dir>/reviewer-critique-<stage>.md.
 Critique only — do not modify any files.
 ```
 
@@ -609,7 +609,7 @@ Critique only — do not modify any files.
 
 ```text
 You are the researcher agent. Read WORKFLOW-CONFIG.md, then AGENTS.md (or CLAUDE.md).
-The reviewer has finished. Read <run_dir>/reviewer-critique.md.
+The reviewer has finished. Read <run_dir>/reviewer-critique-<stage>.md.
 Triage each finding, update the [stage] package with the response-to-reviewer
 section, and then present the gate to me.
 ```

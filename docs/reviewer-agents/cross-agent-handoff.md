@@ -28,11 +28,16 @@ for example `water-env-plan-v1` or `smoke-test-2026-06-28`.
 
 ## The Loop
 
+Files are named per stage, because all four stages of a run share one run
+directory: `<stage>` is `planning`, `modeling`, `reporting`, or `reviewing`.
+
 ```
 [researcher] drafts or revises the stage package
-  -> [researcher] writes <run_dir>/review-request.md
-  -> [reviewer]  reads the request (blind mode: only the header) and the package
-  -> [reviewer]  writes <run_dir>/reviewer-critique.md
+  -> [researcher] writes <run_dir>/review-request-<stage>.md
+                  and <run_dir>/review-framing-<stage>.md
+  -> [reviewer]  reads the request and the package
+                 (blind mode: opens the framing file only after its independent findings)
+  -> [reviewer]  writes <run_dir>/reviewer-critique-<stage>.md
   -> [researcher] triages each finding, updates the package, logs escalations
   -> [researcher] presents a substantive gate to the user
   -> user approves, revises, backtracks, or terminates
@@ -42,7 +47,11 @@ for example `water-env-plan-v1` or `smoke-test-2026-06-28`.
 
 ## Step 1: Researcher Writes the Review Request
 
-**File**: `<run_dir>/review-request.md`
+**Files**: `<run_dir>/review-request-<stage>.md` (header and artifact list) and
+`<run_dir>/review-framing-<stage>.md` (the researcher's summary, known risks,
+and questions). They are separate so that blind review can actually be blind:
+a reviewer cannot read a header without also seeing framing that sits in the
+same file.
 
 The request is the authoritative assignment for this pass. If its reviewer
 assignment differs from `WORKFLOW-CONFIG.md`, it must cite the decision-log entry
@@ -64,26 +73,30 @@ in which the user approved the override.
 - Reviewer agent: [Codex / Claude Code]
 - Assignment source: [WORKFLOW-CONFIG.md / user override D-<n>]
 - Reviewer rights: advisory + escalation (default) / other per Decision-Rights Map
+- Framing file: <run_dir>/review-framing-<stage>.md
 - Date: <date>
 
 ## Artifacts to Inspect
 
 <paths to the package, data, figures, run logs, scripts, and deliverables the
 reviewer should open; no researcher commentary here>
-
-## Researcher Framing
-
-<!-- In blind mode the reviewer reads this section only after writing
-independent findings. -->
-
-### Summary of Work Done
-
-### Known Risks or Open Questions
-
-### Specific Questions for the Reviewer
 ```
 
-Keep **Artifacts to Inspect** free of interpretation so blind review stays blind.
+```markdown
+# Review Framing (<stage>)
+
+<!-- Blind mode: the reviewer opens this file only after writing its
+independent findings. -->
+
+## Summary of Work Done
+
+## Known Risks or Open Questions
+
+## Specific Questions for the Reviewer
+```
+
+Keep the request file free of interpretation so blind review stays blind. Do
+not list the framing file under Artifacts to Inspect.
 
 ---
 
@@ -91,7 +104,7 @@ Keep **Artifacts to Inspect** free of interpretation so blind review stays blind
 
 The reviewer reads:
 
-1. the request **Header** and **Artifacts to Inspect**;
+1. the request file (header and artifact list);
 2. the stage package and listed artifacts;
 3. the stage reviewer file:
    - Planning → `planning-reviewer-agent.md`
@@ -100,10 +113,11 @@ The reviewer reads:
    - Reviewing → `reviewing-reviewer-agent.md`
 4. the decision log, to check that consequential choices in the package were
    authorized;
-5. in **standard** mode, the Researcher Framing section before critiquing; in
-   **blind** mode, only after writing the independent findings.
+5. in **standard** mode, the framing file before critiquing; in **blind** mode,
+   only after writing the independent findings. A blind reviewer that opens the
+   framing early must say so at the top of the critique.
 
-**File**: `<run_dir>/reviewer-critique.md`
+**File**: `<run_dir>/reviewer-critique-<stage>.md`
 
 ```markdown
 # Reviewer Critique
@@ -194,7 +208,9 @@ A skipped pass does not block the gate, but the gate presentation must say so.
 
 - Keep review requests and critiques after the stage completes.
 - For revision passes, append `-r2`, `-r3`, etc.:
-  `<run_dir>/review-request-r2.md`, `<run_dir>/reviewer-critique-r2.md`.
+  `<run_dir>/review-request-<stage>-r2.md`, `<run_dir>/reviewer-critique-<stage>-r2.md`.
+- Reviewer process logs (for example headless stdout) go in `<run_dir>/agent/`,
+  not next to the critique.
 - Informal early-look reviews use `<run_dir>/early-look-<n>.md` and are recorded
   in the decision log as `informal review`; they do not replace the formal pass.
 - Critiques are input to the researcher's response. They are not stage packages

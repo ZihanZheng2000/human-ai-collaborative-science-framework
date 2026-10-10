@@ -1,0 +1,14 @@
+I've written the Modeling critique, and my answer to "is the package ready for Reporting?" is no, not as written. I didn't re-run the script or any analysis, and I didn't edit the package, decision log or artifacts.
+
+Critique file: `examples/smoke-test-v02-co2-growth/artifacts/smoke-v02-co2-2026-10-10/reviewer-critique-modeling.md`
+
+- **Assignment:** Claude Code as reviewer matches Config A, so there is no mismatch finding. The request cites D-1 as the researcher override, but D-1 is marked superseded. The live entry is D-8, which is still waiting on a real user (E-1). I logged that as MR-7 (minor).
+- **MR-1 (major, blocks the gate):** The headline and one claim row rest on a partial 2020s decade. D-4 and D-9 excluded that decade, and no decision authorizes the row. The headline says "highest of any decade… continuing the acceleration" and leads ahead of the locked 1960s vs 2010s result. The locked-choices table also says nothing changed after results were visible, which isn't accurate.
+- **D-4/D-9 compliance (your question 1):** The code follows the core. That covers the growth definition, decades, decision rule, Newey-West standard error, shifted-decade sensitivity, acquisition checks and the checksum stop. It deviates in the 2020s computation and in the precision it stores (MR-3).
+- **Minor findings:**
+  - Wording goes beyond the locked claim level (MR-2).
+  - The cleaned file differs from the raw file only in trailing zeros, on 1989, 1991, 2004 and 2010 (MR-4).
+  - The rerun check records no hashes or command and only tests determinism (MR-5).
+  - E-1 isn't carried into the package's limitation register (MR-6).
+- **MR-8 and MR-9:** MR-8 (mirror source and endpoint dependence) is an accepted limitation. MR-9 is a suggestion to improve the figure.
+- **Gate:** I don't approve gates. The gate is synthetic, so none of this counts as real user approval, and E-1 still needs a real user.

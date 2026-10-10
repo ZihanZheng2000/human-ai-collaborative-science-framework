@@ -42,24 +42,25 @@ Your rights are defined in `docs/decision-rights.md#reviewer-rights`:
 ### How to Receive a Review Request
 
 When Codex is ready for your critique, it writes
-`<run_dir>/review-request.md`, where `<run_dir>` is
+`<run_dir>/review-request-<stage>.md`, where `<run_dir>` is
 `research/<research-name>/artifacts/<run_id>/` for real projects or
 `artifacts/<run_id>/` for smoke tests.
 
-Read the request **Header** and **Artifacts to Inspect** first. Check the
+Read the request file first. It contains only the header and the artifact
+list; the researcher's framing is in a separate `review-framing-<stage>.md`. Check the
 assignment: if the request names a reviewer different from `WORKFLOW-CONFIG.md`
 and does not cite a user override in the decision log, still write the critique,
 but make the mismatch the first finding (major, route `user decision`).
 
-- **Standard mode**: read the Researcher Framing section, then the package and
-  artifacts.
+- **Standard mode**: read the framing file, then the package and artifacts.
 - **Blind mode**: read the package, artifacts, and decision log; write your
-  independent findings; only then read the Researcher Framing and add
-  follow-up findings in a separate block.
+  independent findings; only then open the framing file and add follow-up
+  findings in a separate block. If you opened the framing early, say so at the
+  top of the critique.
 
 ### How to Return Findings
 
-Write your critique to `<run_dir>/reviewer-critique.md` using the format in
+Write your critique to `<run_dir>/reviewer-critique-<stage>.md` using the format in
 `docs/reviewer-agents/cross-agent-handoff.md`:
 
 | Finding ID | Severity | Concern | Evidence or reasoning | Route | Blocks gate? | Recommended action |
@@ -82,6 +83,14 @@ escalations, or blockers in one area, and a short overall assessment.
   silently closed.
 - Approvals that look nominal (the user could not have seen the evidence or
   objections) are flagged.
+
+### Reconfiguration Thresholds
+
+Apply the documented triggers in `docs/coordination.md#adaptive-reconfiguration`
+as written; do not substitute your own threshold. In particular, a reviewer
+blocker or major in the same area across **two** passes is a trigger. Say which
+area you mean and why the findings belong to it. A proposed reconfiguration
+that only adds a researcher self-check does not move authority; say so.
 
 ### Guardrails
 
@@ -188,7 +197,7 @@ Then ask whether to use the reviewer agent:
 
 | Reviewer option | Meaning |
 |---|---|
-| Use reviewer | Write `review-request.md`, wait for reviewer critique, triage findings, then present the user gate. |
+| Use reviewer | Write `review-request-<stage>.md`, wait for reviewer critique, triage findings, then present the user gate. |
 | Skip reviewer | Record skipped-review reason, accepted risk, and revisit trigger in the stage package and decision log before presenting the user gate. |
 
 Default recommendation for real research is **Step-by-step discussion** plus
@@ -334,10 +343,10 @@ Each stage uses a maker-checker loop before its user gate:
 ```text
 Claude Code (researcher agent)
   -> drafts or revises the stage package
-  -> writes <run_dir>/review-request.md
+  -> writes <run_dir>/review-request-<stage>.md and review-framing-<stage>.md
 Codex (reviewer agent)
   -> reads the request and the package
-  -> writes <run_dir>/reviewer-critique.md
+  -> writes <run_dir>/reviewer-critique-<stage>.md
 Claude Code (researcher agent)
   -> triages each finding: accepted-and-fixed / accepted-but-deferred / rejected-with-reason / needs-user-decision
   -> escalates every deferred or rejected blocker/major to the user
@@ -361,12 +370,18 @@ trigger before asking for the stage gate decision.
 ### How to Write a Review Request
 
 When the stage package is ready for Codex to review, write
-`<run_dir>/review-request.md` using the format in
+`<run_dir>/review-request-<stage>.md` using the format in
 `docs/reviewer-agents/cross-agent-handoff.md`. The header must name the stage,
 gate mode, review mode (standard or blind; Reviewing defaults to blind), package
 path, decision-log path, researcher and reviewer agents, and the assignment
-source. Keep the "Artifacts to Inspect" list free of commentary; put your
-summary, known risks, and questions under "Researcher Framing".
+source; cite the live decision ID, not a superseded one. Keep the request free
+of commentary; put your summary, known risks, and questions in the separate
+`<run_dir>/review-framing-<stage>.md`.
+
+Before every review request, check the deliverable or package sentence by
+sentence against its claim-evidence map and the authorized claim level. A
+sentence above the claim level is a Tier 1 checkpoint, not something to send
+for review.
 
 ### Gate Rules
 
@@ -448,9 +463,16 @@ Smoke-test package: `templates/smoke-test-package.md`
 
 For each substantial run, create or update `run-notes.md` in the project folder
 (or `examples/<run-name>/run-notes.md` for examples) using
-`templates/example-run-notes.md`. At the Reviewing Gate, or whenever the run
-stops, fill its Workflow Evaluation section from the decision log and packages
-(`docs/workflow-evaluation.md`).
+`templates/example-run-notes.md`. Fill its Workflow Evaluation section from the
+decision log and packages (`docs/workflow-evaluation.md`) **before** writing the
+Reviewing-stage review request, so the reviewer can check it, and update it
+after the Reviewing Gate.
+
+When the user's own words are the authority for a decision, quote them in the
+decision log and state what they authorized.
+
+If you seed faults to test the workflow, follow the seeded-fault protocol in
+`docs/workflow-evaluation.md`.
 
 Run notes do not override `docs/`, `templates/`, or `skills/`. At the end of a
 run, decide whether each lesson should stay for more evidence, be promoted to a

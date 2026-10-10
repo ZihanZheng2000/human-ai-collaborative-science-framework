@@ -1,0 +1,21 @@
+I wrote the Planning critique. It has 10 findings: two majors, six minors, one accepted limitation and one suggestion. I didn't edit the package, decision log or any other file.
+
+The assignment matches. The request names Claude Code as reviewer, which is what `WORKFLOW-CONFIG.md` (Config A) assigns. Claude Code is also acting as researcher, and the request cites D-1 for that override. I treated the D-1 problem as a finding rather than an assignment mismatch.
+
+The two majors:
+- **PR-1 (route: user decision):** D-1 is not a user approval of the researcher-role override. The log's own approval-quality cell says the user didn't see the override. D-1 also bundles mode, reviewer strategy, role override and gate mode into one entry.
+- **PR-2 (route: Planning):** the locked analysis choices define the growth rate, decades and metric well. They don't say what counts as an "increase" or how the OLS standard error is computed, and they leave rounding, "typing" and the `Uncertainty` column open. These should be locked before any growth rate is computed.
+
+The minor findings, in short:
+- The decade mean of growth rates depends only on two annual means per decade (PR-3).
+- The 2020s were dropped after the 2023-2025 tail values were seen (PR-4).
+- The acquisition rule checks structure only (PR-5).
+- The mirror's provenance is asserted, not verified (PR-6).
+- The Decision-Rights Map omits some default rows (PR-7).
+- D-5 records "Risk accepted: none" (PR-8).
+
+The accepted limitation is that every Tier 1 decision is authorized only as "synthetic" (PR-9). The suggestion is about the critique file name, which differs from the protocol's `reviewer-critique.md` (PR-10).
+
+The raw CSV's row count (68 lines) and both sha256 checksums match the run log. I did not recompute any growth rates, because none exist yet.
+
+The critique is at `examples/smoke-test-v02-co2-growth/artifacts/smoke-v02-co2-2026-10-10/reviewer-critique-planning.md`.
