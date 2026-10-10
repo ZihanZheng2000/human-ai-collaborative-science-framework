@@ -220,12 +220,10 @@ of the Decision-Rights Map. See
 
 The workflow should avoid creating many unreviewed side artifacts. Extra files can exist for code, data, figures, validation outputs, working notes, and drafts, but each stage should summarize them in its package.
 
-For real research projects, create a dedicated project folder under
-`research/<research-name>/` and use the layout in
-[research-organization.md](research-organization.md). New project packages
-belong in `research/<research-name>/packages/`; detailed notes belong in
-`research/<research-name>/notes/`; run-scoped review requests, critiques,
-manifests, and logs belong in `research/<research-name>/artifacts/<run_id>/`.
+Each research project has its own project folder with the layout in
+[research-organization.md](research-organization.md): packages in `packages/`,
+detailed notes in `notes/`, and run-scoped review requests, critiques,
+manifests, and logs in `artifacts/<run_id>/`.
 
 Each real project also keeps `research/<research-name>/decision-log.md`
 (template: `templates/decision-log.md`) and a status block in its `README.md`.
@@ -269,8 +267,7 @@ The example root should usually contain only `README.md`, `run-notes.md`, and th
 
 ## Run Logs and Agent Artifacts
 
-`<run_dir>` is `research/<research-name>/artifacts/<run_id>/` for real projects
-and `artifacts/<run_id>/` for smoke tests or legacy runs.
+`<run_dir>` is `artifacts/<run_id>/` inside the project folder.
 
 For substantial runs, especially exploratory demos that may later scale up, maintain:
 

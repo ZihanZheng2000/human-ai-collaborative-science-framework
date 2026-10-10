@@ -119,7 +119,7 @@ substantive gate looks like, and how to answer.
 2. The agent reads its instruction file ([CLAUDE.md](CLAUDE.md), [AGENTS.md](AGENTS.md), or [GEMINI.md](GEMINI.md)).
 3. Read [docs/quickstart.md](docs/quickstart.md).
 4. Choose full workflow mode or smoke-test mode.
-5. Run the Pre-Planning Session Setup (workflow mode and reviewer strategy), create `research/<research-name>/` with its README status block, `decision-log.md`, and `run-notes.md`, then check for user-supplied domain materials in `research/<research-name>/artifacts/input/domain-materials/` and run Domain Onboarding if present.
+5. Run the Pre-Planning Session Setup (workflow mode and reviewer strategy), create the project folder (default `research/<research-name>/`) with its README status block, `decision-log.md`, and `run-notes.md`, then check for user-supplied domain materials in its `artifacts/input/domain-materials/` and run Domain Onboarding if present.
 6. For a real project, run a focused literature/prior-work and novelty check
    before finalizing the Planning Package. Store detailed notes outside the
    package and summarize the implications in [templates/plan-package.md](templates/plan-package.md).
@@ -148,7 +148,6 @@ empty scaffold placeholders.
 | [skills/](skills/) | Workflow-native skills used inside stages |
 | [.claude/commands/](.claude/commands/) | Claude Code slash commands for all seven workflow-native skills |
 | `research/` | Real research projects, one folder each (local; ignored by git) |
-| `artifacts/` | Legacy run artifacts |
 
 ## Stage Outputs
 
@@ -176,17 +175,17 @@ The workflow uses small reusable internal skills rather than one all-purpose age
 | [route-aware-reviewer](skills/route-aware-reviewer/SKILL.md) | `/route-aware-reviewer` | Reviewing | Stress-test the research output and route findings to the correct stage | May use external reviewer simulation or checklists |
 | [gate-manager](skills/gate-manager/SKILL.md) | `/gate-manager` | All stages | Present gates and Tier 1 checkpoints substantively; record decisions in the decision log | Mostly framework-native |
 
-See [docs/skill-strategy.md](docs/skill-strategy.md) for when to use external tools versus internal skills, and for built-in capability coverage when the researcher is not Codex.
+See [docs/skill-strategy.md](docs/skill-strategy.md) for when to use external tools versus internal skills, and for built-in capability coverage by agent.
 
 ## Domain Onboarding
 
 Non-CS researchers often have domain materials the AI has not seen: institutional reports, field-specific papers, data dictionaries, or policy documents. The Planning stage begins with a **Domain Onboarding** step that reads user-supplied materials, extracts a Domain Knowledge Summary, and produces skill cards — before any literature scan or plan writing begins.
 
-Place domain materials in `research/<research-name>/artifacts/input/domain-materials/` (or `artifacts/<run_id>/domain-materials/` for a smoke test) and tell the researcher agent at the start of Planning. See [USER_NOTE.md](USER_NOTE.md) for the exact prompt to use.
+Place domain materials in `artifacts/input/domain-materials/` inside the project folder and tell the researcher agent at the start of Planning. See [USER_NOTE.md](USER_NOTE.md) for the exact prompt to use.
 
 ## Cross-Agent Handoff
 
-The researcher and reviewer agents communicate through two files written to the run directory (`research/<research-name>/artifacts/<run_id>/`, or `artifacts/<run_id>/` for smoke tests):
+The researcher and reviewer agents communicate through two files written to the run directory (`artifacts/<run_id>/` inside the project folder):
 
 - `review-request-<stage>.md` — written by the researcher; declares the stage, gate mode, review mode (standard or blind), and the reviewer assignment
 - `review-framing-<stage>.md` — the researcher's summary, risks, and questions, kept separate so a blind reviewer can read it last
@@ -225,11 +224,10 @@ research, not a claim of full scientific automation.
 
 ## Current Status
 
-This is an early research-framework repository (v0.2-dev). The workflow docs, templates, skills, orchestrator, and a smoke-test example are present. Next:
+This is an early research-framework repository (v0.3-dev). The workflow docs, templates, skills, orchestrator, and a smoke-test example are present. Next:
 
 - an API researcher (tool-using agent loop), so a single API key can run the whole workflow
 - one domain case study
-- repository-level citation and license metadata
 - workflow evaluation results from at least one real run (`docs/workflow-evaluation.md`)
 
 ## License

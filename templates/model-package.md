@@ -1,4 +1,4 @@
-# Model Package
+# Modeling Package
 
 ## Modeling Workflow Identity
 
@@ -19,7 +19,7 @@
 - goal statement:
 - goal start trigger:
 - execution mode: demo-first / full-scale / addendum
-- goal stop condition: Model Package ready for Modeling Gate / user decision needed / backtrack to Plan / terminate / user paused
+- goal stop condition: Modeling Package ready for Modeling Gate / user decision needed / backtrack to Plan / terminate / user paused
 - first successful script/table/figure treated as final stop? no
 
 ## Run Manifest and Logs

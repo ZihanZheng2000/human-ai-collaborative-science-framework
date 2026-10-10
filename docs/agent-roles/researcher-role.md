@@ -169,7 +169,7 @@ Use this pattern:
    the choice would shape the research. Each accepted unit that shapes the
    research is a Tier 1 decision and goes in the decision log.
 4. Store detailed reviews, literature notes, search logs, source matrices, and
-   long reasoning in `research/<research-name>/notes/`.
+   long reasoning in the project's `notes/` folder.
 5. Keep the stage package as the compact handoff: decisions made (by decision
    ID), evidence status, open questions, selected route, risks, and links to
    supporting notes.
@@ -181,19 +181,16 @@ mode.
 
 ### Research Project Folder Rule
 
-At the beginning of each new real research project, create a dedicated project
-folder under `research/<research-name>/` unless the user explicitly requests a
-different location. Follow `docs/research-organization.md` for the folder
-skeleton, including `README.md` (with status block), `decision-log.md`, and
-`run-notes.md`.
+Each real research project has its own project folder. In orchestrated runs the
+orchestrator creates it (it can be anywhere) and starts you inside it; paths in
+your prompt are relative to it. In manual runs, create it under
+`research/<research-name>/` unless the user names another location. Follow
+`docs/research-organization.md` for the folder skeleton, including `README.md`
+(with status block), `decision-log.md`, and `run-notes.md`.
 
-New real-project stage packages live under `research/<research-name>/packages/`,
-detailed discussion notes under `research/<research-name>/notes/`, domain
-materials under `research/<research-name>/artifacts/input/domain-materials/`,
-and run-scoped artifacts under `research/<research-name>/artifacts/<run_id>/`.
-Avoid placing new real-project files in the repository-level `packages/` or
-`artifacts/` folders except for legacy migration, smoke tests, or explicit user
-instruction.
+Inside the project folder: stage packages in `packages/`, detailed discussion
+notes in `notes/`, domain materials in `artifacts/input/domain-materials/`, and
+run-scoped files in `artifacts/<run_id>/`.
 
 At the start of a real project, begin with Planning orientation and proposed
 user-need confirmation. Do not pre-fill or treat Modeling, Reporting, or
@@ -260,8 +257,7 @@ Researcher agent
 User stage gate (substantive presentation)
 ```
 
-`<run_dir>` is `research/<research-name>/artifacts/<run_id>/` for real projects
-and `artifacts/<run_id>/` for smoke tests. Read
+`<run_dir>` is `artifacts/<run_id>/` inside the project folder. Read
 `docs/reviewer-agents/cross-agent-handoff.md` for file formats.
 
 The reviewer has advisory and escalation rights. You may not close a reviewer

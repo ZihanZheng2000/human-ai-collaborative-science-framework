@@ -1,5 +1,11 @@
 # Smoke Test v0.2: Mauna Loa CO2 Growth-Rate Acceleration
 
+> Historical record: this run used the v0.2 conventions (Config A/B in
+> `WORKFLOW-CONFIG.md`, the PowerShell reviewer wrapper, single-file review
+> requests). Those were replaced in v0.3 by `workflow.config.json`, the
+> orchestrator, and separate framing files. The files below are kept as they
+> were produced.
+
 Framework smoke test of the v0.2 rules (decision tiers, decision log,
 escalation, blind review, substantive gates, workflow evaluation). The research
 content is deliberately small and well known; the object under test is the

@@ -19,7 +19,7 @@ Use this skill to decide which visuals are needed, what evidence they support, w
 
 ## Use When
 
-- Reporting begins from a Model Package
+- Reporting begins from a Modeling Package
 - the method or workflow needs a schematic
 - figures and tables exist but are not yet tied to claims
 - Review finds missing or confusing visuals
@@ -27,7 +27,7 @@ Use this skill to decide which visuals are needed, what evidence they support, w
 
 ## Inputs
 
-- Model Package figures and tables
+- Modeling Package figures and tables
 - claim-evidence map
 - reporting package or manuscript architecture
 - target venue rules, if any
@@ -57,4 +57,4 @@ Use this skill to decide which visuals are needed, what evidence they support, w
 - CCF-Figure or similar tools may propose visual structure, but this skill must still verify claim alignment, evidence status, caption scope, and handoff records.
 - Data-derived figures and tables must come from Model or a documented Model addendum.
 - Captions should state what the reader should learn, not only name the file.
-- Captions must not imply empirical support that is absent from the Model Package or claim-evidence map.
+- Captions must not imply empirical support that is absent from the Modeling Package or claim-evidence map.

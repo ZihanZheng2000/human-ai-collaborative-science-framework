@@ -72,7 +72,7 @@ Run both procedures above, then cross-check:
 
 - research-skill cards using `templates/research-skill-card.md`
 - source attribution for each card (retrieved paper or user-supplied file)
-- selected/provisional cards for the Plan Package
+- selected/provisional cards for the Planning Package
 - conflict flags if user materials and retrieved literature disagree
 
 ## Guardrails

@@ -44,12 +44,9 @@ You do not need to write code. You do need to have ready:
 - **A rough idea of your output goal**: journal article, policy report, thesis
   chapter, slide deck, or something else. If you are not sure, the AI will ask.
 
-For each new real research project, the researcher agent should create a
-separate project folder under:
-
-```text
-research/<research-name>/
-```
+Each research project has its own folder. With the orchestrator you choose it
+(`python -m orchestrator init ~/papers/my-study ...`); in a manual session the
+default is `research/<research-name>/` inside this repository.
 
 Inside that folder, stage packages, discussion notes, run artifacts, data,
 code, figures, tables, deliverables, and archived files should be kept in their
@@ -155,8 +152,7 @@ For real projects, the AI should begin with Planning only. Modeling, Reporting,
 and Reviewing should not be treated as active work until the previous gate is
 approved.
 
-`<run_dir>` in this guide means `research/<research-name>/artifacts/<run_id>/`
-(or `artifacts/<run_id>/` for a smoke test).
+`<run_dir>` in this guide means `artifacts/<run_id>/` inside your project folder.
 
 ---
 
@@ -273,10 +269,10 @@ research plan, the method choice, and the output format.
 **Standard folder for domain materials:**
 
 ```
-research/<research-name>/artifacts/input/domain-materials/
+<project>/artifacts/input/domain-materials/
 ```
 
-For example: `research/water-quality-2026/artifacts/input/domain-materials/`
+For example: `~/papers/water-quality-2026/artifacts/input/domain-materials/`
 
 **What to put there:**
 
@@ -289,7 +285,7 @@ For example: `research/water-quality-2026/artifacts/input/domain-materials/`
 **How to tell the AI about your materials:**
 
 ```text
-I have domain background materials in research/<research-name>/artifacts/input/domain-materials/.
+I have domain background materials in <project>/artifacts/input/domain-materials/.
 Please read them before writing the research plan and tell me what you
 extracted from them.
 ```
@@ -307,7 +303,7 @@ extracted from them.
 You can provide materials at any stage, not only at the beginning.
 
 ```text
-I am adding a report to research/<research-name>/artifacts/input/domain-materials/.
+I am adding a report to <project>/artifacts/input/domain-materials/.
 Please read [filename] and tell me if it changes any assumptions
 in the current plan.
 ```
@@ -512,7 +508,7 @@ Do not move forward until this is verified.
 ### Providing Materials Mid-Stage
 
 ```text
-I am adding domain materials to research/<research-name>/artifacts/input/domain-materials/.
+I am adding domain materials to <project>/artifacts/input/domain-materials/.
 Before continuing, please read [specific file or folder] and tell me
 what you extracted from it that is relevant to our research plan.
 ```
@@ -529,7 +525,7 @@ If yes, revise the plan accordingly. If no, explain why.
 ```text
 The current scope is too broad. Please revise the research question to focus
 only on [specific population / time period / geography / variable].
-Update the Plan Package and come back to me before continuing.
+Update the Planning Package and come back to me before continuing.
 ```
 
 **Change the output type:**

@@ -23,7 +23,7 @@
 
 | Input | Status | Notes |
 |---|---|---|
-| Approved Plan Package |  |  |
+| Approved Planning Package |  |  |
 | Modeling Package |  |  |
 | exploratory demo phase summary, if used |  |  |
 | Modeling Gate decision |  |  |

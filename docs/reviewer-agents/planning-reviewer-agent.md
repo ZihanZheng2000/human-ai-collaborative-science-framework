@@ -29,7 +29,7 @@ Check:
 - mature external tools or existing skills are reused where appropriate
 - proposed project-specific skills are necessary
 - venue or output route fits the evidence standard
-- Model-stage acceptance rubric is specific enough to prevent drift
+- Modeling-stage acceptance rubric is specific enough to prevent drift
 - major risks have mitigation, fallback, or user-decision paths
 - the Decision-Rights Map exists, names who authorizes each consequential decision class, and assigns a domain expert where the researcher and user lack the needed expertise
 

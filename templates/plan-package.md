@@ -346,9 +346,9 @@ user can uphold the response.
 - accepted limitations:
 - unresolved user decisions:
 
-## Acceptance Rubric for Model Stage
+## Acceptance Rubric for Modeling Stage
 
-The Model stage can begin only if:
+The Modeling stage can begin only if:
 
 - the research purpose and final product are clear
 - the planning depth decision is explicit

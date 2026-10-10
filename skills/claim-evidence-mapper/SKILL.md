@@ -15,8 +15,8 @@ description: Use during Reporting or Reviewing to ensure every important finding
 ## Inputs
 
 - Reporting Package, manuscript draft, or outline
-- Plan Package
-- Model Package
+- Planning Package
+- Modeling Package
 - literature map
 - source list or bibliography
 - figures and tables

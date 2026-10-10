@@ -1,19 +1,19 @@
 ---
 name: model-contract-runner
-description: Use during Model when an Approved Plan Package must be turned into reproducible data retrieval, data quality checks, analysis code, preliminary finding checks, model critic passes, next-analysis queues, bounded evidence-deepening loops, figures, tables, and a Model Package.
+description: Use during Model when an Approved Planning Package must be turned into reproducible data retrieval, data quality checks, analysis code, preliminary finding checks, model critic passes, next-analysis queues, bounded evidence-deepening loops, figures, tables, and a Modeling Package.
 ---
 
 # Model Contract Runner
 
 ## Use When
 
-- Plan Gate is approved
+- Planning Gate is approved
 - data must be retrieved, cleaned, matched, or analyzed
-- results need a reproducible Model Package
+- results need a reproducible Modeling Package
 
 ## Inputs
 
-- Approved Plan Package
+- Approved Planning Package
 - data plan
 - method blueprint
 - acceptance rubric
@@ -21,7 +21,7 @@ description: Use during Model when an Approved Plan Package must be turned into 
 
 ## Procedure
 
-1. State a concrete Modeling Goal for the run: continue until the Model Package is ready for the Modeling Gate, or until a user decision, Plan backtrack, or termination condition is required.
+1. State a concrete Modeling Goal for the run: continue until the Modeling Package is ready for the Modeling Gate, or until a user decision, Plan backtrack, or termination condition is required.
 2. Lock the modeling contract from the approved plan. Present labels, exclusion rules, metrics, model search space, and validation split as a Tier 1 decision checkpoint and record the user's decision in `decision-log.md` before running the analyses they affect.
 3. Record data source identity: raw host, official source, documentation source, citation source, version/access date, and license/access status.
 4. Retrieve raw data under explicit acquisition success rules and save provenance.
@@ -39,7 +39,7 @@ description: Use during Model when an Approved Plan Package must be turned into 
 
 ## Outputs
 
-- Model Package
+- Modeling Package
 - raw and cleaned data notes
 - data acquisition success counts
 - data source identity notes

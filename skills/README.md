@@ -21,7 +21,7 @@ Recommended external research skills are listed in `../docs/skill-strategy.md#re
 |---|---|---|
 | `venue-calibration/` | Calibrate a project to target venue, audience, official requirements, and exemplar patterns | Wraps venue websites, author guidelines, templates, and exemplar papers |
 | `research-skill-card-distiller/` | Convert prior work into reusable research-skill cards or method patterns | May use external literature-search or deep-research outputs as input |
-| `model-contract-runner/` | Run Model-stage work under explicit contracts, success rules, and bounded loops | Orchestrates Python, R, Jupyter, containers, APIs, or domain packages rather than replacing them |
+| `model-contract-runner/` | Run Modeling-stage work under explicit contracts, success rules, and bounded loops | Orchestrates Python, R, Jupyter, containers, APIs, or domain packages rather than replacing them |
 | `figure-table-narrative/` | Plan visual evidence, claim alignment, placement, and caption limits around Reporting deliverables | Hands method/conceptual visuals to CCF-Figure or diagram tools; hands empirical visuals to Model/plotting tools |
 | `claim-evidence-mapper/` | Tie claims to citations, model artifacts, limitations, or approved user knowledge | May use citation, retrieval, or metadata tools, but keeps the final map internal |
 | `route-aware-reviewer/` | Review evidence packages or deliverables and route findings to Planning, Modeling, Reporting, Reviewing, or termination | May use reviewer simulation or checklists, but keeps routing decisions internal |

@@ -35,9 +35,8 @@ Your rights are defined in `docs/decision-rights.md#reviewer-rights`:
 ### How to Receive a Review Request
 
 When the researcher is ready for your critique, it writes
-`<run_dir>/review-request-<stage>.md`, where `<run_dir>` is
-`research/<research-name>/artifacts/<run_id>/` for real projects or
-`artifacts/<run_id>/` for smoke tests.
+`<run_dir>/review-request-<stage>.md`, where `<run_dir>` is `artifacts/<run_id>/`
+inside the project folder.
 
 Read the request file first. It contains only the header and the artifact
 list; the researcher's framing is in a separate `review-framing-<stage>.md`. Check the

@@ -11,7 +11,7 @@ STAGE_DOCS = {
     "planning": ("docs/plan-stage.md", "templates/plan-package.md", "planning-package.md"),
     "modeling": ("docs/model-stage.md", "templates/model-package.md", "modeling-package.md"),
     "reporting": ("docs/reporting-stage.md", "templates/reporting-package.md", "reporting-package.md"),
-    "reviewing": ("docs/review-stage.md", "templates/review-package.md", "review-package.md"),
+    "reviewing": ("docs/review-stage.md", "templates/review-package.md", "reviewing-package.md"),
 }
 
 CHECKPOINT_PROTOCOL = """\
@@ -43,7 +43,7 @@ MODE_RULES = {
 }
 
 
-def _files(stage: str, revision: int) -> dict:
+def files_for(stage: str, revision: int) -> dict:
     suffix = "" if revision == 1 else f"-r{revision}"
     return {
         "request": f"review-request-{stage}{suffix}.md",
@@ -56,7 +56,7 @@ def _files(stage: str, revision: int) -> dict:
 def researcher_work(ctx: dict) -> str:
     stage = ctx["stage"]
     spec, template, package = STAGE_DOCS[stage]
-    f = _files(stage, ctx["revision"])
+    f = files_for(stage, ctx["revision"])
     handoff = (
         f"When the package is ready for review, write `{ctx['run_dir']}/{f['request']}` and "
         f"`{ctx['run_dir']}/{f['framing']}` (format: {ctx['fw']}/docs/reviewer-agents/cross-agent-handoff.md), "
@@ -104,7 +104,7 @@ authorized claim level. {handoff}
 def researcher_triage(ctx: dict) -> str:
     stage = ctx["stage"]
     _, _, package = STAGE_DOCS[stage]
-    f = _files(stage, ctx["revision"])
+    f = files_for(stage, ctx["revision"])
     return f"""You are the RESEARCHER agent in the Human-AI Collaborative Science Framework.
 You were started by the workflow orchestrator. Follow {ctx['fw']}/docs/agent-roles/researcher-role.md.
 
@@ -137,7 +137,7 @@ stop instead of writing the gate request.
 
 def reviewer_cli(ctx: dict, blind_pass: str) -> str:
     stage = ctx["stage"]
-    f = _files(stage, ctx["revision"])
+    f = files_for(stage, ctx["revision"])
     reviewer_file = f"{ctx['fw']}/docs/reviewer-agents/{stage}-reviewer-agent.md"
     if blind_pass == "independent":
         framing_rule = (

@@ -14,8 +14,8 @@ description: Use during Review when a Reporting Package and its deliverables nee
 
 ## Inputs
 
-- Approved Plan Package
-- Model Package
+- Approved Planning Package
+- Modeling Package
 - Reporting Package
 - reader-facing deliverables, if any
 - artifacts and known limitations

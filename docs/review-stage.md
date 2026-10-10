@@ -43,7 +43,7 @@ An external agent should modify files only when the user explicitly asks for tha
 
 Required inputs:
 
-- Approved Plan Package
+- Approved Planning Package
 - Modeling Package
 - Reporting Package
 - reader-facing deliverables listed by Reporting

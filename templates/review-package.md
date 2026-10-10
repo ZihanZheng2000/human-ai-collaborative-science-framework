@@ -23,8 +23,8 @@
 
 | Input | Status | Notes |
 |---|---|---|
-| Approved Plan Package |  |  |
-| Model Package |  |  |
+| Approved Planning Package |  |  |
+| Modeling Package |  |  |
 | Reporting Package |  |  |
 | Run manifest/log/summary |  |  |
 | Data/source artifacts |  |  |

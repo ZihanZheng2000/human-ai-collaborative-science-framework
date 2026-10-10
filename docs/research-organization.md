@@ -1,8 +1,10 @@
 # Research Project Organization
 
-This document defines the default layout for real research projects. Each new
-research workflow should get its own folder under `research/` before substantive
-Planning work begins.
+This document defines the layout of a research project folder. Each project gets
+its own folder before substantive Planning work begins. With the orchestrator
+the folder can be anywhere (`python -m orchestrator init <folder> --topic ...`
+creates the layout below). In manual runs inside this repository, the default
+location is `research/<research-name>/`, which git ignores.
 
 ## Default Layout
 
@@ -102,14 +104,6 @@ researcher stops:
 - next action:
 - user decision needed now: none / what
 ```
-
-## Root Directory Rule
-
-Do not create new real-project packages directly under the repository-level
-`packages/` or new real-project run artifacts directly under the repository-level
-`artifacts/` unless the user explicitly requests a legacy layout. Those root
-folders may remain for older runs, templates, or migration staging, but new
-research projects should live under `research/<research-name>/`.
 
 ## Stepwise Work Rule
 

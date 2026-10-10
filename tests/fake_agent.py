@@ -112,7 +112,7 @@ def reviewer(prompt):
         text = text.replace("pending second pass", f"followed up; framing visible now: {'yes' if framing.exists() else 'no'}")
         critique.write_text(text, encoding="utf-8")
     else:
-        critique.write_text(f"# Critique\n\n## Findings\n\n| XR-1 | minor |\n", encoding="utf-8")
+        critique.write_text("# Critique\n\n## Findings\n\n| XR-1 | minor |\n", encoding="utf-8")
 
 
 if __name__ == "__main__":

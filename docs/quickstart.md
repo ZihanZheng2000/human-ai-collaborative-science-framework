@@ -64,6 +64,12 @@ the workflow step is.
 
 Use this to test the framework on a small public-data task.
 
+With the orchestrator (recommended): `python -m orchestrator init <folder> --topic "<small test question>"`,
+choose synthetic gates at setup, then `python -m orchestrator run <folder>`. The
+full stage packages, decision log, and run notes are produced as in a real run.
+
+In a manual session:
+
 1. Start from `templates/smoke-test-package.md`.
 2. Select a small question and public dataset.
 3. Use synthetic gates and label them as synthetic. Record decisions in the smoke-test package's Decision Notes table.
@@ -114,7 +120,7 @@ condition as you go. Run Planning -> Modeling -> Reporting -> Reviewing.
 Download or read real usable data locally.
 Generate a script, cleaned data, at least one table, and at least one figure.
 If the environment fails, record an Environment Repair Decision and continue.
-During Modeling, create a concrete Modeling Goal and usually begin with a small exploratory demo phase before scale-up. Do not stop after the first successful script, table, or figure; continue until the Model Package is ready for the Modeling Gate, or until a route decision is required.
+During Modeling, create a concrete Modeling Goal and usually begin with a small exploratory demo phase before scale-up. Do not stop after the first successful script, table, or figure; continue until the Modeling Package is ready for the Modeling Gate, or until a route decision is required.
 Use synthetic gates and label them as synthetic.
 Write the final summary in Chinese.
 ```

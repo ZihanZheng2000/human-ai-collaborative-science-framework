@@ -175,7 +175,7 @@ class Engine:
         return max(used) + 1
 
     def _files(self) -> dict:
-        return prompts._files(self.state["stage"], self.state["revision"])
+        return prompts.files_for(self.state["stage"], self.state["revision"])
 
     def _save(self) -> None:
         self.state_path.parent.mkdir(parents=True, exist_ok=True)
@@ -400,7 +400,7 @@ class Engine:
         adapter = self._adapter(name)
         if adapter.kind == "human":
             return self._human_task("researcher", label, prompt)
-        res = self._run_cli("researcher", name, adapter, prompt, f"researcher-{label}", label)
+        self._run_cli("researcher", name, adapter, prompt, f"researcher-{label}", label)
         return True
 
     # ------------------------------------------------------------------ sessions

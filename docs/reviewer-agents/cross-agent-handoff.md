@@ -14,10 +14,9 @@ user's gate decision; in manual runs the user hands the files between agents.
 
 ## Run Directory
 
-`<run_dir>` below means:
-
-- real research project: `research/<research-name>/artifacts/<run_id>/`
-- framework smoke test or legacy run: `artifacts/<run_id>/`
+`<run_dir>` below means `artifacts/<run_id>/` inside the project folder (for
+example `research/<research-name>/artifacts/<run_id>/`, or any folder created
+with `python -m orchestrator init`).
 
 `<run_id>` is a descriptive slug that stays the same for every file in the run,
 for example `water-env-plan-v1` or `smoke-test-2026-06-28`.

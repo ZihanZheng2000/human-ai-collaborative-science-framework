@@ -45,6 +45,21 @@ Removed:
 
 - `WORKFLOW-CONFIG.md`, `scripts/run_reviewer_claude.ps1`,
   `scripts/run_reviewer_codex.ps1` (replaced by the orchestrator).
+- `artifacts/agent-call-smoke-test/` (tested the removed PowerShell wrapper).
+
+Cleaned up:
+
+- One naming scheme everywhere: Planning / Modeling / Reporting / Reviewing
+  stages and gates, Planning / Modeling / Reporting / Review Package (was a mix
+  of Plan, Model, and Planning, Modeling).
+- The orchestrator now names the Reviewing package `reviewing-package.md`, as
+  the project layout specifies (it used `review-package.md`).
+- Paths are written relative to the project folder instead of assuming
+  `research/<research-name>/`; legacy root-level `packages/` and `artifacts/`
+  rules removed.
+- `LICENSE` holder, `.gitignore`, `docs/github-publishing.md`,
+  `docs/release-checklist.md`, `CONTRIBUTING.md`, and `docs/skill-strategy.md`
+  updated for the new name and agent-neutral roles.
 
 ## v0.2.0-dev
 
