@@ -251,6 +251,25 @@ class _Refused(_FakeStream):
         self.message = message
 
 
+class ConfigSnapshotTest(unittest.TestCase):
+    def test_snapshot_and_reconfiguration_logged(self):
+        sb = Sandbox()
+        try:
+            cfg = config("real")
+            eng = sb.engine(cfg, interactive=False, config_source="custom.json")
+            eng.init_project("t", run_id="r1", use_config_defaults=True)
+            self.assertTrue((sb.project / ".workflow/config.json").exists())
+            self.assertIn("Setup from custom.json", sb.log())
+            cfg2 = config("real")
+            cfg2["agents"]["other"] = fake_cli("reviewer")
+            cfg2["roles"]["reviewer"] = "other"
+            with env(FAKE_SILENT="researcher"):
+                sb.engine(cfg2, interactive=False).run(max_steps=1)
+            self.assertRegex(sb.log(), r"\| reconfiguration \| Agent configuration changed")
+        finally:
+            sb.close()
+
+
 class ConfigTest(unittest.TestCase):
     def test_api_researcher_rejected(self):
         cfg = config()

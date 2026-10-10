@@ -17,8 +17,11 @@ STAGE_DOCS = {
 CHECKPOINT_PROTOCOL = """\
 ## How to ask the user (Tier 1 decision checkpoints)
 
-You cannot talk to the user directly. When a Tier 1 decision needs the user
-(see docs/decision-rights.md), write one file per decision to
+You cannot talk to the user directly. Every Tier 1 decision class in
+docs/decision-rights.md that you settle needs the user, including choices to
+skip, defer, or lighten a planned check (prior-work depth, venue calibration,
+tool scan) and the output route. Write one file per decision (closely related
+minor choices may share one file) to
 `{inbox}/pending/CP-{stage}-<n>.md` using `templates/checkpoint-request.md`
 (sections: Decision needed, Proposal, Evidence, Alternatives, Open objections,
 Reversibility, Options with the recommended option first, and an empty
@@ -74,6 +77,8 @@ Stage specification: {spec}
 Package template: {template}
 Package to create or revise: {ctx['project_dir']}/packages/{package}
 Gate mode: {ctx['gates']} gates
+Agent assignment for this run: {ctx.get('config', 'workflow.config.json')} (this
+snapshot, not the repository's workflow.config.json, is what this run uses)
 
 The user's research request (verbatim):
 {ctx.get('topic') or '(see the project README)'}
@@ -154,6 +159,7 @@ def reviewer_cli(ctx: dict, blind_pass: str) -> str:
 You were started by the workflow orchestrator. Follow docs/agent-roles/reviewer-role.md.
 
 Stage: {stage} (revision {ctx['revision']})
+Agent assignment for this run: {ctx.get('config', 'workflow.config.json')}
 Review request: {ctx['run_dir']}/{f['request']}
 Stage reviewer file: {reviewer_file}
 Decision log: {ctx['project_dir']}/decision-log.md

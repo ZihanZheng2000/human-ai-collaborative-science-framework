@@ -25,7 +25,8 @@ TEXT_SUFFIXES = {".md", ".txt", ".csv", ".json", ".py", ".r", ".R", ".tex", ".ya
 
 class Engine:
     def __init__(self, repo_root: Path, config: dict, project_dir: Path,
-                 interactive: bool = True, input_fn=input, print_fn=print, adapters=None):
+                 interactive: bool = True, input_fn=input, print_fn=print, adapters=None,
+                 config_source: str = "workflow.config.json"):
         self.root = repo_root.resolve()
         self.cfg = config
         self.project = project_dir.resolve()
@@ -34,7 +35,9 @@ class Engine:
         self.input_fn = input_fn
         self.print = print_fn
         self._adapters = adapters or {}
+        self.config_source = config_source
         self.state_path = self.project / ".workflow" / "state.json"
+        self.snapshot_path = self.project / ".workflow" / "config.json"
         self.state = json.loads(self.state_path.read_text()) if self.state_path.exists() else None
 
     # ------------------------------------------------------------------ setup
@@ -67,18 +70,39 @@ class Engine:
                          "gates": wf.get("gates", "real")},
             "history": [],
         }
+        self._write_snapshot()
         synthetic = self.state["settings"]["gates"] == "synthetic"
         if use_config_defaults or synthetic:
             self._log("Pre-Planning", "tier-1 checkpoint",
-                      f"Setup from workflow.config.json: mode={self.state['settings']['mode']}, "
+                      f"Setup from {self.config_source}: mode={self.state['settings']['mode']}, "
                       f"reviewer={self.state['settings']['reviewer']}, gates={self.state['settings']['gates']}",
-                      "orchestrator", "workflow.config.json",
+                      "orchestrator", f"{self.config_source} (snapshot: {self.rel_project}/.workflow/config.json)",
                       "synthetic" if synthetic else "user (config file)",
                       "synthetic" if synthetic else "nominal: setup taken from the config file, not presented")
             self.state["step"] = "work"
         else:
             self._write_setup_questions()
         self._save()
+
+    def _write_snapshot(self) -> None:
+        """Keep the config this project actually runs with inside the project."""
+        self.snapshot_path.parent.mkdir(parents=True, exist_ok=True)
+        self.snapshot_path.write_text(json.dumps({"source": self.config_source, **self.cfg}, indent=2), encoding="utf-8")
+
+    def _check_config_change(self) -> None:
+        """Record a reconfiguration if the agents or roles differ from the snapshot."""
+        if not self.snapshot_path.exists():
+            self._write_snapshot()
+            return
+        old = json.loads(self.snapshot_path.read_text(encoding="utf-8"))
+        if old.get("roles") == self.cfg.get("roles") and old.get("agents") == self.cfg.get("agents"):
+            return
+        self._log(self.state["stage"].capitalize(), "reconfiguration",
+                  f"Agent configuration changed between runs: roles {json.dumps(old.get('roles'))} -> "
+                  f"{json.dumps(self.cfg.get('roles'))} (source {self.config_source})",
+                  "user (edited config)", f"{self.rel_project}/.workflow/config.json", "user (config file)",
+                  "nominal: change made in the config file, not presented as a decision")
+        self._write_snapshot()
 
     def _write_setup_questions(self) -> None:
         roles = self.cfg["roles"]
@@ -100,7 +124,7 @@ class Engine:
                 f"## Decision needed\n\nChoose the {what} for this project.\n\n"
                 f"## Proposal\n\nOption 1 is the default for real research.\n\n"
                 f"## Evidence\n\nAgents: researcher = {roles['researcher']}, reviewer = {json.dumps(roles['reviewer'])} "
-                f"(workflow.config.json).\n\n## Alternatives\n\nSee options.\n\n## Open objections\n\nnone\n\n"
+                f"({self.config_source}).\n\n## Alternatives\n\nSee options.\n\n## Open objections\n\nnone\n\n"
                 f"## Reversibility\n\nCan be changed later as a reconfiguration.\n\n## Options\n\n{body}\n\n"
                 f"## Decision\n\n{inbox.DECISION_HINT}\n", encoding="utf-8")
 
@@ -136,11 +160,36 @@ class Engine:
 
     def _log(self, stage, typ, decision, proposed_by, evidence, authorized_by, quality,
              alternatives="", objections="", status="active") -> str:
-        return decision_log.append(self.project / "decision-log.md", {
+        did = decision_log.append(self.project / "decision-log.md", {
             "date": date.today().isoformat(), "stage": stage, "type": typ, "decision": decision,
             "proposed_by": proposed_by, "evidence": evidence, "alternatives": alternatives,
             "objections": objections, "authorized_by": authorized_by, "quality": quality, "status": status,
         })
+        self._pending_status = f"{did} ({date.today().isoformat()}): {decision[:100]}"
+        return did
+
+    def _update_status(self, last_decision: str) -> None:
+        """Refresh the README status block after a human decision (no agent runs then)."""
+        readme = self.project / "README.md"
+        if not readme.exists():
+            return
+        text = readme.read_text(encoding="utf-8")
+        s = self.state
+        esc = decision_log.open_escalations(self.project / "decision-log.md")
+        pend = [p.name for p in inbox.pending(self.project / "inbox")]
+        values = {
+            "current stage": f"{s['stage']} (step: {s['step']}, revision {s['revision']})" if s["step"] != "done" else "finished",
+            "last decision": last_decision,
+            "open escalations": "; ".join(e[:80] for e in esc) or "none",
+            "current workflow mode and reviewer strategy": f"{s['settings']['mode']}; reviewer {s['settings']['reviewer']}; {s['settings']['gates']} gates",
+            "user decision needed now": ", ".join(pend) or "none",
+            "next action": ("none" if s["step"] == "done" else "answer the inbox items" if pend
+                            else f"run the orchestrator: {s['stage']} {s['step']}"),
+        }
+        for key, val in values.items():
+            text = re.sub(rf"^- {re.escape(key)}:.*$", lambda _m, k=key, v=val: f"- {k}: {v} (orchestrator)",
+                          text, count=1, flags=re.M)
+        readme.write_text(text, encoding="utf-8")
 
     def _adapter(self, name: str):
         if name not in self._adapters:
@@ -154,6 +203,7 @@ class Engine:
             "run_dir": self.rel_run_dir, "mode": s["settings"]["mode"], "reviewer": s["settings"]["reviewer"],
             "gates": s["settings"]["gates"], "notes": "\n".join(s["notes"]), "topic": s.get("topic", ""),
             "reviewer_output": (reviewer_spec or {}).get("reviewer_output", "file"),
+            "config": f"{self.rel_project}/.workflow/config.json",
         }
 
     def _log_path(self, label: str) -> Path:
@@ -165,6 +215,7 @@ class Engine:
     def run(self, max_steps: int = 50, until_stage: str = None) -> str:
         if self.state is None:
             raise RuntimeError("project not initialized; run `init` first")
+        self._check_config_change()
         for _ in range(max_steps):
             if until_stage and STAGES.index(self.state["stage"]) > STAGES.index(until_stage):
                 self._save()
@@ -210,6 +261,8 @@ class Engine:
                     continue
             self._apply_answer(path, ans[0], ans[1], synthetic)
             progressed = True
+            if getattr(self, "_pending_status", None):
+                self._update_status(self._pending_status)
         if inbox.pending(self.project / "inbox"):
             if not progressed:
                 self.print("[orchestrator] waiting for you. Answer the files in "

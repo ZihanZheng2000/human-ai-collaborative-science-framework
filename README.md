@@ -206,6 +206,7 @@ the user hands the files between agents; the protocol is the same.
 Example folders follow [docs/example-organization.md](docs/example-organization.md). Real research runs live under `research/` and are kept local (git-ignored) so private notes, large generated artifacts, and copyright-sensitive materials are not accidentally published.
 
 - [examples/smoke-test-v02-co2-growth/](examples/smoke-test-v02-co2-growth/): four-stage smoke test of the v0.2 rules with seeded faults, a decision log, escalations, and a filled workflow evaluation.
+- [examples/orchestrator-live-planning/](examples/orchestrator-live-planning/): a real orchestrated Planning stage (Claude Code as researcher and as reviewer, synthetic gates): six checkpoints, a reviewer pass, triage, and a gate, with no human input after `init`.
 
 ## Paper
 

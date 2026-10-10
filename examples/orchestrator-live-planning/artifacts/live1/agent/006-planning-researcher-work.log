@@ -1,0 +1,20 @@
+$ claude ... (prompt in 006-planning-researcher-work.prompt.md)
+returncode: 0
+
+--- stdout ---
+The Planning package isn't ready for review yet, so I haven't written the review request or framing files. In step-by-step mode the exclusion rule and the method and metrics are separate Tier 1 decisions, and neither is approved yet. I wrote the next checkpoint and stopped.
+
+- **New checkpoint:** `inbox/pending/CP-planning-3.md` proposes the exclusion rule, locked before any values are viewed.
+  - **Analysis set:** rows with non-missing `body_mass_g` and `sex` equal to `male` or `female`.
+  - **Other exclusions:** none. No outlier removal, no imputation, no filtering by island or year.
+  - **Reporting:** Modeling will report rows dropped per species and the reason, plus n per species and sex.
+  - **Options:** approve as proposed (recommended), keep missing-sex rows as an "unknown" group, or ask for more checks.
+- **Package:** `packages/planning-package.md` now records D-2 and D-3 as approved (synthetic) and shows the exclusion rule as proposed, pending CP-planning-3. The data source row now reads as approved under D-3.
+- **README status block:** it now shows D-3 as the last decision and CP-planning-3 as the decision needed now.
+
+I did not touch the decision log.
+
+After CP-planning-3 is answered, the next step is CP-planning-4 (method and metrics).
+
+--- stderr ---
+

@@ -1,0 +1,33 @@
+$ claude ... (prompt in 014-planning-researcher-triage.prompt.md)
+returncode: 0
+
+--- stdout ---
+I triaged the reviewer's critique and wrote the Planning Gate request. The gate now waits on you.
+
+**Escalated to you:**
+- **PR-1 (major):** the researcher is Claude Code but the config assigns `codex`, and D-1 records synthetic gates while the config says `real`. You need to say whether both are intended and log an override.
+- **PR-2 (major):** several Planning choices have no logged authorizer: the light prior-work scan, the skipped venue calibration and tool scan, the internal-demo output route, the future-work boundary, the avoid-list and the idea maturity. Confirming the User-Need Profile and Planning Depth table at the gate would settle them.
+
+Both are in the decision log's Open Escalations table with the reviewer's wording quoted. I couldn't close them myself.
+
+**Fixed:**
+- **PR-3:** removed "checked 2026-10-10" from the CC0 licence line in `notes/prior-work-scan.md`; it is recalled and unverified.
+- **PR-4:** dropped Gorman et al. as a domain-judgment source in the Decision-Rights Map.
+- **PR-5:** the claim-level row now says D-5 adds the median difference and mean ratio to D-2's list.
+- **PR-6:** extended the Method Blueprint acceptance checks to cover every table statistic, the 344-row reconciliation, the hash record, the `sex` value check and the no-inference rule.
+- **PR-7:** filled in the Deferred Items table.
+
+**Deferred and acknowledged:** I accepted PR-8 for Reporting and logged it in Deferred Items. PR-9 (all approvals so far are synthetic) is acknowledged.
+
+I didn't correct D-1's evidence column because the orchestrator owns that row. The request asks you to rule on it.
+
+The package status and README status block are updated. My recommendation is to approve for Modeling once you rule on PR-1 and PR-2.
+
+Files are in `research/live-penguins`:
+- `artifacts/live1/gate-request-planning.md`
+- `packages/planning-package.md`
+- `decision-log.md`
+- `README.md`
+
+--- stderr ---
+

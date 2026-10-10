@@ -1,0 +1,21 @@
+$ claude ... (prompt in 010-planning-researcher-work.prompt.md)
+returncode: 0
+
+--- stdout ---
+I completed the Planning package, but I did not write the review request. `docs/plan-stage.md` says the user must confirm the Decision-Rights Map before the package goes to the reviewer, so I wrote a checkpoint for it instead and stopped.
+
+- **Package:** `packages/planning-package.md` now has the route table (D-2 to D-5 approved, synthetic), planning depth, feasibility, data plan, method blueprint, risks, and the proposed map. The Reviewer Critique, Response, and Gate sections are marked pending or not started. I read the package against the D-2 descriptive claim level and found nothing above it. It makes no inferential or causal claims.
+- **Checkpoint:** `inbox/pending/CP-planning-5.md` asks the user to confirm the map. I recommend the default map with project adjustments:
+  - analysis execution and repair are Tier 0 for the researcher;
+  - the data source and success rule, the exclusion rule, and the metrics and plot are locked before results;
+  - reviewer rights are the default (advisory plus escalation);
+  - no domain expert is assigned.
+- **README:** the status block now shows CP-planning-5 as the decision needed.
+- **Disclosed, not changed:**
+  - `workflow.config.json` names `codex` as researcher, but this run's researcher is Claude Code, and no override is logged.
+  - The config sets gates to `real`, while D-1 records `synthetic`.
+
+Once CP-planning-5 is answered, I'll write `review-request-planning.md` and `review-framing-planning.md`, and the reviewer pass can start. The orchestrator will need to log the map approval as a decision-log row.
+
+--- stderr ---
+

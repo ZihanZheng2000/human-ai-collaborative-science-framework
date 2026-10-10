@@ -48,7 +48,11 @@ def main(argv=None) -> int:
         return 1
     project = args.project if args.project.is_absolute() else (Path.cwd() / args.project)
     interactive = args.cmd == "run" and not args.inbox_only and sys.stdin.isatty()
-    engine = Engine(REPO_ROOT, cfg, project, interactive=interactive)
+    try:
+        source = str(args.config.resolve().relative_to(REPO_ROOT))
+    except ValueError:
+        source = str(args.config)
+    engine = Engine(REPO_ROOT, cfg, project, interactive=interactive, config_source=source)
 
     if args.cmd == "init":
         if engine.state is not None:

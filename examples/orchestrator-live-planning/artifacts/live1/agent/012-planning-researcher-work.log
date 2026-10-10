@@ -1,0 +1,21 @@
+$ claude ... (prompt in 012-planning-researcher-work.prompt.md)
+returncode: 0
+
+--- stdout ---
+The Planning package is ready for the reviewer. I stopped there, as instructed.
+
+- **Package** (`packages/planning-package.md`): the Decision-Rights Map now shows as confirmed under D-6, and the status header says it's ready for review. I also changed the CC0 licence line. It had said "checked", which the prior-work scan contradicts, so it now says the licence was recalled and not re-verified.
+- **Claim check**: I went through every sentence of the package against the D-2 descriptive claim level. It states only plans, with no result claims. No data values have been viewed; only the header and row count were inspected.
+- **Review files**: I wrote `artifacts/live1/review-request-planning.md` and `artifacts/live1/review-framing-planning.md`.
+- **README**: the status block now points to the reviewer pass, with no user decision needed.
+
+Open items for the reviewer, all disclosed in the framing file:
+- **Researcher mismatch**: `workflow.config.json` names codex as researcher, but this run's researcher is Claude Code, and no override is logged.
+- **Gate mode mismatch**: the config says `real` gates, but D-1 records `synthetic`.
+- **Unverified citations**: the prior-work citations are recalled, not verified.
+- **Synthetic approvals**: every approval so far is synthetic, so none reflects real user judgment.
+
+I did not touch the decision log; the orchestrator owns those rows.
+
+--- stderr ---
+
