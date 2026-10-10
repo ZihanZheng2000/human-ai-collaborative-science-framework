@@ -23,18 +23,29 @@ def main():
     if os.environ.get("FAKE_VANDAL") == role and "independent pass" not in prompt:
         Path("packages").mkdir(exist_ok=True)
         Path("packages/planning-package.md").write_text("edited by reviewer\n")
+    session = None
     if "--output-format" in sys.argv:
-        # Session continuity: report a session id and remember what we were resumed with.
+        # Session continuity: continue the given session or open a new numbered one.
         resumed = sys.argv[sys.argv.index("--resume") + 1] if "--resume" in sys.argv else ""
-        with open(".fake-sessions.log", "a") as fh:
-            fh.write(f"{role} resume={resumed}\n")
+        Path(".workflow").mkdir(exist_ok=True)
+        counter = Path(".workflow/fake-session-counter")
+        if resumed:
+            session = resumed
+        else:
+            n = int(counter.read_text()) + 1 if counter.exists() else 1
+            counter.write_text(str(n))
+            session = f"{role}-{n}"
+        stage = re.search(r"^(?:Current stage|Stage): (\w+)", prompt, flags=re.M).group(1)
+        kind = "independent" if "independent pass" in prompt else "follow-up" if "follow-up pass" in prompt else "-"
+        with open(".workflow/fake-sessions.log", "a") as fh:
+            fh.write(f"{role} {stage} {kind} resume={resumed} session={session}\n")
     if role == "researcher":
         researcher(prompt)
     else:
         reviewer(prompt)
-    if "--output-format" in sys.argv:
+    if session:
         import json
-        print(json.dumps({"session_id": "sess-1", "result": "done"}))
+        print(json.dumps({"session_id": session, "result": "done"}))
 
 
 def fw(prompt):

@@ -55,12 +55,26 @@ def validate(cfg: dict) -> None:
             raise ConfigError(f"reviewer for stage '{stage}' ('{name}') is not defined in 'agents'")
 
     wf = cfg.get("workflow", {})
+    for role in ("researcher", "reviewer"):
+        if session_policy(cfg, role) not in {"run", "stage", "off"}:
+            raise ConfigError(f"workflow.sessions.{role} must be 'run', 'stage', or 'off'")
+    bad = set(wf.get("sessions", {}).get("fresh_researcher_at", [])) - set(STAGES)
+    if bad:
+        raise ConfigError(f"workflow.sessions.fresh_researcher_at has unknown stages: {sorted(bad)}")
     if wf.get("mode", "step-by-step") not in {"step-by-step", "auto-until-needed"}:
         raise ConfigError("workflow.mode must be 'step-by-step' or 'auto-until-needed'")
     if wf.get("gates", "real") not in {"real", "synthetic"}:
         raise ConfigError("workflow.gates must be 'real' or 'synthetic'")
     if wf.get("reviewer", "use") not in {"use", "skip"}:
         raise ConfigError("workflow.reviewer must be 'use' or 'skip'")
+
+
+SESSION_DEFAULTS = {"researcher": "run", "reviewer": "stage"}
+
+
+def session_policy(cfg: dict, role: str) -> str:
+    """'run' (one conversation for the whole project), 'stage', or 'off' (fresh every step)."""
+    return cfg.get("workflow", {}).get("sessions", {}).get(role, SESSION_DEFAULTS[role])
 
 
 def reviewer_for(cfg: dict, stage: str) -> str:

@@ -42,16 +42,18 @@ class CliAdapter:
         return self.spec.get("role_commands", {}).get(role) or self.spec["command"]
 
     def run_task(self, prompt: str, role: str, cwd: Path, log_path: Path,
-                 session_id: str = None, framework_dir: Path = None) -> AgentResult:
+                 session_id: str = None, framework_dir: Path = None,
+                 use_session: bool = False) -> AgentResult:
         """Run one agent session with `cwd` (the project folder) as working directory.
 
         Placeholders in the command: {prompt}, {prompt_file}, {project_dir},
-        {framework_dir}. With a "session" spec (researcher only), the session id
-        is read from the agent's JSON output and the next call in the same stage
-        resumes it.
+        {framework_dir}. If `use_session` is set and the agent has a "session"
+        spec, the session id is read from the agent's JSON output and returned;
+        passing it back as `session_id` resumes that conversation. Whether to
+        resume is the engine's decision (workflow.sessions).
         """
         template = list(self.command_for(role))
-        session_spec = self.spec.get("session") if role == "researcher" else None
+        session_spec = self.spec.get("session") if use_session else None
         if session_spec:
             template += session_spec.get("start_args", [])
             if session_id:
@@ -97,6 +99,11 @@ class CliAdapter:
             except (ValueError, IndexError, AttributeError):
                 pass  # no JSON: run continues without session continuity
         return AgentResult(text, proc.returncode, sid)
+
+
+    @property
+    def supports_sessions(self) -> bool:
+        return bool(self.spec.get("session"))
 
 
 class AnthropicAdapter:

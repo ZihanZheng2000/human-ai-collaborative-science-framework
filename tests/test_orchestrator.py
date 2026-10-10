@@ -317,23 +317,98 @@ class ReviewerGuardTest(unittest.TestCase):
             sb.close()
 
 
+SESSION = {"start_args": ["--output-format", "json"], "resume_args": ["--resume", "{session_id}"]}
+
+
+def session_config(**sessions):
+    cfg = config("synthetic")
+    cfg["agents"]["fake-researcher"]["session"] = dict(SESSION)
+    cfg["agents"]["fake-reviewer"]["session"] = dict(SESSION)
+    if sessions:
+        cfg["workflow"]["sessions"] = sessions
+    return cfg
+
+
+def session_log(sb):
+    rows = []
+    for line in (sb.project / ".workflow/fake-sessions.log").read_text().splitlines():
+        role, stage, kind, resume, session = line.split()
+        rows.append((role, stage, kind, resume.split("=")[1], session.split("=")[1]))
+    return rows
+
+
 class SessionContinuityTest(unittest.TestCase):
-    def test_researcher_session_resumed_within_stage_only(self):
+    def run_all(self, cfg):
+        sb = Sandbox()
+        eng = sb.engine(cfg, interactive=False)
+        eng.init_project("t", run_id="r1")
+        self.assertEqual(eng.run(max_steps=80), DONE)
+        return sb, eng
+
+    def test_defaults_researcher_one_session_reviewer_per_stage(self):
+        sb, eng = self.run_all(session_config())
+        try:
+            rows = session_log(sb)
+            researcher = [r for r in rows if r[0] == "researcher"]
+            self.assertEqual(researcher[0][3], "")                         # first call is new
+            self.assertEqual({r[4] for r in researcher}, {researcher[0][4]})  # one session for the whole project
+            reviewer = [r for r in rows if r[0] == "reviewer"]
+            by_stage = {}
+            for r in reviewer:
+                by_stage.setdefault(r[1], set()).add(r[4])
+            self.assertEqual(len({s for ss in by_stage.values() for s in ss}), 4)  # a new reviewer per stage
+            indep = next(r for r in reviewer if r[2] == "independent")
+            follow = next(r for r in reviewer if r[2] == "follow-up")
+            self.assertEqual(indep[3], "")              # blind independent pass is new
+            self.assertEqual(follow[3], indep[4])       # follow-up continues it
+        finally:
+            sb.close()
+
+    def test_fresh_researcher_at_stage_and_off(self):
+        sb, _ = self.run_all(session_config(researcher="run", reviewer="off", fresh_researcher_at=["reporting"]))
+        try:
+            rows = session_log(sb)
+            researcher = [r for r in rows if r[0] == "researcher"]
+            sessions = {r[1]: r[4] for r in researcher}
+            self.assertEqual(sessions["planning"], sessions["modeling"])
+            self.assertNotEqual(sessions["modeling"], sessions["reporting"])
+            self.assertEqual(sessions["reporting"], sessions["reviewing"])
+            self.assertTrue(all(r[3] == "" for r in rows if r[0] == "reviewer" and r[2] != "follow-up"))
+        finally:
+            sb.close()
+
+    def test_new_session_command_and_gate_option(self):
         sb = Sandbox()
         try:
-            cfg = config("synthetic")
-            cfg["agents"]["fake-researcher"]["session"] = {
-                "within": "stage", "start_args": ["--output-format", "json"],
-                "resume_args": ["--resume", "{session_id}"]}
+            cfg = session_config()
+            cfg["workflow"]["gates"] = "real"
             eng = sb.engine(cfg, interactive=False)
-            eng.init_project("t", run_id="r1")
-            eng.run(max_steps=60)
-            calls = (sb.project / ".fake-sessions.log").read_text().splitlines()
-            self.assertEqual(calls[0], "researcher resume=")          # first planning call
-            self.assertEqual(calls[1], "researcher resume=sess-1")    # after the checkpoint, same stage
-            stages = [h for h in eng.state["history"] if "running: work" in h]
-            modeling_first = next(i for i, h in enumerate(stages) if "modeling/" in h)
-            self.assertNotIn("resuming", stages[modeling_first])      # new stage, new session
+            eng.init_project("t", run_id="r1", use_config_defaults=True)
+            self.assertEqual(eng.run(), WAITING)          # planning checkpoint
+            answer(sb.project, "CP-planning-1.md", "1")
+            eng = sb.engine(cfg, interactive=False)
+            self.assertEqual(eng.run(), WAITING)          # planning gate
+            gate = (sb.project / "inbox/pending/GATE-planning-r1.md").read_text()
+            self.assertIn("Approve for Modeling and start it with a new researcher session", gate)
+            n = len(inbox.options(gate))
+            answer(sb.project, "GATE-planning-r1.md", str(n))
+            eng = sb.engine(cfg, interactive=False)
+            eng.run()
+            eng.new_session("researcher")
+            rows = session_log(sb)
+            plan = {r[4] for r in rows if r[0] == "researcher" and r[1] == "planning"}
+            model = {r[4] for r in rows if r[0] == "researcher" and r[1] == "modeling"}
+            self.assertEqual(len(plan), 1)
+            self.assertTrue(plan.isdisjoint(model))
+            self.assertNotIn("researcher", eng.state["sessions"])
+        finally:
+            sb.close()
+
+    def test_no_session_spec_means_fresh_calls(self):
+        sb, eng = self.run_all(config("synthetic"))
+        try:
+            self.assertFalse((sb.project / ".workflow/fake-sessions.log").exists())
+            self.assertFalse(eng.state.get("sessions"))
         finally:
             sb.close()
 

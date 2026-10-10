@@ -7,6 +7,9 @@
                           run only the reviewer pass on an existing review request
                           (for manual runs; does not advance the workflow)
 
+  new-session <project-dir> --role R
+                          the next researcher/reviewer call starts a new conversation
+
 The project folder can be anywhere; agents run inside it.
 
 Exit codes for `run`: 0 finished, 2 waiting for a person, 1 error.
@@ -44,6 +47,9 @@ def main(argv=None) -> int:
                        help="stop once this stage's gate is approved")
     p_status = sub.add_parser("status")
     p_status.add_argument("project", type=Path)
+    p_new = sub.add_parser("new-session")
+    p_new.add_argument("project", type=Path)
+    p_new.add_argument("--role", required=True, choices=["researcher", "reviewer"])
     p_review = sub.add_parser("review")
     p_review.add_argument("project", type=Path)
     p_review.add_argument("--stage", required=True, choices=["planning", "modeling", "reporting", "reviewing"])
@@ -83,6 +89,10 @@ def main(argv=None) -> int:
     if engine.state is None:
         print(f"{args.project} is not initialized; run `init` first.", file=sys.stderr)
         return 1
+    if args.cmd == "new-session":
+        engine.new_session(args.role)
+        print(f"the next {args.role} call in {engine.rel_project} will start a new session")
+        return 0
     if args.cmd == "status":
         print(engine.status())
         return 0

@@ -3,7 +3,7 @@
   "agents": {
     "claude-code": {
       "kind": "cli",
-      "_comment": "Claude Code headless mode, run inside the project folder. Different tool permissions per role. session.within = \"stage\" keeps one conversation per stage for the researcher (\"off\" starts fresh every step).",
+      "_comment": "Runs inside the project folder; --add-dir lets it read the framework's docs and templates. 'session' tells the orchestrator how to continue a Claude Code conversation; when to continue is set in workflow.sessions.",
       "role_commands": {
         "researcher": [
           "claude",
@@ -30,7 +30,6 @@
       },
       "timeout_seconds": 3600,
       "session": {
-        "within": "stage",
         "start_args": [
           "--output-format",
           "json"
@@ -119,6 +118,12 @@
       "reviewing": "blind"
     },
     "max_attempts": 3,
-    "max_review_context_chars": 1500000
+    "max_review_context_chars": 1500000,
+    "sessions": {
+      "researcher": "run",
+      "reviewer": "stage",
+      "fresh_researcher_at": []
+    },
+    "_sessions_comment": "researcher: 'run' = one conversation for the whole project (default), 'stage' = new one each stage, 'off' = new one every step; fresh_researcher_at lists stages where the researcher starts a new conversation. reviewer: 'stage' = new conversation each stage (default). A blind review's independent pass always starts a new conversation. Agents without a 'session' spec (for example API reviewers) always start fresh."
   }
 }

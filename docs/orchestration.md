@@ -40,6 +40,7 @@ again. `python -m orchestrator status research/my-project` shows where things st
 | `run <project> --until planning` | Stops once that stage's gate is approved |
 | `run <project> --inbox-only` | Never asks at the terminal; for long or unattended runs |
 | `status <project>` | Stage, step, pending decisions, open escalations |
+| `new-session <project> --role researcher\|reviewer` | The next call for that role starts a new conversation |
 | `review <project> --stage S [--revision N] [--run-id R]` | Runs only the reviewer pass on an existing `review-request-<stage>.md`. For manual runs: you work with an agent in a chat session and hand only the review to the configured reviewer. Does not advance the workflow. |
 
 ## When You Are Asked
@@ -77,34 +78,55 @@ With `"reviewer": "skip"`, `work` ends with the gate request and there is no
 review or triage step. A revision or backtrack reuses the same run directory
 with `-r2`, `-r3` file names.
 
-Every agent session starts fresh by default. Continuity comes from the shared
-research state the prompt tells the agent to read first: the project README
-status block, `decision-log.md`, the stage packages, and `inbox/answered/`.
+Every prompt tells the agent to read the shared research state first: the
+project README status block, `decision-log.md`, the stage packages, and
+`inbox/answered/`. Whether the agent also keeps its earlier conversation is set
+by the session policy below.
 
-### Session continuity
+### Sessions: when agents keep their conversation
 
-Starting fresh costs time and tokens (each session re-reads the project), but it
-keeps everything the next step needs in files that you, the reviewer, and any
-replacement agent can read. For CLI agents that can resume a conversation, the
-researcher can instead keep **one conversation per stage**:
+Default behaviour, like working with Claude Code yourself:
+
+| Role | Default | Meaning |
+|---|---|---|
+| researcher | `run` | one conversation for the whole project; checkpoint answers, triage, and the next stage continue it |
+| reviewer | `stage` | a new conversation for every stage; later review passes in the same stage (for example `-r2` after a revision) continue it |
+| blind review, independent pass | always new | the reviewer must not have seen any framing; the follow-up pass continues the independent pass, and the next pass starts fresh again |
+
+Set the policy in `workflow.config.json`:
 
 ```json
-"session": {
-  "within": "stage",
-  "start_args": ["--output-format", "json"],
-  "resume_args": ["--resume", "{session_id}"],
-  "id_key": "session_id",
-  "text_key": "result"
+"workflow": {
+  "sessions": {"researcher": "run", "reviewer": "stage", "fresh_researcher_at": ["reporting"]}
 }
 ```
 
-These values are for Claude Code. The orchestrator reads the session id from the
-agent's JSON output, resumes it for the next researcher step in the same stage
-(after a checkpoint answer, or for triage), and starts a new conversation at the
-next stage. Set `"within": "off"` to disable. Reviewers always start fresh so
-earlier conversations cannot steer them. Trade-off: with continuity on, some of
-what the researcher "knows" is in its conversation rather than in the shared
-state, so the rule to write reasoning into `notes/` and packages matters more.
+Values are `run`, `stage`, or `off` (a new conversation at every step).
+`fresh_researcher_at` lists stages where the researcher starts a new
+conversation. You can also start one whenever you like:
+
+- `python -m orchestrator new-session <project> --role researcher` (or `reviewer`);
+- at a stage gate, the option "Approve for <next stage> and start it with a new
+  researcher session", which the orchestrator adds when the researcher keeps one
+  conversation.
+
+How to continue a conversation is set per agent with a `session` spec (the
+default config has the one for Claude Code: `--output-format json` to read the
+session id, `--resume <id>` to continue). Agents without it, including API
+reviewers, start fresh every time.
+
+Two things stay true whatever the setting:
+
+- Files remain the authority. A long conversation gets compacted, and the next
+  agent may be a different product, so decisions, reasoning, and status must be
+  written to the decision log, notes, packages, and the README status block.
+- Conversation memory never changes who decided what: human decisions only enter
+  through the inbox and are logged by the orchestrator.
+
+The reviewer defaults to a new conversation per stage because a reviewer that
+has followed the researcher through every stage has read all of its reasoning
+and gradually stops being independent. You can set `"reviewer": "run"`; record
+the reason in the decision log.
 
 ## Who Writes the Decision Log
 

@@ -14,7 +14,7 @@ from pathlib import Path
 
 from . import STAGES, decision_log, inbox, prompts
 from .adapters import AgentError, make_adapter
-from .config import review_mode_for, reviewer_for
+from .config import review_mode_for, reviewer_for, session_policy
 
 WAITING = "waiting"
 DONE = "done"
@@ -276,7 +276,8 @@ class Engine:
             ans = inbox.decision_of(path)
             if ans is None:
                 kind = inbox.header_field(path.read_text(encoding="utf-8"), "Type")
-                if synthetic and kind != "human task":
+                # Synthetic gates answer decisions, never human tasks or stuck states.
+                if synthetic and kind not in {"human task", "stuck"}:
                     opts = inbox.options(path.read_text(encoding="utf-8"))
                     ans = (opts[0] if opts else "approve", "synthetic: recommended option taken")
                     inbox.write_decision(path, ans[0], ans[1], "orchestrator (synthetic gate)")
@@ -366,6 +367,9 @@ class Engine:
         self.state["notes"] = [f"Gate decision {did}: {choice}. {notes}".strip()] if notes else []
         self.state["attempts"] = 0
         if low.startswith(("approve", "finalize", "archive", "accept")):
+            if "new researcher session" in low:
+                self.state.setdefault("sessions", {}).pop("researcher", None)
+                self._event("researcher will start the next stage in a new session")
             idx = STAGES.index(stage)
             if stage == "reviewing" or idx == len(STAGES) - 1:
                 self.state["step"] = "done"
@@ -396,17 +400,51 @@ class Engine:
         adapter = self._adapter(name)
         if adapter.kind == "human":
             return self._human_task("researcher", label, prompt)
-        session = None
-        if adapter.kind == "cli" and adapter.spec.get("session", {}).get("within") == "stage":
-            prev = self.state.setdefault("sessions", {}).get("researcher")
-            if prev and prev.get("stage") == self.state["stage"]:
-                session = prev["id"]
-        self._event(f"researcher ({name}) running: {label}" + (f" [resuming session {session}]" if session else ""))
-        res = adapter.run_task(prompt, "researcher", self.project, self._log_path(f"researcher-{label}"),
-                               session_id=session, framework_dir=self.root)
-        if res.session_id:
-            self.state.setdefault("sessions", {})["researcher"] = {"stage": self.state["stage"], "id": res.session_id}
+        res = self._run_cli("researcher", name, adapter, prompt, f"researcher-{label}", label)
         return True
+
+    # ------------------------------------------------------------------ sessions
+
+    def _session_to_resume(self, role: str, adapter, fresh: bool = False):
+        """Which earlier conversation, if any, this agent call should continue.
+
+        Researcher default 'run': one conversation for the whole project, except
+        stages listed in workflow.sessions.fresh_researcher_at or after
+        `new-session`. Reviewer default 'stage': a new conversation for every
+        stage. A blind independent pass is always fresh.
+        """
+        if fresh or not getattr(adapter, "supports_sessions", False):
+            return None
+        policy = session_policy(self.cfg, role)
+        prev = self.state.setdefault("sessions", {}).get(role)
+        if policy == "off" or not prev or prev.get("agent") != adapter.name:
+            return None
+        same_stage = prev.get("stage") == self.state["stage"]
+        if policy == "stage" and not same_stage:
+            return None
+        fresh_at = self.cfg.get("workflow", {}).get("sessions", {}).get("fresh_researcher_at", [])
+        if role == "researcher" and not same_stage and self.state["stage"] in fresh_at:
+            return None
+        return prev["id"]
+
+    def _run_cli(self, role: str, name: str, adapter, prompt: str, log_label: str, what: str,
+                 fresh: bool = False):
+        use = getattr(adapter, "supports_sessions", False) and session_policy(self.cfg, role) != "off"
+        session = self._session_to_resume(role, adapter, fresh) if use else None
+        note = f" [continuing session {session[:12]}]" if session else (" [new session]" if use else "")
+        self._event(f"{role} ({name}) running: {what}{note}")
+        res = adapter.run_task(prompt, role, self.project, self._log_path(log_label),
+                               session_id=session, framework_dir=self.root, use_session=use)
+        if use and res.session_id:
+            self.state.setdefault("sessions", {})[role] = {
+                "agent": name, "stage": self.state["stage"], "id": res.session_id}
+        return res
+
+    def new_session(self, role: str) -> None:
+        """Make the next call for this role start a new conversation."""
+        dropped = self.state.setdefault("sessions", {}).pop(role, None)
+        self._event(f"user asked for a new {role} session" + (" (previous session closed)" if dropped else ""))
+        self._save()
 
     def _human_task(self, role: str, label: str, prompt: str) -> bool:
         task_id = f"TASK-{self.state['stage']}-{label}-r{self.state['revision']}"
@@ -505,9 +543,10 @@ class Engine:
         f = self._files()
         framing = self.run_dir / f["framing"]
         ctx = self._ctx(spec)
+        name = adapter.name
         if mode != "blind":
-            res = adapter.run_task(prompts.reviewer_cli(ctx, "standard"), "reviewer", self.project,
-                                   self._log_path("reviewer"), framework_dir=self.root)
+            res = self._run_cli("reviewer", name, adapter, prompts.reviewer_cli(ctx, "standard"),
+                                "reviewer", "review")
             if ctx["reviewer_output"] == "stdout":
                 critique.write_text(res.text, encoding="utf-8")
             return
@@ -518,8 +557,9 @@ class Engine:
             held = hold / framing.name
             shutil.move(str(framing), held)
         try:
-            res = adapter.run_task(prompts.reviewer_cli(ctx, "independent"), "reviewer", self.project,
-                                   self._log_path("reviewer-independent"), framework_dir=self.root)
+            # Always a new conversation: the reviewer must not have seen any framing.
+            res = self._run_cli("reviewer", name, adapter, prompts.reviewer_cli(ctx, "independent"),
+                                "reviewer-independent", "blind review, independent pass", fresh=True)
             if ctx["reviewer_output"] == "stdout":
                 critique.write_text(res.text, encoding="utf-8")
         finally:
@@ -528,11 +568,13 @@ class Engine:
             shutil.rmtree(hold, ignore_errors=True)
         if not critique.exists():
             return
-        res = adapter.run_task(prompts.reviewer_cli(ctx, "follow-up"), "reviewer", self.project,
-                               self._log_path("reviewer-follow-up"), framework_dir=self.root)
+        # Continues the independent pass, so the reviewer keeps its own findings.
+        res = self._run_cli("reviewer", name, adapter, prompts.reviewer_cli(ctx, "follow-up"),
+                            "reviewer-follow-up", "blind review, follow-up pass")
         if ctx["reviewer_output"] == "stdout":
             critique.write_text(replace_followup(critique.read_text(encoding="utf-8"), res.text),
                                 encoding="utf-8")
+        self.state.get("sessions", {}).pop("reviewer", None)
 
     def _review_api(self, adapter, mode, critique: Path) -> None:
         f = self._files()
@@ -604,10 +646,26 @@ class Engine:
         if escalations:
             text = text.replace("## Options", "## Open escalations in the decision log\n\n" +
                                 "\n".join(f"- {e}" for e in escalations) + "\n\n## Options", 1)
+        text = self._add_session_option(text)
         target = self.project / "inbox/pending" / f"GATE-{self.state['stage']}-r{self.state['revision']}.md"
         target.write_text(text, encoding="utf-8")
         self.state["step"] = "gate_wait"
         self._event(f"{self.state['stage']} gate is ready for you")
+
+    def _add_session_option(self, text: str) -> str:
+        stage = self.state["stage"]
+        adapter = self._adapter(self.cfg["roles"]["researcher"])
+        if (stage == STAGES[-1] or session_policy(self.cfg, "researcher") != "run"
+                or not getattr(adapter, "supports_sessions", False)):
+            return text
+        nxt = STAGES[STAGES.index(stage) + 1]
+        m = re.search(r"^##\s+Options\s*$(.*?)(?=^##\s|\Z)", text, flags=re.M | re.S)
+        if not m:
+            return text
+        n = len(re.findall(r"^\s*\d+[.)]\s+", m.group(1), flags=re.M)) + 1
+        line = f"{n}. Approve for {nxt.capitalize()} and start it with a new researcher session"
+        body = m.group(1).rstrip() + "\n" + line + "\n\n"
+        return text[:m.start(1)] + body + text[m.end(1):]
 
     def _step_gate_wait(self) -> None:
         # Reached only if the gate file was removed without an answer.

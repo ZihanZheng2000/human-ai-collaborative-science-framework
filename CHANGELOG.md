@@ -26,8 +26,12 @@ Added:
   the framework through `{framework_dir}` (Claude Code `--add-dir`). `init`
   writes pointer instruction files in external projects.
 - `review` command: run only the reviewer pass (manual runs).
-- Optional researcher session continuity within a stage (`session.within:
-  "stage"`; tested with Claude Code `--output-format json` / `--resume`).
+- Session policy (`workflow.sessions`): by default the researcher keeps one
+  conversation for the whole project and the reviewer gets a new conversation
+  per stage; a blind independent pass is always new. `fresh_researcher_at`,
+  the `new-session` command, and a gate option start new conversations on
+  request. Tested with Claude Code `--output-format json` / `--resume`.
+- Synthetic gates no longer auto-answer stuck states.
 - Reviewer guard: the run stops if a CLI reviewer changes any file besides its
   critique.
 - Default configuration: Claude Code researcher, Codex CLI reviewer.
