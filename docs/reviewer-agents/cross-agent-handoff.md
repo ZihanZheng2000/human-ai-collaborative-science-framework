@@ -5,14 +5,12 @@ inside each stage's maker-checker loop. It implements the Tier 2 accountability
 loop described in [../coordination.md](../coordination.md); the reviewer's
 rights are defined in [../decision-rights.md](../decision-rights.md#reviewer-rights).
 
-`WORKFLOW-CONFIG.md` sets the default assignment:
-
-| Config | Researcher agent | Reviewer agent |
-|---|---|---|
-| A | Codex | Claude Code |
-| B | Claude Code | Codex |
-
-The protocol is the same for both configs.
+Which agent is researcher and which is reviewer (per stage, if desired) is set
+in `roles` in `workflow.config.json`. Any agent can hold either role: a CLI
+agent, a model API (reviewer only), or a person. The protocol is the same for
+all of them. In orchestrated runs ([../orchestration.md](../orchestration.md))
+the orchestrator starts the reviewer, enforces blind mode, and records the
+user's gate decision; in manual runs the user hands the files between agents.
 
 ## Run Directory
 
@@ -54,7 +52,7 @@ a reviewer cannot read a header without also seeing framing that sits in the
 same file.
 
 The request is the authoritative assignment for this pass. If its reviewer
-assignment differs from `WORKFLOW-CONFIG.md`, it must cite the decision-log entry
+assignment differs from `roles` in `workflow.config.json`, it must cite the decision-log entry
 in which the user approved the override.
 
 ```markdown
@@ -69,9 +67,9 @@ in which the user approved the override.
 - Review mode: [standard / blind]
 - Stage package path: <path>
 - Decision log path: <path or "smoke test: none">
-- Researcher agent: [Codex / Claude Code]
-- Reviewer agent: [Codex / Claude Code]
-- Assignment source: [WORKFLOW-CONFIG.md / user override D-<n>]
+- Researcher agent: <agent name from workflow.config.json>
+- Reviewer agent: <agent name from workflow.config.json>
+- Assignment source: [workflow.config.json / user override D-<n>]
 - Reviewer rights: advisory + escalation (default) / other per Decision-Rights Map
 - Framing file: <run_dir>/review-framing-<stage>.md
 - Date: <date>
@@ -123,7 +121,7 @@ The reviewer reads:
 # Reviewer Critique
 
 - Stage: [Planning / Modeling / Reporting / Reviewing]
-- Reviewer agent: [Codex / Claude Code]
+- Reviewer agent: <agent name>
 - Assignment confirmed: [yes / mismatch: details]
 - Gate mode acknowledged: [real / synthetic / mixed]
 - Review mode: [standard / blind]
@@ -164,7 +162,7 @@ All stages use the same seven-column table. Only the ID prefix changes:
 
 ### Assignment mismatch
 
-If the request names a different reviewer than `WORKFLOW-CONFIG.md` and does not
+If the request names a different reviewer than `workflow.config.json` and does not
 cite a user override, the reviewer still writes the critique but records the
 mismatch as the first finding (severity `major`, route `user decision`). The
 user decides whether the pass counts.

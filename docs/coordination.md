@@ -21,6 +21,7 @@ Every real project keeps its state in three places with distinct jobs:
 | `research/<name>/README.md` | **Status block**: current stage, active package, last decision, open escalations, next action. Updated whenever the researcher stops. |
 | `research/<name>/decision-log.md` | **Decision log**: one row per Tier 1 or Tier 2 decision, reconfiguration, escalation, and informal review. Append-only; superseded decisions are marked, not deleted. Template: `templates/decision-log.md`. |
 | `research/<name>/packages/*.md` | **Stage packages**: compact handoffs that cite decision IDs instead of repeating the history. |
+| `research/<name>/inbox/` | **Pending and answered requests** for human decisions (checkpoints, gates, tasks). In orchestrated runs this is how agents reach the user ([orchestration.md](orchestration.md)). |
 
 Run logs (`<run_dir>/run_log.md`) remain the chronological execution
 record. The decision log is not an execution log: it records only decisions,

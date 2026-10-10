@@ -1,6 +1,6 @@
 # Contributing
 
-Thank you for helping improve AI-Native Academic Research Framework.
+Thank you for helping improve Human–AI Collaborative Science Framework.
 
 This repository is a research workflow kit. Contributions should preserve the core design:
 

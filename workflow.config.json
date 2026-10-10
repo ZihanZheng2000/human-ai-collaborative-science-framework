@@ -1,0 +1,31 @@
+{
+  "_comment": "Active configuration. See workflow.config.example.json for more agent types (APIs, other CLIs, human roles) and docs/orchestration.md.",
+
+  "agents": {
+    "codex": {
+      "kind": "cli",
+      "command": ["codex", "exec", "--sandbox", "workspace-write", "{prompt}"],
+      "timeout_seconds": 3600
+    },
+    "claude-code": {
+      "kind": "cli",
+      "role_commands": {
+        "researcher": ["claude", "-p", "{prompt}", "--permission-mode", "acceptEdits", "--allowedTools", "Read,Write,Edit,Glob,Grep,Bash"],
+        "reviewer": ["claude", "-p", "{prompt}", "--permission-mode", "acceptEdits", "--allowedTools", "Read,Glob,Grep,Write"]
+      },
+      "timeout_seconds": 3600
+    }
+  },
+
+  "roles": {
+    "researcher": "codex",
+    "reviewer": "claude-code"
+  },
+
+  "workflow": {
+    "mode": "step-by-step",
+    "reviewer": "use",
+    "gates": "real",
+    "review_modes": {"reviewing": "blind"}
+  }
+}

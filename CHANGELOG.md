@@ -1,5 +1,37 @@
 # Changelog
 
+## v0.3.0-dev
+
+Renamed to the **Human–AI Collaborative Science Framework** (repository
+`human-ai-collaborative-science-framework`) to match the companion paper.
+
+Added:
+
+- `orchestrator/`: runs the four stages automatically with any configured
+  agents and stops only at human nodes (setup, Tier 1 checkpoints, stage gates,
+  human tasks, stuck states). Terminal answers or a file inbox
+  (`inbox/pending/`) that can be answered later. The orchestrator records
+  every human decision in the decision log and computes approval quality.
+  Blind review is enforced by withholding the framing file (CLI) or by a
+  two-call review (API). Standard library only.
+- Agent adapters: `cli` (any command-line agent), `anthropic` (Claude via the
+  Anthropic SDK; reviewer), `openai_compatible` (any chat-completions endpoint;
+  reviewer), `human` (a person in either role). Per-stage reviewer assignment.
+- `workflow.config.json` / `workflow.config.example.json`; `docs/orchestration.md`;
+  `templates/checkpoint-request.md`, `templates/gate-request.md`; `tests/`.
+- `GEMINI.md`; `CLAUDE.md`, `AGENTS.md`, and `GEMINI.md` are identical,
+  generated from `docs/agent-roles/`.
+
+Changed:
+
+- Roles are no longer tied to products: Config A/B and `WORKFLOW-CONFIG.md`
+  are replaced by `roles` in `workflow.config.json`.
+
+Removed:
+
+- `WORKFLOW-CONFIG.md`, `scripts/run_reviewer_claude.ps1`,
+  `scripts/run_reviewer_codex.ps1` (replaced by the orchestrator).
+
 ## v0.2.0-dev
 
 Framework revision aligning the workflow kit with the three-layer design

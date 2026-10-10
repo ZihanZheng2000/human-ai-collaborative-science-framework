@@ -1,0 +1,73 @@
+{
+  "_comment": "Copy to workflow.config.json and keep only the agents you use. Any agent can fill any role, with one limit: the researcher must be a 'cli' or 'human' agent because it edits files and runs code. See docs/orchestration.md.",
+
+  "agents": {
+    "claude-code": {
+      "kind": "cli",
+      "_comment": "Claude Code headless mode. Different tool permissions per role.",
+      "role_commands": {
+        "researcher": ["claude", "-p", "{prompt}", "--permission-mode", "acceptEdits", "--allowedTools", "Read,Write,Edit,Glob,Grep,Bash"],
+        "reviewer": ["claude", "-p", "{prompt}", "--permission-mode", "acceptEdits", "--allowedTools", "Read,Glob,Grep,Write"]
+      },
+      "timeout_seconds": 3600
+    },
+    "codex": {
+      "kind": "cli",
+      "_comment": "OpenAI Codex CLI non-interactive mode.",
+      "command": ["codex", "exec", "--sandbox", "workspace-write", "{prompt}"],
+      "timeout_seconds": 3600
+    },
+    "codex-readonly-reviewer": {
+      "kind": "cli",
+      "_comment": "A reviewer in a read-only sandbox prints its critique; the orchestrator saves it.",
+      "command": ["codex", "exec", "--sandbox", "read-only", "{prompt}"],
+      "reviewer_output": "stdout"
+    },
+    "gemini-cli": {
+      "kind": "cli",
+      "_comment": "Example only: check the non-interactive flags of your installed version.",
+      "command": ["gemini", "-p", "{prompt}", "--yolo"]
+    },
+    "claude-api": {
+      "kind": "anthropic",
+      "_comment": "Claude through the Anthropic SDK (pip install anthropic). Reviewer role only. Credentials from ANTHROPIC_API_KEY or an `ant auth login` profile.",
+      "model": "claude-opus-5-5",
+      "effort": "high",
+      "max_tokens": 64000
+    },
+    "openai-api": {
+      "kind": "openai_compatible",
+      "_comment": "Any OpenAI chat-completions endpoint (pip install openai). Reviewer role only. Set model to an id your account offers.",
+      "model": "<model-id>",
+      "api_key_env": "OPENAI_API_KEY"
+    },
+    "local-model": {
+      "kind": "openai_compatible",
+      "_comment": "A local or self-hosted OpenAI-compatible server (for example Ollama or vLLM).",
+      "model": "<local-model-name>",
+      "base_url": "http://localhost:11434/v1",
+      "api_key_env": "LOCAL_MODEL_API_KEY"
+    },
+    "domain-expert": {
+      "kind": "human",
+      "_comment": "A person fills the role; tasks arrive in the project inbox."
+    }
+  },
+
+  "roles": {
+    "researcher": "claude-code",
+    "reviewer": {
+      "default": "codex",
+      "reviewing": "claude-api"
+    }
+  },
+
+  "workflow": {
+    "mode": "step-by-step",
+    "reviewer": "use",
+    "gates": "real",
+    "review_modes": {"reviewing": "blind"},
+    "max_attempts": 3,
+    "max_review_context_chars": 1500000
+  }
+}

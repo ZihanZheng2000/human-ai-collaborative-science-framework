@@ -639,7 +639,7 @@ The Model stage should stop under any of these conditions:
 - **Backtrack to Plan**: data, method, or assumptions no longer support the approved plan.
 - **Terminate**: the task is infeasible under available data, time, or ethical constraints.
 
-Stopping is not failure. In an AI-native research workflow, stopping is part of scientific control. However, the system should not stop merely because it produced one table, one figure, or one executable result. It should stop when the result is correct and sufficient for the accepted claim level, or when further progress requires user judgment, new data, or a backtrack.
+Stopping is not failure. In a human–AI research workflow, stopping is part of scientific control. However, the system should not stop merely because it produced one table, one figure, or one executable result. It should stop when the result is correct and sufficient for the accepted claim level, or when further progress requires user judgment, new data, or a backtrack.
 
 ## 19. Modeling Gate
 

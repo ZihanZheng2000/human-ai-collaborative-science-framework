@@ -7,7 +7,9 @@ This repository is a workflow kit for AI-assisted academic research. It is not a
 Every new session should start with a short Pre-Planning Session Setup before
 Planning begins.
 
-1. Confirm the role configuration from `WORKFLOW-CONFIG.md`.
+1. Confirm the role assignment from `roles` in `workflow.config.json`.
+   With the orchestrator (`python -m orchestrator init ...`, see
+   `docs/orchestration.md`) steps 1-4 happen at `init`.
 2. Ask the user to choose a workflow mode:
 
 | Mode | Meaning |

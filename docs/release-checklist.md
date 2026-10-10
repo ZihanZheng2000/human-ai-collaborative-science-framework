@@ -4,9 +4,9 @@ Use this before publishing the repository on GitHub.
 
 ## Repository
 
-- [ ] Confirm repository name, recommended: `human-gated-ai-research-framework`
+- [ ] Confirm repository name, recommended: `human-ai-collaborative-science-framework`
 - [ ] Ensure `.env` is ignored and not committed
-- [ ] Replace placeholder URL in `CITATION.cff`
+- [ ] Confirm the `repository-code` URL in `CITATION.cff` after renaming the GitHub repository
 - [ ] Check license and contributor names
 - [ ] Confirm README links work
 - [ ] Add screenshots or workflow figures if desired

@@ -14,18 +14,22 @@ organized, kept coherent, and evaluated:
 | Coordination | [coordination.md](coordination.md) | shared research state (README status + decision log + packages), the accountability loop, escalation, blind review, gate presentation, adaptive reconfiguration |
 | Evaluation | [workflow-evaluation.md](workflow-evaluation.md) | how each run measures outcome, collaboration process, accountability, and human effort |
 
+[orchestration.md](orchestration.md) describes the orchestrator, which runs the
+stages with any configured agents and stops only at human nodes.
+
 Stage gates are the Tier 2 decisions in this design. Tier 1 decision checkpoints
 happen inside stages; Tier 0 routine choices are made by the researcher.
 
 ## Pre-Planning Session Setup
 
-Before the workflow enters Planning, the researcher agent should run a short
-setup gate. This setup gate is not a research stage and does not produce a
+Before the workflow enters Planning, a short setup gate runs. In orchestrated
+runs the orchestrator asks these questions at `init`; in manual runs the
+researcher agent asks them. This setup gate is not a research stage and does not produce a
 Planning package. It determines how the rest of the workflow should be led.
 
 The setup gate has two decisions:
 
-1. Confirm the active role configuration from `WORKFLOW-CONFIG.md`.
+1. Confirm the active role assignment from `roles` in `workflow.config.json`.
 2. Ask the user to choose the workflow mode and reviewer strategy.
 
 Workflow mode choices:

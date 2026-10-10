@@ -1,8 +1,15 @@
-# AI-Native Academic Research Framework
+# Human–AI Collaborative Science Framework
 
-A human-gated, skill-guided research framework for turning research questions, literature, public or local data, and domain expertise into inspectable academic research packages.
+A workflow framework for research in which humans and AI agents work on the same
+inquiry: research questions, literature, public or local data, and domain
+expertise are turned into inspectable research packages through four gated
+stages, with explicit decision rights and a shared research state.
 
-This project is designed for researchers who want AI help with planning, data/model execution, research reporting, and review, but do **not** want an opaque fully autonomous research agent. The framework is implemented as a lightweight workflow kit and keeps the human researcher in control through explicit stage packages, evidence checks, and user gates.
+It is for researchers who want AI agents to plan, execute, report, and review,
+but do **not** want an opaque fully autonomous research agent. Agents run the
+workflow automatically; people step in at defined decision points. Any agent can
+be plugged in: command-line agents such as Claude Code, Codex, or Gemini CLI,
+model APIs, or people.
 
 ## What It Is
 
@@ -70,29 +77,45 @@ The core design choices are:
 - authority-explicit, so who proposed, who objected, and who authorized each consequential decision can be reconstructed
 - domain-aware, so non-CS researchers can supply their own field materials at the start of Planning
 
-## Supported Agent Configurations
+## Agents: Anything Can Fill a Role
 
-This repository supports two role configurations, switchable via [WORKFLOW-CONFIG.md](WORKFLOW-CONFIG.md):
+Roles (researcher, reviewer) are assigned in [workflow.config.json](workflow.config.json);
+[workflow.config.example.json](workflow.config.example.json) shows every option.
 
-| Config | Researcher agent | Reviewer agent |
-|---|---|---|
-| **A** | Codex | Claude Code |
-| **B** | Claude Code | Codex |
+| Agent kind | Examples | Can be researcher | Can be reviewer |
+|---|---|---|---|
+| `cli` | Claude Code, Codex, Gemini CLI, Aider, your own script | yes | yes |
+| `anthropic` | Claude via the Anthropic API | not yet | yes |
+| `openai_compatible` | OpenAI API, hosted or local OpenAI-compatible servers | not yet | yes |
+| `human` | you, a collaborator, a domain expert | yes | yes |
 
-- **Codex** reads [AGENTS.md](AGENTS.md) for its role instructions.
-- **Claude Code** reads [CLAUDE.md](CLAUDE.md) for its role instructions.
-- To switch configs, edit one line in [WORKFLOW-CONFIG.md](WORKFLOW-CONFIG.md).
-
-If you are a user (not an AI agent), read [USER_NOTE.md](USER_NOTE.md) first.
+The reviewer can differ by stage (for example a domain expert reviews Modeling
+and an API model does the blind final review). Instruction files for the common
+agent runtimes ([CLAUDE.md](CLAUDE.md), [AGENTS.md](AGENTS.md),
+[GEMINI.md](GEMINI.md)) are generated from one source and are identical, so no
+runtime is special.
 
 ## Quick Start
 
-**For users:** Read [USER_NOTE.md](USER_NOTE.md). It tells you what to say to the AI at each stage, how to provide domain materials, and how to hand off between agents.
+**Automatic run (recommended):** the orchestrator hands work between agents and
+asks you only at setup, Tier 1 decision checkpoints, and stage gates.
 
-**For the researcher agent (Codex or Claude Code):**
+```bash
+cp workflow.config.example.json workflow.config.json   # choose your agents
+python -m orchestrator init research/my-project --topic "what I want to study"
+python -m orchestrator run research/my-project         # answers at the terminal
+python -m orchestrator run research/my-project --inbox-only   # or answer files later
+```
 
-1. Read [WORKFLOW-CONFIG.md](WORKFLOW-CONFIG.md) to confirm your role.
-2. Read [AGENTS.md](AGENTS.md) (Codex) or [CLAUDE.md](CLAUDE.md) (Claude Code).
+See [docs/orchestration.md](docs/orchestration.md).
+
+**For users:** read [USER_NOTE.md](USER_NOTE.md): what you will be asked, what a
+substantive gate looks like, and how to answer.
+
+**Manual run (an agent in a chat session):**
+
+1. Tell the agent its role, or let it read `roles` in [workflow.config.json](workflow.config.json).
+2. The agent reads its instruction file ([CLAUDE.md](CLAUDE.md), [AGENTS.md](AGENTS.md), or [GEMINI.md](GEMINI.md)).
 3. Read [docs/quickstart.md](docs/quickstart.md).
 4. Choose full workflow mode or smoke-test mode.
 5. Run the Pre-Planning Session Setup (workflow mode and reviewer strategy), create `research/<research-name>/` with its README status block, `decision-log.md`, and `run-notes.md`, then check for user-supplied domain materials in `research/<research-name>/artifacts/input/domain-materials/` and run Domain Onboarding if present.
@@ -111,18 +134,20 @@ empty scaffold placeholders.
 
 | Path | Purpose |
 |---|---|
-| [WORKFLOW-CONFIG.md](WORKFLOW-CONFIG.md) | Switch between Config A (Codex=researcher) and Config B (Claude Code=researcher) |
-| [AGENTS.md](AGENTS.md) | Codex instructions — researcher role (Config A) or reviewer role (Config B); generated |
-| [CLAUDE.md](CLAUDE.md) | Claude Code instructions — reviewer role (Config A) or researcher role (Config B); generated |
+| [workflow.config.json](workflow.config.json) | Which agents exist and which role each holds; workflow mode, reviewer strategy, gate mode |
+| [orchestrator/](orchestrator/) | Runs the workflow automatically with any configured agents ([docs/orchestration.md](docs/orchestration.md)) |
+| [CLAUDE.md](CLAUDE.md), [AGENTS.md](AGENTS.md), [GEMINI.md](GEMINI.md) | Identical agent instructions for different runtimes; generated |
 | [docs/agent-roles/](docs/agent-roles/) | Single source for the researcher and reviewer role instructions; run `python scripts/build_agent_instructions.py` after editing |
 | [USER_NOTE.md](USER_NOTE.md) | User guide: how to interact with the agents, gate language, handoff scripts |
 | [docs/](docs/) | Stage specifications, handoff rules, organization/coordination/evaluation layers, skill strategy, reviewer-agent prompts, quick start |
 | [templates/](templates/) | Package templates for Planning, Modeling, Reporting, Reviewing, the decision log, run notes, smoke tests, and research-skill cards |
-| [scripts/](scripts/) | Single-window reviewer wrappers and the agent-instruction builder |
+| [scripts/](scripts/) | The agent-instruction builder |
+| [tests/](tests/) | Orchestrator tests with scripted agents (`python -m unittest discover -s tests`) |
+| [examples/](examples/) | Worked examples, including the v0.2 smoke test |
 | [skills/](skills/) | Workflow-native skills used inside stages |
 | [.claude/commands/](.claude/commands/) | Claude Code slash commands for all seven workflow-native skills |
 | `research/` | Real research projects, one folder each (local; ignored by git) |
-| `artifacts/` | Legacy and smoke-test run artifacts |
+| `artifacts/` | Legacy run artifacts |
 
 ## Stage Outputs
 
@@ -150,7 +175,7 @@ The workflow uses small reusable internal skills rather than one all-purpose age
 | [route-aware-reviewer](skills/route-aware-reviewer/SKILL.md) | `/route-aware-reviewer` | Reviewing | Stress-test the research output and route findings to the correct stage | May use external reviewer simulation or checklists |
 | [gate-manager](skills/gate-manager/SKILL.md) | `/gate-manager` | All stages | Present gates and Tier 1 checkpoints substantively; record decisions in the decision log | Mostly framework-native |
 
-See [docs/skill-strategy.md](docs/skill-strategy.md) for when to use external tools versus internal skills, and for Claude Code built-in capability coverage when Claude Code is the researcher (Config B).
+See [docs/skill-strategy.md](docs/skill-strategy.md) for when to use external tools versus internal skills, and for built-in capability coverage when the researcher is not Codex.
 
 ## Domain Onboarding
 
@@ -172,39 +197,35 @@ independent findings before reading the researcher's framing.
 
 See [docs/reviewer-agents/cross-agent-handoff.md](docs/reviewer-agents/cross-agent-handoff.md) for the full protocol and file formats.
 
-This repository also includes optional one-command wrappers for single-window
-workflows:
-
-- `scripts/run_reviewer_claude.ps1` lets a Codex researcher call Claude Code as reviewer under Config A.
-- `scripts/run_reviewer_codex.ps1` lets a Claude Code researcher call Codex as reviewer under Config B.
-
-Both wrappers preserve the same file protocol: the researcher still writes
-`review-request-<stage>.md`, the reviewer writes `reviewer-critique-<stage>.md`, and the
-researcher remains responsible for triage and gate presentation.
+In orchestrated runs the orchestrator starts the reviewer, withholds the framing
+file during a blind pass, and records the user's gate decision. In manual runs
+the user hands the files between agents; the protocol is the same.
 
 ## Examples
 
-Example folders should follow [docs/example-organization.md](docs/example-organization.md). Real research runs live under `research/` and are kept local (git-ignored) so private notes, large generated artifacts, and copyright-sensitive materials are not accidentally published. Public examples will be added once they have been reviewed for release.
+Example folders follow [docs/example-organization.md](docs/example-organization.md). Real research runs live under `research/` and are kept local (git-ignored) so private notes, large generated artifacts, and copyright-sensitive materials are not accidentally published.
+
+- [examples/smoke-test-v02-co2-growth/](examples/smoke-test-v02-co2-growth/): four-stage smoke test of the v0.2 rules with seeded faults, a decision log, escalations, and a filled workflow evaluation.
 
 ## Paper
 
-The design of this repository follows the three-layer framework developed in a
-companion conceptual paper, *Designing Human–AI Collaborative Science:
-Organization, Coordination, and Evaluation* (in preparation, maintained
-separately). The paper's organization layer (activity, actor, authority) maps to
-[docs/decision-rights.md](docs/decision-rights.md); its coordination layer
-(shared research state, scientific accountability loop, adaptive
-reconfiguration) maps to [docs/coordination.md](docs/coordination.md); its
-evaluation layer maps to [docs/workflow-evaluation.md](docs/workflow-evaluation.md).
+The repository's name and design follow the companion paper, *Designing
+Human–AI Collaborative Science: Organization, Coordination, and Evaluation*
+(Zheng, Pan, and Lan; in preparation, maintained separately). The paper's organization layer (activity, actor, authority) maps to
+[docs/decision-rights.md](docs/decision-rights.md) and the agent roster in
+`workflow.config.json`; its coordination layer (shared research state,
+scientific accountability loop, adaptive reconfiguration) maps to
+[docs/coordination.md](docs/coordination.md) and the
+[orchestrator](docs/orchestration.md); its evaluation layer maps to
+[docs/workflow-evaluation.md](docs/workflow-evaluation.md).
 This repository is one concrete instantiation of that framework for academic
 research, not a claim of full scientific automation.
 
 ## Current Status
 
-This is an early research-framework repository. The workflow docs, templates, skills, and examples are present. The next milestone is a cleaner public v0.1 release with:
+This is an early research-framework repository (v0.2-dev). The workflow docs, templates, skills, orchestrator, and a smoke-test example are present. Next:
 
-- polished paper draft
-- one reproducible smoke test
+- an API researcher (tool-using agent loop), so a single API key can run the whole workflow
 - one domain case study
 - repository-level citation and license metadata
 - workflow evaluation results from at least one real run (`docs/workflow-evaluation.md`)

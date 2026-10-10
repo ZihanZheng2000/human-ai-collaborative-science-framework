@@ -1,6 +1,6 @@
 # Skills
 
-This folder contains internal workflow-native skills for the AI-native research workflow.
+This folder contains internal workflow-native skills for the Human–AI Collaborative Science Framework.
 
 These skills are written and maintained in this repository. They are not meant to replace mature external research tools. They are small reusable control modules that help the four stages stay inspectable, evidence-bound, and human-gated.
 

@@ -51,9 +51,10 @@ The following external skills are useful companions for this workflow. They shou
 
 These four skills cover common external needs without changing the framework's core control logic: deep research, Codex-native academic workflow support, manuscript-output assistance inside Reporting, and research-figure prompting. They should normally be referenced in the Plan Package as external tool candidates, then invoked only when a stage has a clear input and a clear verification path.
 
-### Claude Code as Researcher: Built-in Capability Coverage (Config B)
+### When the Researcher Is Not Codex: Built-in Capability Coverage
 
-When Claude Code is the researcher agent (Config B), the four Codex-specific
+The external skills above were selected for Codex. Any researcher agent can
+use them if its runtime supports them. When Claude Code is the researcher, the four Codex-specific
 external skills above are not directly available. Claude Code's built-in
 capabilities cover the same functional needs without additional installation.
 

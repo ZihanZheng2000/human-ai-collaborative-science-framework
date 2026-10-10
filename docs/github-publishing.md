@@ -2,11 +2,16 @@
 
 Recommended repository name:
 
-`human-gated-ai-research-framework`
+`human-ai-collaborative-science-framework`
 
 Recommended display title:
 
-`A Human-Gated, Skill-Guided Framework for AI-Native Academic Research`
+`Human–AI Collaborative Science Framework`
+
+The repository was renamed from `human-gated-ai-research-framework` to match the
+companion paper *Designing Human–AI Collaborative Science*. Rename it in GitHub
+under Settings → General → Repository name; GitHub redirects the old URL, but
+update local remotes with `git remote set-url origin <new-url>`.
 
 ## Before Creating the Repository
 
@@ -18,7 +23,7 @@ Recommended display title:
 
 ## Suggested Repository Description
 
-Human-gated, skill-guided framework for evidence-grounded academic research by domain researchers.
+Human–AI collaborative research workflow: four gated stages, explicit decision rights, reviewer escalation, and an orchestrator that works with any agent (CLI, API, or human).
 
 ## Suggested Topics
 
@@ -39,10 +44,10 @@ From the repository folder:
 git init
 git add README.md LICENSE CONTRIBUTING.md CHANGELOG.md CITATION.cff .gitignore .env.example docs templates skills examples
 git status
-git commit -m "Prepare AI-Native Academic Research Framework v0.1"
+git commit -m "Prepare Human–AI Collaborative Science Framework v0.1"
 ```
 
-Then create a GitHub repository named `human-gated-ai-research-framework` and follow GitHub's instructions to add the remote and push.
+Then create a GitHub repository named `human-ai-collaborative-science-framework` and follow GitHub's instructions to add the remote and push.
 
 After the repository URL exists, update:
 
@@ -51,7 +56,7 @@ After the repository URL exists, update:
 
 ## Suggested v0.1 Release Notes
 
-Initial development release of AI-Native Academic Research Framework, including:
+Initial development release of Human–AI Collaborative Science Framework, including:
 
 - four-stage Planning -> Modeling -> Reporting / Output Packaging -> Reviewing framework
 - demo-before-scale-up control and run-log conventions

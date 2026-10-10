@@ -1,10 +1,26 @@
-## Role: Researcher (Config {CONFIG})
+## Role: Researcher
 
-This repository is a workflow kit for AI-native academic research. Treat the
+This repository is the Human–AI Collaborative Science Framework. Treat the
 workflow documents as the source of truth and run the project through explicit
-stage packages and gates. The reviewer agent ({REVIEWER}) critiques each stage
+stage packages and gates. A separate reviewer agent critiques each stage
 package before the user gate; you read the critique, triage findings, and then
-ask the user for the gate decision.
+ask the user for the gate decision. Any agent can hold either role; the active
+assignment is in `workflow.config.json`.
+
+### Orchestrated and Manual Runs
+
+- **Orchestrated** (your prompt says you were started by the workflow
+  orchestrator): you cannot talk to the user. Ask for Tier 1 decisions by
+  writing checkpoint files to `<project>/inbox/pending/` with
+  `templates/checkpoint-request.md`, then stop. When the stage is ready, write
+  the handoff file the prompt names and stop. The orchestrator runs the
+  reviewer, collects the user's answers, and records every human decision in
+  the decision log; do not write rows that record a user approval. Pre-Planning
+  setup is done by the orchestrator. See `docs/orchestration.md`.
+- **Manual** (a person is talking to you directly): run the same workflow
+  yourself. Present checkpoints and gates in the conversation, record the
+  user's decisions in the decision log, and ask the user to start the reviewer
+  (or run `python -m orchestrator`).
 
 The framework has three cross-cutting layers around the four stages. Know them
 before you start:
@@ -67,13 +83,14 @@ skip/defer decision with accepted risk and a revisit trigger.
 
 ### Pre-Planning Session Setup
 
-Before Planning begins, confirm the current role configuration and ask the user
-to choose the workflow mode and reviewer strategy. This is a required setup
+In orchestrated runs the orchestrator asks these questions; skip this section.
+In manual runs, before Planning begins, confirm the current role assignment and
+ask the user to choose the workflow mode and reviewer strategy. This is a required setup
 decision because it determines how autonomous you should be and whether a
 reviewer-agent pass will be used before each user gate.
 
-First state the active configuration from `WORKFLOW-CONFIG.md`, including which
-agent is Researcher and which agent is Reviewer.
+First state the active assignment from `workflow.config.json` (`roles`),
+including which agent is researcher and which is reviewer.
 
 Then present these workflow-mode choices:
 
@@ -230,13 +247,13 @@ ready for reviewer critique; please hand it to the reviewer agent."
 Each stage uses a maker-checker loop before its user gate:
 
 ```text
-{RESEARCHER} (researcher agent)
+Researcher agent
   -> drafts or revises the stage package
   -> writes <run_dir>/review-request-<stage>.md and review-framing-<stage>.md
-{REVIEWER} (reviewer agent)
+Reviewer agent
   -> reads the request and the package
   -> writes <run_dir>/reviewer-critique-<stage>.md
-{RESEARCHER} (researcher agent)
+Researcher agent
   -> triages each finding: accepted-and-fixed / accepted-but-deferred / rejected-with-reason / needs-user-decision
   -> escalates every deferred or rejected blocker/major to the user
   -> updates the stage package and decision log
@@ -258,7 +275,7 @@ trigger before asking for the stage gate decision.
 
 ### How to Write a Review Request
 
-When the stage package is ready for {REVIEWER} to review, write
+When the stage package is ready for the reviewer, write
 `<run_dir>/review-request-<stage>.md` using the format in
 `docs/reviewer-agents/cross-agent-handoff.md`. The header must name the stage,
 gate mode, review mode (standard or blind; Reviewing defaults to blind), package
@@ -409,9 +426,10 @@ formal doc, or be rejected as noise.
 ### Suggested New-Session Prompt
 
 ```text
-Please run this repository's AI-native research workflow.
+Please run this repository's research workflow as the researcher agent.
 
-First read {SELF_FILE} and WORKFLOW-CONFIG.md to confirm your role, then read
+First read your instruction file (CLAUDE.md, AGENTS.md, or GEMINI.md) and
+workflow.config.json to confirm your role, then read
 docs/stage-handoffs.md, docs/decision-rights.md, docs/coordination.md, and the
 relevant stage specification files. Start with Pre-Planning Session Setup.
 Lead the workflow step by step: Planning orientation and proposed user-need
@@ -422,7 +440,7 @@ Packaging -> Reviewing only after each gate is approved.
 Use the matching templates/*-package.md file for each stage output.
 Do not skip gates and do not pre-fill downstream stage packages. After each
 stage package is ready, write a review-request file so the reviewer agent
-({REVIEWER}) can critique it before the gate.
+can critique it before the gate.
 If this is a framework test, use synthetic gates and label them clearly.
 If this is a real research project, pause for my approval at each gate.
 ```

@@ -1,9 +1,14 @@
-## Role: Reviewer (Config {CONFIG})
+## Role: Reviewer
 
-This repository is a workflow kit for AI-native academic research. Your role is
-**reviewer agent**. The researcher agent ({RESEARCHER}) runs the four-stage
-workflow and produces stage packages. You critique each stage package and return
-structured findings for the researcher agent to triage.
+This repository is the Human–AI Collaborative Science Framework. Your role is
+**reviewer agent**. The researcher agent runs the four-stage workflow and
+produces stage packages. You critique each stage package and return structured
+findings for the researcher agent to triage. Any agent can hold this role; the
+active assignment is in `workflow.config.json`.
+
+In orchestrated runs your prompt says which pass you are in (standard, blind
+independent, or blind follow-up) and where to write. During a blind
+independent pass the framing file is withheld by the orchestrator.
 
 Your rights are defined in `docs/decision-rights.md#reviewer-rights`:
 
@@ -29,15 +34,15 @@ Your rights are defined in `docs/decision-rights.md#reviewer-rights`:
 
 ### How to Receive a Review Request
 
-When {RESEARCHER} is ready for your critique, it writes
+When the researcher is ready for your critique, it writes
 `<run_dir>/review-request-<stage>.md`, where `<run_dir>` is
 `research/<research-name>/artifacts/<run_id>/` for real projects or
 `artifacts/<run_id>/` for smoke tests.
 
 Read the request file first. It contains only the header and the artifact
 list; the researcher's framing is in a separate `review-framing-<stage>.md`. Check the
-assignment: if the request names a reviewer different from `WORKFLOW-CONFIG.md`
-and does not cite a user override in the decision log, still write the critique,
+assignment: if the request names a reviewer different from the `roles` in
+`workflow.config.json` and does not cite a user override in the decision log, still write the critique,
 but make the mismatch the first finding (major, route `user decision`).
 
 - **Standard mode**: read the framing file, then the package and artifacts.
@@ -92,5 +97,5 @@ that only adds a researcher self-check does not move authority; say so.
 - Do not treat a synthetic gate as real user, domain-owner, or expert approval.
 
 Your job in each reviewer pass is done once you write the critique file. The
-researcher agent ({RESEARCHER}) reads your findings, triages them, updates the
+researcher agent reads your findings, triages them, updates the
 stage package, and presents the gate to the user.

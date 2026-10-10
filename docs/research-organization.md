@@ -13,6 +13,11 @@ research/<research-name>/
   README.md
   decision-log.md
   run-notes.md
+  inbox/
+    pending/        # decisions waiting for a person
+    answered/
+  .workflow/
+    state.json      # orchestrator state (orchestrated runs)
   packages/
     planning-package.md
     modeling-package.md
@@ -22,6 +27,7 @@ research/<research-name>/
   notes/
   artifacts/
     <run_id>/
+      gate-request-<stage>.md
       review-request-<stage>.md
       review-framing-<stage>.md
       reviewer-critique-<stage>.md
@@ -46,6 +52,8 @@ research/<research-name>/
 |---|---|
 | `README.md` | Status block (see below) plus research question and important paths |
 | `decision-log.md` | Shared research state for decisions: every Tier 1 checkpoint, Tier 2 gate, escalation, reconfiguration, and informal review (template: `templates/decision-log.md`) |
+| `inbox/` | Checkpoint, gate, and task requests for people; answered requests are kept and linked from the decision log |
+| `.workflow/state.json` | Orchestrator state: stage, step, revision, settings, history |
 | `run-notes.md` | Provisional lessons, friction, and the workflow evaluation record (template: `templates/example-run-notes.md`) |
 | `packages/` | Compact stage handoff packages only |
 | `deliverables/` | Reader-facing outputs such as manuscript drafts, reports, slides, dashboards, or software packages |
@@ -62,7 +70,9 @@ research/<research-name>/
 
 ## Startup Rule
 
-At the beginning of a new real research project, the researcher agent should:
+With the orchestrator, `python -m orchestrator init research/<research-name> --topic "..."`
+creates this layout. In manual runs, at the beginning of a new real research
+project, the researcher agent should:
 
 1. propose a `research/<research-name>/` slug;
 2. create the default folder skeleton after the user confirms or when the slug is safe to infer;

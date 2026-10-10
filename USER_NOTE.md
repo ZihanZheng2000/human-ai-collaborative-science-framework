@@ -64,11 +64,43 @@ the workflow before it begins.
 
 ## Starting a Session
 
-Open a new session with your AI agent (Codex or Claude Code depending on your
-setup) and say only two things: what you want to do, and what the topic is.
+There are two ways to run the workflow.
+
+### Automatic (recommended)
+
+The orchestrator passes work between the agents for you. You only answer when a
+decision is yours to make.
+
+1. Choose your agents in `workflow.config.json` (any mix of command-line agents
+   such as Claude Code, Codex, or Gemini CLI, model APIs for the reviewer, or a
+   person). `workflow.config.example.json` shows the options.
+2. Start a project, describing the topic in your own words:
 
 ```text
-Read WORKFLOW-CONFIG.md and AGENTS.md (Codex) or CLAUDE.md (Claude Code) first, confirm your role, then follow this repository's workflow starting with Pre-Planning Session Setup.
+python -m orchestrator init research/my-project --topic "describe your question, problem, or research idea in plain language"
+python -m orchestrator run research/my-project
+```
+
+3. You are asked three setup questions (workflow mode, reviewer strategy, gate
+   mode). After that the agents work on their own. The run stops and asks you
+   only at decision checkpoints, stage gates, and if something gets stuck.
+4. If you would rather not wait at the terminal, type `later`, or run with
+   `--inbox-only`. Open the file the orchestrator names in
+   `research/my-project/inbox/pending/`, write your choice under **Decision**
+   (a number, or your own words, plus any notes), and run the same command
+   again. `python -m orchestrator status research/my-project` shows where
+   things stand.
+
+Every decision you make is written to the project's `decision-log.md` by the
+orchestrator itself, so the agents cannot record an approval you did not give.
+
+### Manual (talking to an agent directly)
+
+Open a new session with any AI agent and say only two things: what you want to
+do, and what the topic is.
+
+```text
+You are the researcher agent. Read your instruction file (CLAUDE.md, AGENTS.md, or GEMINI.md) and workflow.config.json, then follow this repository's workflow starting with Pre-Planning Session Setup.
 The topic is: [describe your question, problem, or research idea in plain language].
 ```
 
@@ -81,7 +113,14 @@ agent asks or when they become relevant.
 If you just want to try the framework with a small test question first, use:
 
 ```text
-Read WORKFLOW-CONFIG.md and AGENTS.md (Codex) or CLAUDE.md (Claude Code) first, confirm your role, then run a small framework smoke test with synthetic gates.
+python -m orchestrator init research/test-run --topic "[short test topic]"
+python -m orchestrator run research/test-run
+```
+
+and choose "synthetic gates" at setup. Or, in a manual session:
+
+```text
+You are the researcher agent. Read your instruction file and workflow.config.json, then run a small framework smoke test with synthetic gates.
 The topic is: [short test topic, or "choose one for me"].
 ```
 
@@ -328,7 +367,7 @@ worth pursuing.
 
 **The AI waits for you to manage the workflow.**
 ```text
-Please lead the workflow according to AGENTS.md. Tell me the current stage,
+Please lead the workflow according to your instruction file. Tell me the current stage,
 the current package path, the next action you will take, and the decision you
 need from me before proceeding.
 ```
@@ -398,8 +437,8 @@ most of the work. You direct it, correct it, and approve or reject its output.
 At the beginning of a session, or after the reviewer has finished its critique:
 
 ```text
-You are the researcher agent. Read WORKFLOW-CONFIG.md to confirm your role,
-then read AGENTS.md (or CLAUDE.md).
+You are the researcher agent. Read your instruction file (CLAUDE.md,
+AGENTS.md, or GEMINI.md).
 
 We are currently in [Planning / Modeling / Reporting / Reviewing].
 The current stage package is at [path].
@@ -507,8 +546,8 @@ critique — and to decide which findings the researcher should act on.
 Open a new session with the reviewer agent and say:
 
 ```text
-You are the reviewer agent. Read WORKFLOW-CONFIG.md to confirm your role,
-then read AGENTS.md (or CLAUDE.md).
+You are the reviewer agent. Read your instruction file (CLAUDE.md,
+AGENTS.md, or GEMINI.md).
 
 Please review the [Planning / Modeling / Reporting / Reviewing] package.
 The review request is at <run_dir>/review-request-<stage>.md.
@@ -590,15 +629,16 @@ single most important issue the researcher needs to address?
 
 ---
 
-## Switching Between Agents: Session Script
+## Switching Between Agents: Session Script (manual runs only)
 
-Because Codex and Claude Code run in separate sessions, you need to hand
-off context explicitly. Use these scripts each time you switch.
+In automatic runs the orchestrator does this for you. In manual runs the
+researcher and reviewer are separate sessions (they can be different products),
+so you hand off context explicitly. Use these scripts each time you switch.
 
 **Researcher → Reviewer** (after researcher finishes a stage):
 
 ```text
-You are the reviewer agent. Read WORKFLOW-CONFIG.md, then AGENTS.md (or CLAUDE.md).
+You are the reviewer agent. Read your instruction file (CLAUDE.md, AGENTS.md, or GEMINI.md).
 The researcher has completed the [stage] package.
 The review request is at <run_dir>/review-request-<stage>.md.
 Please critique and write findings to <run_dir>/reviewer-critique-<stage>.md.
@@ -608,7 +648,7 @@ Critique only — do not modify any files.
 **Reviewer → Researcher** (after reviewer writes critique):
 
 ```text
-You are the researcher agent. Read WORKFLOW-CONFIG.md, then AGENTS.md (or CLAUDE.md).
+You are the researcher agent. Read your instruction file (CLAUDE.md, AGENTS.md, or GEMINI.md).
 The reviewer has finished. Read <run_dir>/reviewer-critique-<stage>.md.
 Triage each finding, update the [stage] package with the response-to-reviewer
 section, and then present the gate to me.

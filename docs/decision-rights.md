@@ -116,6 +116,15 @@ A project may strengthen these rights (for example, giving a domain-expert
 reviewer blocking rights on label definitions). That is a change to the
 Decision-Rights Map.
 
+## Who Records Human Decisions
+
+In orchestrated runs ([orchestration.md](orchestration.md)) the orchestrator
+writes every decision-log row whose authority is a person, and computes its
+approval quality from the request the person saw. Agents propose and record
+their own proposals, mitigations, disclosures, and escalations, but never a
+human approval. In manual runs the researcher records the user's decision and
+the reviewer checks it.
+
 ## What the Researcher Agent May Not Do Alone
 
 - approve its own checkpoint or gate
