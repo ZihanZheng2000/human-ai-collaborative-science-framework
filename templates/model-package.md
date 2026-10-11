@@ -1,4 +1,4 @@
-# Model Package
+# Modeling Package
 
 ## Modeling Workflow Identity
 
@@ -7,6 +7,9 @@
 - Modeling Reviewer: reviewer agent name or runtime / skipped
 - reviewer file: `docs/reviewer-agents/modeling-reviewer-agent.md`
 - reviewer mode: critique-only / edits explicitly authorized by user / skipped
+- review mode: standard / blind
+- reviewer rights: advisory + escalation (default) / other per Decision-Rights Map
+- decision log: `decision-log.md`
 - Modeling Review status: pending / completed / skipped
 - researcher-agent response status: pending / completed / not applicable
 - Modeling Gate status: pending / approved / revise / backtrack / terminate
@@ -16,7 +19,7 @@
 - goal statement:
 - goal start trigger:
 - execution mode: demo-first / full-scale / addendum
-- goal stop condition: Model Package ready for Model Gate / user decision needed / backtrack to Plan / terminate / user paused
+- goal stop condition: Modeling Package ready for Modeling Gate / user decision needed / backtrack to Plan / terminate / user paused
 - first successful script/table/figure treated as final stop? no
 
 ## Run Manifest and Logs
@@ -43,6 +46,19 @@
 - evidence-deepening budget:
 - accepted claim level: full manuscript / preliminary manuscript / demo / internal check
 - backtrack conditions:
+
+### Locked Analysis Choices
+
+Choices locked at a Tier 1 checkpoint before results were visible. Any later
+change needs a new decision that says results were already seen.
+
+| Choice | Locked value | Decision ID | Changed after results? | Change decision ID |
+|---|---|---|---|---|
+| labels / event definitions |  |  | no / yes |  |
+| inclusion / exclusion rules |  |  | no / yes |  |
+| evaluation metrics |  |  | no / yes |  |
+| model search space |  |  | no / yes |  |
+| validation split |  |  | no / yes |  |
 
 ## Exploratory Demo Phase
 
@@ -279,9 +295,9 @@ Used when a correct preliminary result is not yet sufficient for the research pu
 
 Use `docs/reviewer-agents/modeling-reviewer-agent.md` before the Modeling Gate when a separate reviewer agent is available and approved.
 
-| Finding ID | Reviewer concern | Severity | Evidence or artifact | Route | Blocks Modeling Gate? |
-|---|---|---|---|---|---|
-| MR-1 |  | blocker / major / minor / suggestion / accepted limitation |  | Planning / Modeling / Reporting / Reviewing / Terminate | yes / no |
+| Finding ID | Severity | Concern | Evidence or reasoning | Route | Blocks gate? | Recommended action |
+|---|---|---|---|---|---|---|
+| MR-1 | blocker / major / minor / suggestion / accepted limitation |  |  | Planning / Modeling / Reporting / Reviewing / Terminate / user decision | yes / no |  |
 
 If Modeling Review was skipped, record why:
 
@@ -291,13 +307,21 @@ If Modeling Review was skipped, record why:
 
 ## Researcher-Agent Response to Modeling Review
 
-| Finding ID | Response status | Change made or planned | Blocks gate? | Notes |
-|---|---|---|---|---|
-| MR-1 | accepted and fixed / accepted but deferred / rejected with reason / needs user decision |  | yes / no |  |
+Blocker and major findings that are deferred or rejected are escalated: add
+them to the decision log's Open Escalations and quote them at the gate. Only the
+user can uphold the response.
 
-## Model Gate Decision
+| Finding ID | Response status | Change made or planned | Blocks gate? | Escalated to user? | User ruling | Notes |
+|---|---|---|---|---|---|---|
+| MR-1 | accepted and fixed / accepted but deferred / rejected with reason / needs user decision |  | yes / no | yes / no | upheld / overturned / pending / n.a. |  |
+
+## Modeling Gate Decision
 
 - decision: approve for Reporting / approve with limitations / edit required / request reporting-support addendum / revise Model / backtrack to Plan / terminate
+- decision-log ID:
+- approval quality: substantive / nominal (what was missing) / synthetic
+- escalated findings ruled on: finding ID -> upheld / overturned
+- open objections carried forward:
 - user notes:
 - data-quality or cleaning concerns:
 - finding correctness concerns:

@@ -1,0 +1,23 @@
+$ claude ... (prompt in 008-planning-researcher-work.prompt.md)
+returncode: 0
+
+--- stdout ---
+I wrote checkpoint CP-planning-4 and stopped. The Planning package isn't ready for review yet, so I didn't write the review request or framing files.
+
+D-2, D-3 and D-4 are approved (synthetic), but the method and metrics choice is still open. It's a Tier 1 decision, and in step-by-step mode I stop after each checkpoint file.
+
+**CP-planning-4 proposes (recommended option first):**
+- **Table:** n, mean, median, SD and range of body mass for each species × sex, on the D-4 complete-case set.
+- **Differences:** male minus female difference in mean and in median, plus the male/female mean ratio, per species.
+- **Plot:** one by-sex strip/box plot per species showing every point.
+- **Acceptance checks:** a second, independent recomputation of the means, and cell counts that sum to the analysis-set size.
+- **Not computed:** no p-values, confidence intervals, regression or pooling, to stay within the descriptive claim level from D-2.
+
+The other options are table only, adding an inferential step (which would mean revisiting D-2), or asking for more checks. The file is `inbox/pending/CP-planning-4.md`.
+
+I updated the package's route table so the exclusion row shows as approved under D-4 and the method row as pending CP-planning-4. The README status block now points to CP-planning-4. I made no decision-log rows, since the orchestrator writes those.
+
+After CP-planning-4 is answered, I'll draft the Decision-Rights Map and finish the remaining package sections. I'll check each sentence against the descriptive claim level, then write `review-request-planning.md` and `review-framing-planning.md`. The Decision-Rights Map needs its own confirmation, so that may mean one more checkpoint.
+
+--- stderr ---
+

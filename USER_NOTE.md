@@ -44,12 +44,9 @@ You do not need to write code. You do need to have ready:
 - **A rough idea of your output goal**: journal article, policy report, thesis
   chapter, slide deck, or something else. If you are not sure, the AI will ask.
 
-For each new real research project, the researcher agent should create a
-separate project folder under:
-
-```text
-research/<research-name>/
-```
+Each research project has its own folder. With the orchestrator you choose it
+(`python -m orchestrator init ~/papers/my-study ...`); in a manual session the
+default is `research/<research-name>/` inside this repository.
 
 Inside that folder, stage packages, discussion notes, run artifacts, data,
 code, figures, tables, deliverables, and archived files should be kept in their
@@ -64,11 +61,56 @@ the workflow before it begins.
 
 ## Starting a Session
 
-Open a new session with your AI agent (Codex or Claude Code depending on your
-setup) and say only two things: what you want to do, and what the topic is.
+There are two ways to run the workflow.
+
+### Automatic (recommended)
+
+The orchestrator passes work between the agents for you. You only answer when a
+decision is yours to make.
+
+1. Choose your agents in `workflow.config.json` (any mix of command-line agents
+   such as Claude Code, Codex, or Gemini CLI, model APIs for the reviewer, or a
+   person). `workflow.config.example.json` shows the options.
+2. Start a project, describing the topic in your own words:
 
 ```text
-Read WORKFLOW-CONFIG.md and AGENTS.md first, confirm your role, then follow this repository's workflow starting with Pre-Planning Session Setup.
+python -m orchestrator init ~/papers/my-study --topic "describe your question, problem, or research idea in plain language"
+python -m orchestrator run ~/papers/my-study
+```
+
+Run these from the framework folder. The project folder (`~/papers/my-study`
+here) can be anywhere, including a folder that already has your data; the
+agents work inside it.
+
+3. You are asked three setup questions (workflow mode, reviewer strategy, gate
+   mode). After that the agents work on their own. The run stops and asks you
+   only at decision checkpoints, stage gates, and if something gets stuck.
+4. If you would rather not wait at the terminal, type `later`, or run with
+   `--inbox-only`. Open the file the orchestrator names in
+   `research/my-project/inbox/pending/`, write your choice under **Decision**
+   (a number, or your own words, plus any notes), and run the same command
+   again. `python -m orchestrator status research/my-project` shows where
+   things stand.
+
+Every decision you make is written to the project's `decision-log.md` by the
+orchestrator itself, so the agents cannot record an approval you did not give.
+
+### Manual (talking to an agent directly)
+
+You can also open Claude Code (or any agent) in your project folder and work
+with it in conversation. When a stage package is ready for review, hand just
+the review to the configured reviewer:
+
+```text
+python -m orchestrator review ~/papers/my-study --stage planning --run-id <run_id>
+```
+
+
+Open a new session with any AI agent and say only two things: what you want to
+do, and what the topic is.
+
+```text
+You are the researcher agent. Read your instruction file (CLAUDE.md, AGENTS.md, or GEMINI.md) and workflow.config.json, then follow this repository's workflow starting with Pre-Planning Session Setup.
 The topic is: [describe your question, problem, or research idea in plain language].
 ```
 
@@ -81,7 +123,14 @@ agent asks or when they become relevant.
 If you just want to try the framework with a small test question first, use:
 
 ```text
-Read WORKFLOW-CONFIG.md and AGENTS.md first, confirm your role, then run a small framework smoke test with synthetic gates.
+python -m orchestrator init research/test-run --topic "[short test topic]"
+python -m orchestrator run research/test-run
+```
+
+and choose "synthetic gates" at setup. Or, in a manual session:
+
+```text
+You are the researcher agent. Read your instruction file and workflow.config.json, then run a small framework smoke test with synthetic gates.
 The topic is: [short test topic, or "choose one for me"].
 ```
 
@@ -103,12 +152,72 @@ For real projects, the AI should begin with Planning only. Modeling, Reporting,
 and Reviewing should not be treated as active work until the previous gate is
 approved.
 
+`<run_dir>` in this guide means `artifacts/<run_id>/` inside your project folder.
+
+---
+
+## Decisions Inside a Stage: Checkpoints
+
+Gates are not the only time you decide. Inside each stage the AI will stop and
+ask you about consequential choices — the research question wording, which
+dataset to use, how an event or label is defined, which cases to exclude, which
+metrics a model is judged by, how to interpret a result. These are **decision
+checkpoints** (Tier 1 in `docs/decision-rights.md`).
+
+At a checkpoint the AI should show you:
+
+- what it proposes and what that changes
+- the evidence and where to look at it
+- the alternatives it considered
+- any objections it knows about
+- whether the choice is easy or hard to reverse
+
+Routine choices (file names, code structure, retries) the AI makes on its own.
+If you think a choice the AI made alone should have come to you, say so — that
+is useful feedback and gets recorded.
+
+Choices that shape the analysis (labels, exclusions, metrics, model search
+space) are fixed **before** the AI sees results. If they change afterward, the
+AI must tell you that results were already visible.
+
+Every checkpoint and gate decision is written to the project's
+`decision-log.md`. The top of the project's `README.md` shows the current
+status: stage, last decision, open escalations, and the next action.
+
+```text
+Show me the decision log entries for this stage.
+```
+
 ---
 
 ## At the Gates: What to Say
 
-At the end of each stage, the AI will present a **gate decision** — a short
-summary of what was done and a list of options. You choose one:
+At the end of each stage, the AI will present a **gate decision**. It should
+include:
+
+- what decision is needed and what the AI recommends
+- what was done and where the stage package is
+- three to five files worth opening to check the evidence
+- **open objections**: any reviewer finding the AI did not fully fix, in the
+  reviewer's own words, and the AI's reason
+- the alternatives and what approval will cause
+
+If the AI rejected or postponed a serious reviewer finding (blocker or major),
+you decide whether that response stands:
+
+```text
+On PR-3, I do not accept your reason. Fix it before the gate.
+```
+
+If something is missing from the gate summary, you can ask for more checks
+before deciding:
+
+```text
+Before I decide, show me the reviewer's original findings and the evidence for
+the main result.
+```
+
+Then choose one:
 
 When the chat interface supports structured choices, the AI should show
 clickable options for the gate, such as approve, revise, or backtrack. You can
@@ -160,10 +269,10 @@ research plan, the method choice, and the output format.
 **Standard folder for domain materials:**
 
 ```
-artifacts/<your-run-id>/domain-materials/
+<project>/artifacts/input/domain-materials/
 ```
 
-For example: `artifacts/water-quality-2026/domain-materials/`
+For example: `~/papers/water-quality-2026/artifacts/input/domain-materials/`
 
 **What to put there:**
 
@@ -176,7 +285,7 @@ For example: `artifacts/water-quality-2026/domain-materials/`
 **How to tell the AI about your materials:**
 
 ```text
-I have domain background materials in artifacts/<run-id>/domain-materials/.
+I have domain background materials in <project>/artifacts/input/domain-materials/.
 Please read them before writing the research plan and tell me what you
 extracted from them.
 ```
@@ -194,7 +303,7 @@ extracted from them.
 You can provide materials at any stage, not only at the beginning.
 
 ```text
-I am adding a report to artifacts/<run-id>/domain-materials/.
+I am adding a report to <project>/artifacts/input/domain-materials/.
 Please read [filename] and tell me if it changes any assumptions
 in the current plan.
 ```
@@ -267,7 +376,7 @@ worth pursuing.
 
 **The AI waits for you to manage the workflow.**
 ```text
-Please lead the workflow according to AGENTS.md. Tell me the current stage,
+Please lead the workflow according to your instruction file. Tell me the current stage,
 the current package path, the next action you will take, and the decision you
 need from me before proceeding.
 ```
@@ -290,6 +399,27 @@ alternative data sources with their access conditions.
 Please summarize what stage we are in, what has been completed, what the
 current package contains, and what the next step is.
 ```
+
+---
+
+## Changing Who Does What
+
+Sometimes the problem is not the research but how the work is divided. Signs:
+you keep correcting the AI on the same domain point; the same kind of decision
+keeps coming back; the reviewer keeps flagging the same area; or the project's
+real focus has changed. You can ask for a change in how the collaboration is
+organized (a **reconfiguration**):
+
+```text
+I keep correcting the label definitions. From now on, propose options only and
+let me (or [domain expert]) decide labels. Record this in the decision log.
+```
+
+```text
+Switch to step-by-step discussion for the rest of Modeling.
+```
+
+The AI should also propose such a change on its own when it sees these signs.
 
 ---
 
@@ -316,8 +446,8 @@ most of the work. You direct it, correct it, and approve or reject its output.
 At the beginning of a session, or after the reviewer has finished its critique:
 
 ```text
-You are the researcher agent. Read WORKFLOW-CONFIG.md to confirm your role,
-then read AGENTS.md (or CLAUDE.md).
+You are the researcher agent. Read your instruction file (CLAUDE.md,
+AGENTS.md, or GEMINI.md).
 
 We are currently in [Planning / Modeling / Reporting / Reviewing].
 The current stage package is at [path].
@@ -326,7 +456,7 @@ The current stage package is at [path].
 If continuing after a reviewer critique:
 
 ```text
-The reviewer critique is at artifacts/<run_id>/reviewer-critique.md.
+The reviewer critique is at <run_dir>/reviewer-critique-<stage>.md.
 Please read it, triage each finding, update the stage package, and then
 present the gate to me.
 ```
@@ -378,7 +508,7 @@ Do not move forward until this is verified.
 ### Providing Materials Mid-Stage
 
 ```text
-I am adding domain materials to artifacts/<run_id>/domain-materials/.
+I am adding domain materials to <project>/artifacts/input/domain-materials/.
 Before continuing, please read [specific file or folder] and tell me
 what you extracted from it that is relevant to our research plan.
 ```
@@ -395,7 +525,7 @@ If yes, revise the plan accordingly. If no, explain why.
 ```text
 The current scope is too broad. Please revise the research question to focus
 only on [specific population / time period / geography / variable].
-Update the Plan Package and come back to me before continuing.
+Update the Planning Package and come back to me before continuing.
 ```
 
 **Change the output type:**
@@ -425,15 +555,21 @@ critique — and to decide which findings the researcher should act on.
 Open a new session with the reviewer agent and say:
 
 ```text
-You are the reviewer agent. Read WORKFLOW-CONFIG.md to confirm your role,
-then read AGENTS.md (or CLAUDE.md).
+You are the reviewer agent. Read your instruction file (CLAUDE.md,
+AGENTS.md, or GEMINI.md).
 
 Please review the [Planning / Modeling / Reporting / Reviewing] package.
-The review request is at artifacts/<run_id>/review-request.md.
+The review request is at <run_dir>/review-request-<stage>.md.
 Read the stage package and supporting artifacts listed there.
-Write your critique to artifacts/<run_id>/reviewer-critique.md.
+Write your critique to <run_dir>/reviewer-critique-<stage>.md.
 Critique only — do not modify any files.
 ```
+
+The review request says whether this is a **standard** or **blind** review. In
+blind mode the reviewer forms its own findings before reading the researcher's
+summary and questions, which makes it harder for the researcher's framing to
+hide a problem. Reviewing uses blind mode by default; you can ask for it at any
+stage.
 
 If you want to focus the review:
 
@@ -446,7 +582,7 @@ method validity / citation support / a specific section].
 
 **If a finding is too vague:**
 ```text
-Finding RC-[N] is not specific enough. What exactly is wrong, and
+Finding PR-[N] is not specific enough. What exactly is wrong, and
 where in the package does the problem appear? Please restate it with
 a concrete example and a clearer recommended action.
 ```
@@ -467,14 +603,14 @@ Add any findings on this to your critique file.
 ### Disagreeing with a Finding
 
 ```text
-I disagree with finding RC-[N]. In this domain, [explanation of why
+I disagree with finding PR-[N]. In this domain, [explanation of why
 the finding does not apply or is already addressed]. Please mark this
 as an accepted limitation or withdraw the finding, and explain your
 revised assessment.
 ```
 
 ```text
-Finding RC-[N] is correct but not fixable within the current scope.
+Finding PR-[N] is correct but not fixable within the current scope.
 Please mark it as an accepted limitation with the reason:
 [explanation]. We will disclose it in the Reporting stage.
 ```
@@ -485,7 +621,7 @@ By default the reviewer agent does not modify files. If you want it to
 fix something directly:
 
 ```text
-I authorize you to fix finding RC-[N] directly. Please make only
+I authorize you to fix finding PR-[N] directly. Please make only
 that change to [specific file], record what you changed, and then
 stop. Do not make any other edits.
 ```
@@ -502,26 +638,27 @@ single most important issue the researcher needs to address?
 
 ---
 
-## Switching Between Agents: Session Script
+## Switching Between Agents: Session Script (manual runs only)
 
-Because Codex and Claude Code run in separate sessions, you need to hand
-off context explicitly. Use these scripts each time you switch.
+In automatic runs the orchestrator does this for you. In manual runs the
+researcher and reviewer are separate sessions (they can be different products),
+so you hand off context explicitly. Use these scripts each time you switch.
 
 **Researcher → Reviewer** (after researcher finishes a stage):
 
 ```text
-You are the reviewer agent. Read WORKFLOW-CONFIG.md, then AGENTS.md (or CLAUDE.md).
+You are the reviewer agent. Read your instruction file (CLAUDE.md, AGENTS.md, or GEMINI.md).
 The researcher has completed the [stage] package.
-The review request is at artifacts/<run_id>/review-request.md.
-Please critique and write findings to artifacts/<run_id>/reviewer-critique.md.
+The review request is at <run_dir>/review-request-<stage>.md.
+Please critique and write findings to <run_dir>/reviewer-critique-<stage>.md.
 Critique only — do not modify any files.
 ```
 
 **Reviewer → Researcher** (after reviewer writes critique):
 
 ```text
-You are the researcher agent. Read WORKFLOW-CONFIG.md, then AGENTS.md (or CLAUDE.md).
-The reviewer has finished. Read artifacts/<run_id>/reviewer-critique.md.
+You are the researcher agent. Read your instruction file (CLAUDE.md, AGENTS.md, or GEMINI.md).
+The reviewer has finished. Read <run_dir>/reviewer-critique-<stage>.md.
 Triage each finding, update the [stage] package with the response-to-reviewer
 section, and then present the gate to me.
 ```
@@ -530,10 +667,10 @@ section, and then present the gate to me.
 
 ```text
 Before you update the package, here is my position on the reviewer findings:
-- RC-1: Accept and fix. [Any guidance on how.]
-- RC-2: Accept as limitation. Disclose in the Reporting stage.
-- RC-3: Reject. [Reason.]
-- RC-4: I need your recommendation before deciding.
+- PR-1: Accept and fix. [Any guidance on how.]
+- PR-2: Accept as limitation. Disclose in the Reporting stage.
+- PR-3: Reject. [Reason.]
+- PR-4: I need your recommendation before deciding.
 Now triage the rest and update the package.
 ```
 

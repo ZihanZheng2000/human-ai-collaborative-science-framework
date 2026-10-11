@@ -1,5 +1,5 @@
 ---
-description: Record a stage gate decision (approve / revise / backtrack / terminate) and advance to the next stage.
+description: Present a stage gate or Tier 1 decision checkpoint substantively, record it in the decision log, and advance to the next stage after approval.
 ---
 
 Invoke the Gate Manager workflow-native skill.

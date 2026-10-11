@@ -1,0 +1,31 @@
+$ claude ... (prompt in 013-planning-reviewer.prompt.md)
+returncode: 0
+
+--- stdout ---
+I wrote the Planning critique to `research/live-penguins/artifacts/live1/reviewer-critique-planning.md`. It's a synthetic gate, a standard review, and I changed no other file.
+
+The plan itself is sound for a small descriptive trial. It is ready after fixes. I did not verify any citation, licence or data fact; the package marks them as recalled, and I left them that way.
+
+Findings (0 blockers, 2 majors, 5 minors, 1 suggestion, 1 accepted limitation):
+
+- **PR-1 (major, user decision):** The run diverges from `workflow.config.json` without any logged user override. The researcher is claude-code while the config names codex. D-1 records synthetic gates as coming "from workflow.config.json", but the config says `real`.
+- **PR-2 (major, user decision):** Several consequential choices have no decision-log entry or authorizer, even though the package's own map treats them as Tier 1 for the user. These are:
+  - the light recalled-knowledge prior-work scan;
+  - skipping venue calibration and the external tool scan;
+  - the output route and audience;
+  - the future-work boundary;
+  - the unconfirmed avoid-list;
+  - the "mature" idea label.
+- **PR-3 to PR-7 (minor):**
+  - **PR-3:** the scan says the CC0 licence was "checked 2026-10-10", but the package and D-3 say it was not re-verified.
+  - **PR-4:** the prior-work basis is unsourced recall, yet the Decision-Rights Map cites it as domain judgment.
+  - **PR-5:** D-5 adds a median difference and a mean ratio that D-2's list of allowed statements doesn't name.
+  - **PR-6:** the acceptance checks cover only the means, not the full table, the dropped-row reconciliation, or the hash record.
+  - **PR-7:** the Deferred Items table is still empty.
+- **PR-8 (suggestion):** Reporting should say plainly that "differ" is answered only as a description of the sampled birds.
+- **PR-9 (accepted limitation):** All approvals D-1 to D-6 are synthetic, and per-cell n isn't known until Modeling.
+
+No reconfiguration is triggered, since this is the first pass. The critique notes the setup and role-authorization area so a repeat next pass would count toward the two-pass trigger.
+
+--- stderr ---
+

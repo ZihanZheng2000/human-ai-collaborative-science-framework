@@ -14,8 +14,8 @@ description: Use during Review when a Reporting Package and its deliverables nee
 
 ## Inputs
 
-- Approved Plan Package
-- Model Package
+- Approved Planning Package
+- Modeling Package
 - Reporting Package
 - reader-facing deliverables, if any
 - artifacts and known limitations
@@ -28,14 +28,15 @@ description: Use during Review when a Reporting Package and its deliverables nee
 4. Audit evidence tier and claim strength, especially Abstract, Results, Discussion, and Conclusion.
 5. Review method, data source identity, acquisition success, validation, environment repair decisions, and reproducibility.
 6. Audit evidence packaging, source support, accepted citation threshold, and claim-by-claim evidence use when relevant.
-7. Run reviewer-agent critique as critique-only when requested or useful.
-8. Review deliverable structure, venue/format fit, and output-mode requirements when relevant.
-9. Check ethics, disclosure, responsible AI use, and human/expert review status.
-10. Simulate adversarial objections and likely response demands.
-11. Label severity and route each finding.
-12. Check revision feasibility and completion criteria.
-13. Run submission-readiness check only when applicable.
-14. Produce a response-to-review summary and Review Package.
+7. Run reviewer-agent critique as critique-only when requested or useful. Use blind review mode by default in the Reviewing stage.
+8. Audit accountability: every Tier 1/2 decision in the decision log has proposer, evidence, objections, and authorizer; flag nominal approvals, unresolved escalations, and locked analysis choices changed after results.
+9. Review deliverable structure, venue/format fit, and output-mode requirements when relevant.
+10. Check ethics, disclosure, responsible AI use, and human/expert review status.
+11. Simulate adversarial objections and likely response demands.
+12. Label severity and route each finding.
+13. Check revision feasibility and completion criteria.
+14. Run submission-readiness check only when applicable.
+15. Produce a response-to-review summary and Review Package.
 
 ## Outputs
 
@@ -45,6 +46,7 @@ description: Use during Review when a Reporting Package and its deliverables nee
 - findings table
 - internal self-review summary
 - reviewer-agent critique triage, if used
+- accountability audit and reconfiguration recommendations
 - routed revision execution plan
 - submission-readiness check, when applicable
 - accepted limitations
@@ -59,3 +61,5 @@ description: Use during Review when a Reporting Package and its deliverables nee
 - Do not treat synthetic gates as real user, domain-owner, or expert approval.
 - Do not ignore mismatches between raw data hosts, official sources, documentation sources, and citation sources.
 - Do not let a reviewer agent modify files unless the user explicitly requested that agent to edit.
+- Every deferred or rejected blocker or major finding is escalated to the user; do not close it in the Review Package.
+- Recommend a reconfiguration when findings show the Decision-Rights Map no longer fits.

@@ -8,10 +8,14 @@
 - review scope: evidence package / workflow demo / manuscript or paper / slide deck / web or dashboard / software package / submission package / other
 - gate mode: real user gates / synthetic gates / mixed
 - recommendation: approve for finalization or release / approve limited package / revise Reporting / request Model addendum / backtrack to Plan / terminate
+- permitted use while escalations are open (required for limited or archive): may / may not
 - Reviewing Researcher: researcher agent name or runtime
 - Reviewing Reviewer: reviewer agent name or runtime / skipped
 - reviewer file: `docs/reviewer-agents/reviewing-reviewer-agent.md`
 - reviewer mode: critique-only / edits explicitly authorized by user / skipped
+- review mode: blind (default for Reviewing) / standard
+- reviewer rights: advisory + escalation (default) / other per Decision-Rights Map
+- decision log: `decision-log.md`
 - Reviewing Review status: pending / completed / skipped
 - researcher-agent response status: pending / completed / not applicable
 
@@ -19,8 +23,8 @@
 
 | Input | Status | Notes |
 |---|---|---|
-| Approved Plan Package |  |  |
-| Model Package |  |  |
+| Approved Planning Package |  |  |
+| Modeling Package |  |  |
 | Reporting Package |  |  |
 | Run manifest/log/summary |  |  |
 | Data/source artifacts |  |  |
@@ -40,6 +44,12 @@
 | usable evidence is distinguished from candidate material |  |  | Model |
 | Reporting separates supported/preliminary/uncertain/unsupported findings |  |  | Reporting |
 | limitations and failures remain visible |  |  | Reporting |
+| every Tier 1/2 decision in the decision log has proposer, evidence, objections, and authorizer (outcome may be pass / concern / synthetic) |  |  | Review / user decision |
+| nominal or synthetic approvals of consequential decisions are identified and counted |  |  | user decision |
+| seeded faults, if any, are disclosed in the decision log |  |  | Review |
+| run-notes.md Workflow Evaluation is filled |  |  | Review |
+| open escalations and deferred items are listed, none silently closed |  |  | user decision |
+| locked analysis choices were not changed after results without a logged decision |  |  | Model |
 
 ## Internal Self Review
 
@@ -55,9 +65,12 @@
 - packet path or prompt path:
 - output path:
 
-| Reviewer finding | Severity | Accepted? | Researcher-agent response | Route | Action |
-|---|---|---|---|---|---|
-|  | blocker / major / minor / suggestion / accepted limitation | yes / no / partial / deferred |  | Plan / Model / Reporting / Review / Terminate |  |
+Independent (blind) findings and follow-up findings are kept separate in the
+critique file; note which block each finding came from.
+
+| Reviewer finding | Block | Severity | Accepted? | Researcher-agent response | Escalated to user? | User ruling | Route | Action |
+|---|---|---|---|---|---|---|---|---|
+|  | independent / follow-up | blocker / major / minor / suggestion / accepted limitation | yes / no / partial / deferred |  | yes / no | upheld / overturned / pending / n.a. | Plan / Model / Reporting / Review / Terminate / user decision |  |
 
 ## Review Criteria
 
@@ -74,6 +87,7 @@
 | synthesis quality and uncertainty handling |  |  |
 | reporting readability and traceability |  |  |
 | ethics/licensing/disclosure |  |  |
+| accountability and decision traceability |  |  |
 | readiness for next route |  |  |
 
 ## Findings Table
@@ -100,6 +114,12 @@
 | public sharing/submission | yes / no / maybe |  |
 | archive or terminate | yes / no / maybe |  |
 
+## Reconfiguration Recommendations
+
+| Signal | Decision class affected | Recommended change | Decision ID if adopted |
+|---|---|---|---|
+|  |  |  |  |
+
 ## Accepted Limitations
 
 | Limitation | Why accepted | Where disclosed |
@@ -109,6 +129,11 @@
 ## Review Gate Decision
 
 - decision: approve for finalization or release / approve limited package / revise Reporting / request Model addendum / backtrack to Plan / run another reviewer-agent critique / accept limitations and finalize / terminate
+- decision-log ID:
+- approval quality: substantive / nominal (what was missing) / synthetic
+- escalated findings ruled on: finding ID -> upheld / overturned
+- open objections carried forward:
+- workflow evaluation recorded in run-notes.md: yes / no
 - user notes:
 - blocker issues remaining:
 - major issues remaining:

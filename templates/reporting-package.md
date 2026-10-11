@@ -13,6 +13,9 @@
 - Reporting Reviewer: reviewer agent name or runtime / skipped
 - reviewer file: `docs/reviewer-agents/reporting-reviewer-agent.md`
 - reviewer mode: critique-only / edits explicitly authorized by user / skipped
+- review mode: standard / blind
+- reviewer rights: advisory + escalation (default) / other per Decision-Rights Map
+- decision log: `decision-log.md`
 - Reporting Review status: pending / completed / skipped
 - researcher-agent response status: pending / completed / not applicable
 
@@ -20,7 +23,7 @@
 
 | Input | Status | Notes |
 |---|---|---|
-| Approved Plan Package |  |  |
+| Approved Planning Package |  |  |
 | Modeling Package |  |  |
 | exploratory demo phase summary, if used |  |  |
 | Modeling Gate decision |  |  |
@@ -143,9 +146,9 @@ Use only the rows relevant to the selected output mode.
 
 Use `docs/reviewer-agents/reporting-reviewer-agent.md` before the Reporting Gate when a separate reviewer agent is available and approved.
 
-| Finding ID | Reviewer concern | Severity | Evidence or artifact | Route | Blocks Reporting Gate? |
-|---|---|---|---|---|---|
-| RR-1 |  | blocker / major / minor / suggestion / accepted limitation |  | Planning / Modeling / Reporting / Reviewing / Terminate | yes / no |
+| Finding ID | Severity | Concern | Evidence or reasoning | Route | Blocks gate? | Recommended action |
+|---|---|---|---|---|---|---|
+| RR-1 | blocker / major / minor / suggestion / accepted limitation |  |  | Planning / Modeling / Reporting / Reviewing / Terminate / user decision | yes / no |  |
 
 If Reporting Review was skipped, record why:
 
@@ -155,13 +158,21 @@ If Reporting Review was skipped, record why:
 
 ## Researcher-Agent Response to Reporting Review
 
-| Finding ID | Response status | Change made or planned | Blocks Reporting Gate? | Notes |
-|---|---|---|---|---|
-| RR-1 | accepted and fixed / accepted but deferred / rejected with reason / needs user decision |  | yes / no |  |
+Blocker and major findings that are deferred or rejected are escalated: add
+them to the decision log's Open Escalations and quote them at the gate. Only the
+user can uphold the response.
+
+| Finding ID | Response status | Change made or planned | Blocks gate? | Escalated to user? | User ruling | Notes |
+|---|---|---|---|---|---|---|
+| RR-1 | accepted and fixed / accepted but deferred / rejected with reason / needs user decision |  | yes / no | yes / no | upheld / overturned / pending / n.a. |  |
 
 ## Reporting Gate Decision
 
 - decision: approve for Review / approve as limited demo / revise Reporting / request Modeling addendum / request Planning addendum / terminate or archive
+- decision-log ID:
+- approval quality: substantive / nominal (what was missing) / synthetic
+- escalated findings ruled on: finding ID -> upheld / overturned
+- open objections carried forward:
 - user notes:
 - required changes before Review:
 - approved limitations:

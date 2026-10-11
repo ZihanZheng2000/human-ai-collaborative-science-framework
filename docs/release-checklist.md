@@ -4,12 +4,15 @@ Use this before publishing the repository on GitHub.
 
 ## Repository
 
-- [ ] Confirm repository name, recommended: `human-gated-ai-research-framework`
+- [ ] Confirm repository name, recommended: `human-ai-collaborative-science-framework`
 - [ ] Ensure `.env` is ignored and not committed
-- [ ] Replace placeholder URL in `CITATION.cff`
+- [ ] Confirm the `repository-code` URL in `CITATION.cff` after renaming the GitHub repository
 - [ ] Check license and contributor names
 - [ ] Confirm README links work
 - [ ] Add screenshots or workflow figures if desired
+- [ ] `python -m unittest discover -s tests` passes
+- [ ] `python scripts/build_agent_instructions.py` leaves `CLAUDE.md`, `AGENTS.md`, `GEMINI.md` unchanged (they match `docs/agent-roles/`)
+- [ ] `workflow.config.json` and `workflow.config.example.json` contain no API keys or private paths
 
 ## Examples
 
@@ -19,13 +22,11 @@ Use this before publishing the repository on GitHub.
 
 ## Paper
 
-- [ ] Review `docs/paper.md` for citation correctness
-- [ ] Replace placeholder contributor names if needed
-- [ ] Decide whether the paper targets arXiv, preprint, or internal technical note first
-- [ ] Add repository URL after GitHub publication
+- [ ] The companion paper is maintained in a separate repository; confirm the README citation and title match its current version
+- [ ] Add the repository URL to the paper once it is public
 
 ## Security and Privacy
 
-- [ ] Search for API keys, tokens, private paths, and personal notes
+- [ ] Search for API keys, tokens, private paths, and personal notes (including agent prompt logs under `examples/*/artifacts/*/agent/`)
 - [ ] Remove or anonymize sensitive data
 - [ ] Confirm all included datasets can be redistributed or are small derived artifacts

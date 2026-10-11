@@ -1,153 +1,214 @@
 # Cross-Agent Handoff Protocol
 
 This document defines how the researcher agent and reviewer agent exchange work
-inside each stage's maker-checker loop.
+inside each stage's maker-checker loop. It implements the Tier 2 accountability
+loop described in [../coordination.md](../coordination.md); the reviewer's
+rights are defined in [../decision-rights.md](../decision-rights.md#reviewer-rights).
 
-Check `WORKFLOW-CONFIG.md` to see which agent is currently the researcher and
-which is the reviewer:
+Which agent is researcher and which is reviewer (per stage, if desired) is set
+in `roles` in `workflow.config.json`. Any agent can hold either role: a CLI
+agent, a model API (reviewer only), or a person. The protocol is the same for
+all of them. In orchestrated runs ([../orchestration.md](../orchestration.md))
+the orchestrator starts the reviewer, enforces blind mode, and records the
+user's gate decision; in manual runs the user hands the files between agents.
 
-| Config | Researcher agent | Reviewer agent |
-|---|---|---|
-| A | Codex | Claude Code |
-| B | Claude Code | Codex |
+## Run Directory
 
-The handoff protocol below is the same for both configs. Substitute the current
-researcher and reviewer agents from the table above.
+`<run_dir>` below means `artifacts/<run_id>/` inside the project folder (for
+example `research/<research-name>/artifacts/<run_id>/`, or any folder created
+with `python -m orchestrator init`).
+
+`<run_id>` is a descriptive slug that stays the same for every file in the run,
+for example `water-env-plan-v1` or `smoke-test-2026-06-28`.
 
 ---
 
 ## The Loop
 
+Files are named per stage, because all four stages of a run share one run
+directory: `<stage>` is `planning`, `modeling`, `reporting`, or `reviewing`.
+
 ```
-[researcher-agent] drafts or revises the stage package
-  -> [researcher-agent] writes artifacts/<run_id>/review-request.md
-  -> [reviewer-agent] reads the request and the stage package
-  -> [reviewer-agent] critiques and writes artifacts/<run_id>/reviewer-critique.md
-  -> [researcher-agent] reads findings, triages each one, updates the stage package
-  -> [researcher-agent] asks the user for the stage gate decision
-  -> User approves, revises, backtracks, or terminates
+[researcher] drafts or revises the stage package
+  -> [researcher] writes <run_dir>/review-request-<stage>.md
+                  and <run_dir>/review-framing-<stage>.md
+  -> [reviewer]  reads the request and the package
+                 (blind mode: opens the framing file only after its independent findings)
+  -> [reviewer]  writes <run_dir>/reviewer-critique-<stage>.md
+  -> [researcher] triages each finding, updates the package, logs escalations
+  -> [researcher] presents a substantive gate to the user
+  -> user approves, revises, backtracks, or terminates
 ```
 
 ---
 
 ## Step 1: Researcher Writes the Review Request
 
-**File**: `artifacts/<run_id>/review-request.md`
+**Files**: `<run_dir>/review-request-<stage>.md` (header and artifact list) and
+`<run_dir>/review-framing-<stage>.md` (the researcher's summary, known risks,
+and questions). They are separate so that blind review can actually be blind:
+a reviewer cannot read a header without also seeing framing that sits in the
+same file.
 
-The researcher agent writes this file when the stage package is ready for
-reviewer critique. The file must contain:
+The request is the authoritative assignment for this pass. If its reviewer
+assignment differs from `roles` in `workflow.config.json`, it must cite the decision-log entry
+in which the user approved the override.
 
 ```markdown
 # Review Request
 
+## Header
+
 - Stage: [Planning / Modeling / Reporting / Reviewing]
 - Run ID: <run_id>
+- Run directory: <run_dir>
 - Gate mode: [real user gate / synthetic gate / mixed]
-- Stage package path: <path to the stage package file>
-- Researcher agent: [Codex / Claude Code]
+- Review mode: [standard / blind]
+- Stage package path: <path>
+- Decision log path: <path or "smoke test: none">
+- Researcher agent: <agent name from workflow.config.json>
+- Reviewer agent: <agent name from workflow.config.json>
+- Assignment source: [workflow.config.json / user override D-<n>]
+- Reviewer rights: advisory + escalation (default) / other per Decision-Rights Map
+- Framing file: <run_dir>/review-framing-<stage>.md
 - Date: <date>
+
+## Artifacts to Inspect
+
+<paths to the package, data, figures, run logs, scripts, and deliverables the
+reviewer should open; no researcher commentary here>
+```
+
+```markdown
+# Review Framing (<stage>)
+
+<!-- Blind mode: the reviewer opens this file only after writing its
+independent findings. -->
 
 ## Summary of Work Done
 
-<brief summary of what was completed in this stage>
-
-## Supporting Artifacts
-
-<list of paths to data files, figures, run logs, scripts, or other artifacts
-that the reviewer should inspect>
-
 ## Known Risks or Open Questions
 
-<list any issues the researcher is uncertain about or wants the reviewer to focus on>
-
 ## Specific Questions for the Reviewer
-
-<optional: specific questions for the reviewer agent>
 ```
+
+Keep the request file free of interpretation so blind review stays blind. Do
+not list the framing file under Artifacts to Inspect.
 
 ---
 
 ## Step 2: Reviewer Reads and Critiques
 
-The reviewer agent reads:
+The reviewer reads:
 
-1. `artifacts/<run_id>/review-request.md`
-2. The stage package at the path listed in the request
-3. The relevant reviewer-agent file:
-   - Planning → `docs/reviewer-agents/planning-reviewer-agent.md`
-   - Modeling → `docs/reviewer-agents/modeling-reviewer-agent.md`
-   - Reporting → `docs/reviewer-agents/reporting-reviewer-agent.md`
-   - Reviewing → `docs/reviewer-agents/reviewing-reviewer-agent.md`
-4. Supporting artifacts referenced in the request
+1. the request file (header and artifact list);
+2. the stage package and listed artifacts;
+3. the stage reviewer file:
+   - Planning → `planning-reviewer-agent.md`
+   - Modeling → `modeling-reviewer-agent.md`
+   - Reporting → `reporting-reviewer-agent.md`
+   - Reviewing → `reviewing-reviewer-agent.md`
+4. the decision log, to check that consequential choices in the package were
+   authorized;
+5. in **standard** mode, the framing file before critiquing; in **blind** mode,
+   only after writing the independent findings. A blind reviewer that opens the
+   framing early must say so at the top of the critique.
 
-The reviewer agent writes findings to:
-
-**File**: `artifacts/<run_id>/reviewer-critique.md`
-
-The file must contain:
+**File**: `<run_dir>/reviewer-critique-<stage>.md`
 
 ```markdown
 # Reviewer Critique
 
 - Stage: [Planning / Modeling / Reporting / Reviewing]
-- Reviewer agent: [Codex / Claude Code]
+- Reviewer agent: <agent name>
+- Assignment confirmed: [yes / mismatch: details]
 - Gate mode acknowledged: [real / synthetic / mixed]
+- Review mode: [standard / blind]
 - Date: <date>
 
 ## Findings
 
 | Finding ID | Severity | Concern | Evidence or reasoning | Route | Blocks gate? | Recommended action |
 |---|---|---|---|---|---|---|
-| RC-1 | blocker/major/minor/suggestion/accepted limitation | | | Planning/Modeling/Reporting/Reviewing/Terminate | yes/no | |
+| PR-1 | blocker / major / minor / suggestion / accepted limitation | | | Planning / Modeling / Reporting / Reviewing / Terminate / user decision | yes / no | |
+
+## Follow-Up Findings (blind mode only)
+
+Findings added after reading the researcher's framing. Same table format;
+continue the ID sequence.
+
+## Reconfiguration Signals
+
+Optional. Patterns that suggest the Decision-Rights Map no longer fits (see
+`docs/coordination.md#adaptive-reconfiguration`).
 
 ## Overall Assessment
 
-<one short paragraph: is the stage package ready for the user gate as-is,
-ready after minor fixes, or does it need substantial revision before the gate>
+<one short paragraph: ready for the gate as-is, ready after minor fixes, or
+needs substantial revision>
 ```
+
+### Finding IDs and table format
+
+All stages use the same seven-column table. Only the ID prefix changes:
+
+| Stage | Prefix |
+|---|---|
+| Planning | `PR-` |
+| Modeling | `MR-` |
+| Reporting | `RR-` |
+| Reviewing | `RVR-` |
+
+### Assignment mismatch
+
+If the request names a different reviewer than `workflow.config.json` and does not
+cite a user override, the reviewer still writes the critique but records the
+mismatch as the first finding (severity `major`, route `user decision`). The
+user decides whether the pass counts.
 
 ---
 
-## Step 3: Researcher Reads Findings and Responds
+## Step 3: Researcher Responds
 
-The researcher agent reads `artifacts/<run_id>/reviewer-critique.md` and adds a
-**Response to Reviewer** section to the stage package. Each finding must be
-classified as one of:
+The researcher adds a **Response to Reviewer** section to the stage package.
+Each finding gets one response:
 
-- **Accepted and fixed**: what was changed
-- **Accepted but deferred**: why and when it will be addressed
-- **Rejected**: reason for rejection
-- **Needs user decision**: escalated to the user at the gate
+- **Accepted and fixed**: what changed
+- **Accepted but deferred**: why, and the revisit trigger
+- **Rejected with reason**: why the finding is wrong or out of scope
+- **Needs user decision**: escalated directly
 
-After triaging all findings, the researcher agent presents the stage gate to the
-user with: what was completed, what the reviewer found, how each finding was
-triaged, what decision is needed, what will happen if approved, and what
-alternative routes exist.
+**Escalation rule.** A `blocker` or `major` finding that is deferred or rejected
+is escalated to the user. The researcher adds it to the decision log's Open
+Escalations table and quotes the reviewer's original wording at the gate. Only
+the user can uphold the researcher's response.
+
+The researcher then presents the gate using the substantive gate presentation
+in [../coordination.md](../coordination.md#substantive-gate-presentation).
 
 ---
 
 ## Skipped Reviewer Pass
 
-If the reviewer agent is unavailable or the reviewer pass is skipped for any
-stage, the researcher agent must record in the stage package:
+If the reviewer pass is skipped, the researcher records in the stage package and
+the decision log:
 
-- reason the pass was skipped
-- accepted risk
-- revisit trigger (when or under what condition the critique will be done)
+- why the pass was skipped and who decided
+- the accepted risk
+- the revisit trigger
 
-A skipped reviewer pass does not block the gate, but it must be labeled in the
-package and presented to the user at the gate decision.
+A skipped pass does not block the gate, but the gate presentation must say so.
 
 ---
 
 ## File Conventions
 
-- `<run_id>` is consistent across all files for the same run.
-  Use a descriptive slug such as `smoke-test-2026-06-28` or `water-env-plan-v1`.
-- Do not delete review-request or reviewer-critique files after a stage completes.
-  Keep them under `artifacts/<run_id>/` for traceability.
+- Keep review requests and critiques after the stage completes.
 - For revision passes, append `-r2`, `-r3`, etc.:
-  `artifacts/<run_id>/reviewer-critique-r2.md`
-- Reviewer-critique files are reviewer input to the researcher agent's
-  response-to-reviewer section. They are not stage packages and do not replace
-  user gate decisions.
+  `<run_dir>/review-request-<stage>-r2.md`, `<run_dir>/reviewer-critique-<stage>-r2.md`.
+- Reviewer process logs (for example headless stdout) go in `<run_dir>/agent/`,
+  not next to the critique.
+- Informal early-look reviews use `<run_dir>/early-look-<n>.md` and are recorded
+  in the decision log as `informal review`; they do not replace the formal pass.
+- Critiques are input to the researcher's response. They are not stage packages
+  and never count as gate approval.

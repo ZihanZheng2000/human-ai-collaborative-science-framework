@@ -7,7 +7,9 @@ This repository is a workflow kit for AI-assisted academic research. It is not a
 Every new session should start with a short Pre-Planning Session Setup before
 Planning begins.
 
-1. Confirm the role configuration from `WORKFLOW-CONFIG.md`.
+1. Confirm the role assignment from `roles` in `workflow.config.json`.
+   With the orchestrator (`python -m orchestrator init ...`, see
+   `docs/orchestration.md`) steps 1-4 happen at `init`.
 2. Ask the user to choose a workflow mode:
 
 | Mode | Meaning |
@@ -21,6 +23,10 @@ Planning begins.
 |---|---|
 | Use reviewer | Run review-request -> reviewer-critique -> researcher response before each user gate. |
 | Skip reviewer | Record skipped-review reason, accepted risk, and revisit trigger before the user gate. |
+
+4. For a real project, create `research/<research-name>/` with `README.md`
+   (status block), `decision-log.md`, and `run-notes.md`, and record these
+   setup choices as `D-1`.
 
 For real research, recommend **Step-by-step discussion** and **Use reviewer**.
 For smoke tests, recommend **Auto-until-needed** with synthetic gates.
@@ -58,9 +64,15 @@ the workflow step is.
 
 Use this to test the framework on a small public-data task.
 
+With the orchestrator (recommended): `python -m orchestrator init <folder> --topic "<small test question>"`,
+choose synthetic gates at setup, then `python -m orchestrator run <folder>`. The
+full stage packages, decision log, and run notes are produced as in a real run.
+
+In a manual session:
+
 1. Start from `templates/smoke-test-package.md`.
 2. Select a small question and public dataset.
-3. Use synthetic gates and label them as synthetic.
+3. Use synthetic gates and label them as synthetic. Record decisions in the smoke-test package's Decision Notes table.
 4. Download or read real usable data.
 5. Run a minimal executable analysis.
 6. Generate at least one table and one figure.
@@ -80,6 +92,10 @@ For any mode:
   before the full Planning Package is gate-ready, unless the user explicitly
   accepts a skip/defer rationale and revisit trigger.
 - Each stage gate should happen after reviewer-agent critique and researcher-agent response, or after an explicit skipped-review rationale is recorded.
+- Consequential in-stage choices are Tier 1 decision checkpoints: the researcher proposes, the user decides, and the decision goes in the decision log (`docs/decision-rights.md`).
+- Reviewer blockers and majors that the researcher defers or rejects are escalated to the user.
+- Gates are presented substantively: evidence paths, open objections in the reviewer's wording, alternatives, and consequences (`docs/coordination.md`).
+- Each substantial run records workflow evaluation measures in `run-notes.md` (`docs/workflow-evaluation.md`).
 - Data count only when usable under the acquisition success rule.
 - Raw data host, official source, documentation source, version/access date, and license/access status should be recorded.
 - Environment failures should trigger an environment repair decision.
@@ -92,7 +108,7 @@ For any mode:
 
 Run a smoke test with a small public CSV dataset and organize it according to `docs/example-organization.md`.
 
-## Suggested Prompt for a New Codex Session
+## Suggested Prompt for a New Researcher Session
 
 ```text
 Please run a complete smoke test of this repository's workflow.
@@ -104,7 +120,7 @@ condition as you go. Run Planning -> Modeling -> Reporting -> Reviewing.
 Download or read real usable data locally.
 Generate a script, cleaned data, at least one table, and at least one figure.
 If the environment fails, record an Environment Repair Decision and continue.
-During Modeling, create a concrete Modeling Goal and usually begin with a small exploratory demo phase before scale-up. Do not stop after the first successful script, table, or figure; continue until the Model Package is ready for the Modeling Gate, or until a route decision is required.
+During Modeling, create a concrete Modeling Goal and usually begin with a small exploratory demo phase before scale-up. Do not stop after the first successful script, table, or figure; continue until the Modeling Package is ready for the Modeling Gate, or until a route decision is required.
 Use synthetic gates and label them as synthetic.
 Write the final summary in Chinese.
 ```

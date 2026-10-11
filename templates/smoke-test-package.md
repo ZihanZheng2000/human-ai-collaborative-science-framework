@@ -14,6 +14,7 @@ Use this compact package when the goal is to test the workflow itself rather tha
 - gate mode: real user gate / synthetic gate / mixed
 - intended claim level: internal smoke test / demo / preliminary
 - modeling mode: demo-first / full-scale / addendum
+- decisions: record Tier 1 and Tier 2 decisions in the Decision Notes table below (a separate decision log is optional for smoke tests)
 
 ## Purpose and Scope
 
@@ -70,6 +71,12 @@ Use this compact package when the goal is to test the workflow itself rather tha
 | Problem | Options considered | Decision | Outcome |
 |---|---|---|---|
 |  | install dependency / simplify implementation / use container / change environment / backtrack |  |  |
+
+## Decision Notes
+
+| ID | Stage | Decision | Proposed by | Authorized by | Approval quality |
+|---|---|---|---|---|---|
+| D-1 |  |  |  | synthetic / user | synthetic / substantive / nominal |
 
 ## Reporting Summary
 

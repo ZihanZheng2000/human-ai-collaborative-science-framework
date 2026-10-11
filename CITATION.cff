@@ -1,16 +1,23 @@
 cff-version: 1.2.0
-title: "A Human-Gated, Skill-Guided Framework for AI-Native Academic Research"
-message: "If you use this framework, please cite the repository and accompanying paper draft."
+title: "Human–AI Collaborative Science Framework"
+message: "If you use this framework, please cite the repository and the accompanying paper."
 type: software
 authors:
-  - name: "AI-Native Academic Research Framework contributors"
-abstract: "A human-gated, skill-guided research framework for evidence-grounded academic research by domain researchers."
-version: "0.1.0-dev"
-date-released: "2026-06-05"
+  - family-names: "Zheng"
+    given-names: "Zihan"
+abstract: "A workflow framework for human–AI collaborative research: four stages (Planning, Modeling, Reporting, Reviewing) with explicit decision rights, a shared research state, reviewer escalation, human gates, workflow evaluation, and an orchestrator that works with any agent (CLI agents, model APIs, or people)."
+version: "0.2.0-dev"
 license: "MIT"
+repository-code: "https://github.com/ZihanZheng2000/human-ai-collaborative-science-framework"
 preferred-citation:
   type: article
-  title: "A Human-Gated, Skill-Guided Framework for AI-Native Academic Research"
+  title: "Designing Human–AI Collaborative Science: Organization, Coordination, and Evaluation"
   authors:
-    - name: "AI-Native Academic Research Framework contributors"
+    - family-names: "Zheng"
+      given-names: "Zihan"
+    - family-names: "Pan"
+      given-names: "Linyue"
+    - family-names: "Lan"
+      given-names: "Xin"
   year: 2026
+  status: preprint

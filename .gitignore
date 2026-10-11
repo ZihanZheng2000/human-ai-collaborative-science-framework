@@ -22,12 +22,9 @@ Thumbs.db
 .vscode/
 .idea/
 
-# Paper draft — not public yet
-docs/paper.md
-
 # Local research notes and runs
-notes/
-research/
+/notes/
+/research/
 
 # Generated archives
 *.zip

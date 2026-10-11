@@ -1,0 +1,17 @@
+$ claude ... (prompt in 004-planning-researcher-work.prompt.md)
+returncode: 0
+
+--- stdout ---
+The package isn't ready for review yet, so I haven't written the review request or framing files. In step-by-step mode the data source, exclusions and metrics each need their own Tier 1 checkpoint. D-2 settled only the research question and claim level.
+
+- **Done:** I recorded the D-2 approval in the package's route table, and the README now states the research question.
+- **Checkpoint written:** `inbox/pending/CP-planning-2.md` covers the data source and acquisition success rule. It proposes the `palmerpenguins` CSV (CC0, per the package description) as the data source, pinned by access date and SHA-256 hash at download.
+- **Success rule:** The proposed rule has four parts: HTTP 200 with a parseable CSV, the exact 8-column header, 344 rows, and exactly the three species.
+- **Pin limitation:** I couldn't resolve a commit SHA because GitHub API access isn't enabled in this session. A later change on `main` would show up as a hash mismatch but wouldn't be prevented.
+- **Not touched:** I haven't downloaded the data or viewed any values. I didn't write any decision-log rows.
+- **README:** The status block now points to CP-planning-2 as the decision needed.
+
+Next, after CP-planning-2 is answered, I'll write the checkpoints for missing sex/mass rows (CP-planning-3) and metrics (CP-planning-4). Then I'll fill in the remaining package sections and write the review request.
+
+--- stderr ---
+

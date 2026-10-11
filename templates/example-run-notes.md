@@ -1,6 +1,8 @@
 # Example Run Notes
 
-Use this file as `examples/<run-name>/run-notes.md` for lessons learned during one workflow run. Run notes are provisional, but they should stay attached to the example that produced them.
+Use this file as `research/<research-name>/run-notes.md` (real projects) or `examples/<run-name>/run-notes.md` (examples and smoke tests) for lessons learned during one workflow run. Run notes are provisional, but they should stay attached to the project that produced them.
+
+The Workflow Evaluation section applies `docs/workflow-evaluation.md`. Fill it at the Reviewing Gate, or when the run stops, using the decision log and stage packages.
 
 ## Run Identity
 
@@ -10,6 +12,62 @@ Use this file as `examples/<run-name>/run-notes.md` for lessons learned during o
 - Gate mode: real user gates / synthetic gates / mixed
 - Topic or task:
 - Stage coverage: Plan / Model / Reporting / Review
+
+## Workflow Configuration
+
+- workflow mode: auto-until-needed / step-by-step discussion (changes: D-<n>)
+- reviewer strategy: use reviewer / skip reviewer (changes: D-<n>)
+- review modes used: standard / blind
+- researcher agent / reviewer agent:
+- domain expert involved: none / who, for which decision classes
+- reconfigurations during the run: none / D-<n>: what changed and why
+
+## Workflow Evaluation
+
+### Scientific outcome
+
+| Measure | Value | Notes |
+|---|---|---|
+| substantive claims: supported / limited / unsupported / removed |  |  |
+| reproducibility rerun | pass / fail / not run |  |
+| validation type(s) used | known outcome / seeded error / reproducibility / expert adjudication / delayed / none |  |
+
+### Collaboration process
+
+| Measure | Value | Notes |
+|---|---|---|
+| reviewer findings total (by severity) |  |  |
+| trajectory-changing reviewer findings (changed the route or a Tier 1 decision) |  | list IDs |
+| trajectory-changing user corrections |  | list decision IDs |
+| problems caught at their own stage vs found later |  |  |
+| duplicated or lost work |  |  |
+
+### Reliability and accountability
+
+| Measure | Value | Notes |
+|---|---|---|
+| Tier 1 / Tier 2 decisions logged |  |  |
+| decisions with proposer, evidence, objections, and authorizer all recorded |  | share |
+| approvals: substantive / nominal / synthetic |  |  |
+| escalations raised / upheld / overturned |  |  |
+| decisions reopened or superseded |  |  |
+| reviewer-triage closure rate |  | closed findings / total |
+
+### Human effort
+
+| Measure | Value | Notes |
+|---|---|---|
+| checkpoints and gates presented |  |  |
+| user domain corrections (hidden repair) |  |  |
+| re-runs or rewrites requested by the user |  |  |
+| approximate user time at gates |  |  |
+| where user effort went | mostly judgment / mostly routine verification / mixed |  |
+
+### Reading the numbers
+
+- Many checkpoints with few trajectory changes: tiers may be set too low.
+- Repeated domain corrections in one area: consider reconfiguration.
+- Many nominal approvals: gate presentation is not giving the user enough to judge.
 
 ## Useful Observations
 

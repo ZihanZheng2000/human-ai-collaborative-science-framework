@@ -1,0 +1,25 @@
+{
+  "raw_sha256": "b1548ededea6f9b7eecac370753de8d8da6e0afafe1041f749a11db78c2e33c4",
+  "acquisition_checks": {
+    "unique_years": true,
+    "continuous": true,
+    "starts_1959": true,
+    "reaches_2020": true,
+    "no_missing": true,
+    "no_sentinels": true,
+    "range_300_450": true
+  },
+  "years_available": [
+    1959,
+    2025
+  ],
+  "decade_first_1960s": 0.864,
+  "decade_last_2010s": 2.401,
+  "ols_slope_ppm_per_yr2": 0.0284,
+  "hac_se_lag2": 0.00218,
+  "verdict": "increase",
+  "telescoping_identity_holds": true,
+  "cleaned_equals_raw_numerically": true,
+  "hand_check_1960s": 0.864,
+  "partial_2020s_mean": 2.6167
+}

@@ -1,10 +1,10 @@
-# Plan Stage Specification
+# Planning Stage Specification
 
 ## Purpose
 
-The Plan stage converts a vague or concrete user research intent into one approved research plan package. It is designed for non-CS researchers and should avoid writing a polished plan before the system has understood the user's purpose, checked prior work, extracted useful research patterns, and tested feasibility.
+The Planning stage converts a vague or concrete user research intent into one approved research plan package. It is designed for non-CS researchers and should avoid writing a polished plan before the system has understood the user's purpose, checked prior work, extracted useful research patterns, and tested feasibility.
 
-There is only one Plan stage. The stage may contain early discovery work, but that discovery is not a separate plan. It is the evidence-gathering and clarification required before the final **Approved Plan Package** is written.
+There is only one Planning stage. The stage may contain early discovery work, but that discovery is not a separate plan. It is the evidence-gathering and clarification required before the final **Approved Planning Package** is written.
 
 For framework validation, Plan may be run in **Smoke-Test Mode**. Smoke-Test Mode uses the same logic but deliberately selects a small, low-risk, low-cost project so the whole workflow can be exercised end to end. It should label gates as real user gates or synthetic gates, and it may use the compact `../templates/smoke-test-package.md` instead of the full Planning, Modeling, Reporting, and Reviewing packages.
 
@@ -30,7 +30,7 @@ critique is required before the Planning Gate.
 
 Prior work should not be treated only as background. When useful, it should be converted into research-skill cards or skill candidates: reusable patterns for data acquisition, measurement, modeling, validation, visualization, or manuscript framing.
 
-The Plan stage should also check whether mature external tools, packages, templates, databases, or existing skills already solve part of the intended workflow. The goal is to reuse reliable external capabilities where possible and create new skills only for workflow-control gaps or project-specific operations that are not already covered well.
+The Planning stage should also check whether mature external tools, packages, templates, databases, or existing skills already solve part of the intended workflow. The goal is to reuse reliable external capabilities where possible and create new skills only for workflow-control gaps or project-specific operations that are not already covered well.
 
 ## Researcher / Reviewer / Gate Flow
 
@@ -44,7 +44,7 @@ User Gate
 ```
 
 The planning researcher agent clarifies the research purpose, runs the selected
-prior-work, tool, feasibility, and venue checks, then drafts the Plan Package.
+prior-work, tool, feasibility, and venue checks, then drafts the Planning Package.
 
 The planning reviewer agent is a separate agent from the planning researcher
 agent when available and approved by the user. Use
@@ -52,7 +52,7 @@ agent when available and approved by the user. Use
 critiques only by default. It should not modify files unless the user explicitly
 authorizes that agent to edit. Its job is to identify planning risks,
 unsupported novelty or gap claims, feasibility weaknesses, source-strategy
-problems, venue/output mismatches, and missing Model-stage acceptance criteria.
+problems, venue/output mismatches, and missing Modeling-stage acceptance criteria.
 
 After reviewer feedback, the researcher agent must triage the findings before
 the user gate:
@@ -62,9 +62,13 @@ the user gate:
 - rejected with reason
 - needs user decision
 
+Blocker and major findings that the researcher defers or rejects are escalated
+to the user; only the user can uphold that response (see
+`decision-rights.md#reviewer-rights`).
+
 Only after the researcher agent has recorded this response should the Planning
 Gate be shown to the user. If no separate reviewer agent is available or the
-user declines it, the Plan Package must say that the Planning Review was
+user declines it, the Planning Package must say that the Planning Review was
 skipped and why.
 
 ## Internal Flow
@@ -84,7 +88,8 @@ and reviewer strategy.
 6. Generate candidate research plans, if more than one route remains
 7. Run feasibility and cost checks on the plausible routes
 8. Calibrate target venue, audience, or output format using official requirements and exemplar articles
-9. Select or confirm the research route, research question, and claim level
+9. Select or confirm the research route, research question, and claim level,
+   and draft the project's Decision-Rights Map
 10. Scan for mature external tools, packages, templates, and existing skills for the selected route
 11. Distill useful selected prior work into research-skill cards or skill candidates
 12. Write the Planning Researcher draft package
@@ -93,7 +98,7 @@ and reviewer strategy.
 15. Human gate
 16. Output one approved plan package
 
-The final output should be one **Approved Plan Package**. It combines user need, literature basis, selected skill cards, research opportunity, venue/output calibration, research question, data plan, method blueprint, risks, feasibility notes, and Model-stage acceptance criteria. The goal is compact traceability: enough information to support human review and downstream modeling, but not so many artifacts that the workflow becomes hard to use.
+The final output should be one **Approved Planning Package**. It combines user need, literature basis, selected skill cards, research opportunity, venue/output calibration, research question, data plan, method blueprint, risks, feasibility notes, and Modeling-stage acceptance criteria. The goal is compact traceability: enough information to support human review and downstream modeling, but not so many artifacts that the workflow becomes hard to use.
 
 ## Stepwise Planning Mode
 
@@ -125,6 +130,10 @@ In stepwise mode, the researcher agent should:
    Planning package.
 5. Ask the user for a concrete next decision when a unit would shape the
    research route.
+6. Treat each accepted unit that shapes the research as a Tier 1 decision
+   checkpoint: append it to `decision-log.md` with the proposal, evidence,
+   alternatives, open objections, and the user's decision (see
+   `decision-rights.md`).
 
 Only after the user has discussed or accepted the major Planning units should
 the researcher consolidate them into a complete Planning package for reviewer
@@ -137,16 +146,11 @@ package.
 
 ## Planning Project Folder Setup
 
-At the start of a real research project, create a dedicated folder under
-`research/<research-name>/` using `../docs/research-organization.md`. The active
-Planning package should be `research/<research-name>/packages/planning-package.md`.
-Long Planning notes should go in `research/<research-name>/notes/`, while
-review requests and reviewer critiques should go in
-`research/<research-name>/artifacts/<run_id>/`.
-
-If a project began in the legacy root-level `packages/` or `artifacts/`
-folders, migrate it into `research/<research-name>/` before sending it for
-reviewer critique unless the user asks to keep the legacy layout.
+Each real research project has its own project folder (layout:
+`research-organization.md`; the orchestrator creates it, and in manual runs
+the default is `research/<research-name>/`). The active Planning package is
+`packages/planning-package.md`, long Planning notes go in `notes/`, and review
+requests and critiques go in `artifacts/<run_id>/`.
 
 ## 0. Domain Onboarding
 
@@ -183,7 +187,7 @@ If the user says no or does not respond, proceed to step 1 without waiting.
 ### Procedure
 
 1. Identify the user-supplied material folder or file list.
-   Convention: place materials in `artifacts/<run_id>/domain-materials/`.
+   Convention: `artifacts/input/domain-materials/` inside the project folder.
 2. Read each file. For each, note:
    - material type (paper, report, data documentation, policy doc, field notes, other)
    - domain covered
@@ -407,9 +411,9 @@ The check should include:
 - figure/table feasibility
 - feasibility of external tools or skills selected for the workflow
 
-For data-collection projects, the Plan stage should distinguish candidate sources from usable acquired data. A planned corpus, dataset, or validation set should specify what counts as acquisition success.
+For data-collection projects, the Planning stage should distinguish candidate sources from usable acquired data. A planned corpus, dataset, or validation set should specify what counts as acquisition success.
 
-When the raw data host differs from the official data source or documentation source, the Plan Package should record that mismatch explicitly. Documentation for a newer or different version should not silently stand in for the exact data used.
+When the raw data host differs from the official data source or documentation source, the Planning Package should record that mismatch explicitly. Documentation for a newer or different version should not silently stand in for the exact data used.
 
 ## 8. Calibrate Target Venue, Audience, or Output Format
 
@@ -425,11 +429,11 @@ The system should ask for:
 
 If the user has no target venue, the system should recommend 2-3 plausible venue or output routes and explain tradeoffs. A journal route may require stronger literature coverage, robustness, formatting, and novelty. A preprint or short empirical note may allow a more transparent workflow demonstration with narrower claims. A policy note may prioritize readable figures, practical interpretation, and concise methods.
 
-Venue calibration should be provisional. The Plan Package should record whether the target is confirmed by the user, system-recommended and accepted, provisional or undecided, or deferred to Reporting.
+Venue calibration should be provisional. The Planning Package should record whether the target is confirmed by the user, system-recommended and accepted, provisional or undecided, or deferred to Reporting.
 
 If a specific journal or conference is selected, the system should retrieve official author instructions during Plan when venue requirements may affect data, methods, validation, article type, or feasibility. If only formatting details remain, they may be deferred to Reporting.
 
-Plan-stage venue calibration has two parts:
+Planning-stage venue calibration has two parts:
 
 ### Official Venue Requirements
 
@@ -448,7 +452,7 @@ Official author instructions should be used for hard constraints:
 
 ### Venue Exemplar Scan
 
-Official instructions rarely reveal the actual writing and evidence conventions of a venue. When the intended output is a journal article, conference paper, thesis chapter, or similar formal manuscript, the Plan stage should inspect 2-5 recent structurally similar articles from the target venue or candidate venues.
+Official instructions rarely reveal the actual writing and evidence conventions of a venue. When the intended output is a journal article, conference paper, thesis chapter, or similar formal manuscript, the Planning stage should inspect 2-5 recent structurally similar articles from the target venue or candidate venues.
 
 The exemplar scan should extract:
 
@@ -464,7 +468,7 @@ The exemplar scan should extract:
 - data/code availability statement style
 - disclosure, ethics, funding, and supplementary material patterns
 
-The exemplar scan should affect the plan. If exemplar articles suggest that the venue expects stronger validation, larger data scale, more robust baselines, more literature grounding, or a different article type, the Plan Package should record that requirement before Model begins. If the current project cannot meet those expectations, the Plan stage should recommend a different venue, a narrower claim level, or a demo/preprint route.
+The exemplar scan should affect the plan. If exemplar articles suggest that the venue expects stronger validation, larger data scale, more robust baselines, more literature grounding, or a different article type, the Planning Package should record that requirement before Model begins. If the current project cannot meet those expectations, the Planning stage should recommend a different venue, a narrower claim level, or a demo/preprint route.
 
 ## 9. Select or Confirm the Research Route
 
@@ -485,6 +489,25 @@ The selected route should lock:
 
 If the route remains uncertain, stop and ask the user to choose among the
 candidate routes rather than drafting a full package around an unapproved route.
+
+### Draft the Decision-Rights Map
+
+Once the route is selected, copy the default map from `decision-rights.md` into
+the Planning Package and adjust it to the project:
+
+- mark decision classes where the researcher or the user lacks the needed
+  domain judgment, and say who supplies it (user materials, a named domain
+  expert, or a deferred check);
+- raise the tier of any decision with irreversible cost, safety, privacy, or
+  public-release consequences;
+- state reviewer rights (default: advisory + escalation) and which stages use
+  blind review;
+- list which analysis choices must be locked at a Tier 1 checkpoint before
+  results are visible (labels, exclusions, metrics, model search space,
+  validation split).
+
+The map is itself a Tier 1 decision and is confirmed by the user before the
+Planning package goes to the reviewer.
 
 ## 10. Scan for Mature External Tools, Packages, Templates, and Existing Skills
 
@@ -512,7 +535,7 @@ For each candidate, record:
 - licensing, cost, API, data, privacy, or runtime constraints
 - whether it should be reused directly, wrapped by a workflow-native skill, adapted, or rejected
 
-The Plan Package should distinguish:
+The Planning Package should distinguish:
 
 - external mature tools to reuse
 - workflow-native skills to invoke
@@ -562,7 +585,9 @@ The draft should include:
 - venue or output calibration
 - candidate routes, when relevant
 - selected research question and method blueprint
-- Model-stage acceptance rubric
+- Decision-Rights Map
+- decision-log references for each Tier 1 decision made during Planning
+- Modeling-stage acceptance rubric
 
 The package status should be `draft for Planning Review`, not `approved`.
 
@@ -582,7 +607,7 @@ Reviewer criteria:
 - Are mature external tools reused where appropriate?
 - Are proposed project-specific skills justified?
 - Does the venue or output route fit the evidence standard?
-- Are Model-stage acceptance criteria specific enough to prevent drift?
+- Are Modeling-stage acceptance criteria specific enough to prevent drift?
 - What would force backtracking before Modeling?
 
 Reviewer findings should include severity, evidence or reasoning, and a route:
@@ -602,6 +627,9 @@ For each finding, record:
 - response status: accepted and fixed / accepted but deferred / rejected with reason / needs user decision
 - change made or planned
 - whether the item blocks the Planning Gate
+
+Blocker or major findings that are deferred or rejected are escalated: add them
+to the decision log's Open Escalations and quote them at the gate.
 
 The researcher agent may fix local plan-package issues, clarify assumptions,
 soften claims, add fallback sources, tighten acceptance criteria, or mark
@@ -629,10 +657,13 @@ Gate questions:
 - Does the target venue, audience, or output format fit this plan?
 - Have Planning Reviewer findings been fixed, deferred, rejected with reason, or escalated for user decision?
 - Is any skipped external Planning Review acceptable for this project?
+- Do you uphold or overturn the researcher's response to each escalated finding?
+- Does the Decision-Rights Map give the right people authority over the
+  decisions that matter, including domain judgment the AI agents lack?
 - What must be changed before modeling starts?
 
-## 16. Approved Plan Package
+## 16. Approved Planning Package
 
-The Plan stage outputs one compact approved plan package. It should combine the important artifacts rather than scatter them across many files.
+The Planning stage outputs one compact approved plan package. It should combine the important artifacts rather than scatter them across many files.
 
 Use the template in `../templates/plan-package.md`.

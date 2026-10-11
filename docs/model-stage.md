@@ -1,8 +1,8 @@
-# Model Stage Specification
+# Modeling Stage Specification
 
 ## Purpose
 
-The Model stage converts the Approved Plan Package into executable research artifacts: data acquisition, analysis code, experiment logs, figures, tables, and a validated result summary. It is one of the most important stages because it determines whether downstream outputs are grounded in reproducible analysis rather than persuasive prose.
+The Modeling stage converts the Approved Planning Package into executable research artifacts: data acquisition, analysis code, experiment logs, figures, tables, and a validated result summary. It is one of the most important stages because it determines whether downstream outputs are grounded in reproducible analysis rather than persuasive prose.
 
 Model is not just "write code and run it." It is an execution-controlled research loop with explicit acquisition success rules, preflight checks, bounded repair, preliminary finding checks, evidence deepening, validation, and stopping rules.
 
@@ -14,7 +14,7 @@ Model is **execution-grounded, evidence-building, and stop-aware**.
 
 The system should generate and run code, but it should not optimize indefinitely or silently change the research question. It must know when to continue, when to repair, when to deepen the evidence, when to simplify, when to ask the user, and when to backtrack to Plan.
 
-Model may use external packages, APIs, datasets, compute tools, or experiment frameworks selected in the Plan Package. These tools are execution aids, not substitutes for the modeling contract. Their inputs, versions, outputs, limitations, and verification status must be recorded in the Model Package.
+Model may use external packages, APIs, datasets, compute tools, or experiment frameworks selected in the Planning Package. These tools are execution aids, not substitutes for the modeling contract. Their inputs, versions, outputs, limitations, and verification status must be recorded in the Modeling Package.
 
 The key control rule is:
 
@@ -37,7 +37,7 @@ The demo should produce:
 - issues found and changes proposed before scale-up
 
 The demo is part of Modeling. It does not have a separate gate. When the demo
-finds issues, the researcher agent records them in the Model Package and either
+finds issues, the researcher agent records them in the Modeling Package and either
 continues within the approved contract, revises the Modeling approach, asks for
 a user decision, backtracks to Planning, or terminates. The user decision, when
 needed, is handled through the Modeling Gate or an ordinary user-decision point,
@@ -58,16 +58,16 @@ demo, backtrack to Planning, or terminate.
 
 ## Modeling Goal Control
 
-For agentic execution environments, the Model stage should begin with a concrete **Modeling Goal**. The goal is an execution-continuity device: it keeps the researcher agent working past the first runnable script, table, or figure. The gate remains the control device: it prevents the agent from moving into Reporting without approval.
+For agentic execution environments, the Modeling stage should begin with a concrete **Modeling Goal**. The goal is an execution-continuity device: it keeps the researcher agent working past the first runnable script, table, or figure. The gate remains the control device: it prevents the agent from moving into Reporting without approval.
 
 Use this distinction:
 
-- **Goal** keeps Model work moving until the Model Package is gate-ready or a route decision is required.
-- **Model Gate** decides whether the Model Package can move downstream to Reporting.
+- **Goal** keeps Model work moving until the Modeling Package is gate-ready or a route decision is required.
+- **Modeling Gate** decides whether the Modeling Package can move downstream to Reporting.
 
 A good Modeling Goal should state that the agent must continue until one of these conditions is met:
 
-1. the Model Package is complete and ready for the Model Gate;
+1. the Modeling Package is complete and ready for the Modeling Gate;
 2. the approved modeling contract is impossible under current data, tools, permissions, or runtime;
 3. a user/domain decision is required;
 4. the workflow must backtrack to Plan;
@@ -76,12 +76,12 @@ A good Modeling Goal should state that the agent must continue until one of thes
 Suggested goal text:
 
 ```text
-Complete the Model stage for the approved plan. If the workflow is new or uncertain, first run a small exploratory demo phase before scaling up. Do not stop after the first successful script, table, or figure. Continue until usable data acquisition, preflight checks, data-quality audit, executable analysis, output validation, Preliminary Finding Brief, correctness check, sufficiency check, Model Critic Pass, Next Analysis Queue decision, claim-readiness notes, and the Model Package are ready for the Model Gate, or until a user decision, Plan backtrack, or termination condition is required.
+Complete the Modeling stage for the approved plan. If the workflow is new or uncertain, first run a small exploratory demo phase before scaling up. Do not stop after the first successful script, table, or figure. Continue until usable data acquisition, preflight checks, data-quality audit, executable analysis, output validation, Preliminary Finding Brief, correctness check, sufficiency check, Model Critic Pass, Next Analysis Queue decision, claim-readiness notes, and the Modeling Package are ready for the Modeling Gate, or until a user decision, Plan backtrack, or termination condition is required.
 ```
 
 ## Internal Flow
 
-1. Ingest the Approved Plan Package
+1. Ingest the Approved Planning Package
 2. Lock the modeling contract
 3. Decide demo-first or full-scale execution mode
 4. Prepare data and environment
@@ -98,14 +98,14 @@ Complete the Model stage for the approved plan. If the workflow is new or uncert
 15. Repair environment, data, code, or evidence within bounded loops
 16. Prepare reporting-support artifacts and claim-readiness notes
 17. Run Modeling Reviewer critique and researcher-agent response when available and approved
-18. Stop, escalate, or pass through the Model Gate
-19. Output one Model Package
+18. Stop, escalate, or pass through the Modeling Gate
+19. Output one Modeling Package
 
-The final output should be one **Model Package**. It combines code location, data provenance, acquisition success counts, execution environment, run manifest, run log, validation checks, preliminary finding briefs, model state updates, critic notes, reviewer-agent critique when used, next-analysis queue, result tables, figure inventory, iteration history, evidence-deepening decisions, stopping decision, and handoff notes for Reporting.
+The final output should be one **Modeling Package**. It combines code location, data provenance, acquisition success counts, execution environment, run manifest, run log, validation checks, preliminary finding briefs, model state updates, critic notes, reviewer-agent critique when used, next-analysis queue, result tables, figure inventory, iteration history, evidence-deepening decisions, stopping decision, and handoff notes for Reporting.
 
-## 1. Ingest the Approved Plan Package
+## 1. Ingest the Approved Planning Package
 
-The Model stage starts from the approved Plan output. It should not freely reinterpret the research question.
+The Modeling stage starts from the approved Plan output. It should not freely reinterpret the research question.
 
 Required inputs:
 
@@ -115,9 +115,9 @@ Required inputs:
 - method blueprint
 - expected figures and tables
 - assumptions and risks
-- Model-stage acceptance rubric
+- Modeling-stage acceptance rubric
 
-If any required input is missing, the Model stage should request clarification or backtrack to Plan.
+If any required input is missing, the Modeling stage should request clarification or backtrack to Plan.
 
 ## 2. Lock the Modeling Contract
 
@@ -148,7 +148,7 @@ Before data acquisition, decide whether this Modeling run starts as:
 - **Full-scale**: appropriate when the method, source access, validation, and output structure are already stable.
 - **Addendum**: a bounded follow-up requested by Reporting or Reviewing.
 
-Record the mode in the Model Package. For demo-first runs, define the demo sample, success criteria, and scale-up decision criteria before executing.
+Record the mode in the Modeling Package. For demo-first runs, define the demo sample, success criteria, and scale-up decision criteria before executing.
 
 ## 4. Prepare Data and Environment
 
@@ -168,7 +168,7 @@ Minimum requirements:
 
 The default expectation is **one isolated environment per experiment or project**. The system should not silently install packages into a shared global interpreter. For Python projects, a local project environment such as `.venv` is usually sufficient; for heavier or cross-language studies, Conda, Docker, or another managed runtime may be more appropriate. The environment choice should match the accepted claim level and expected reproducibility burden.
 
-The system should prefer the simplest reproducible environment that can run the approved method. For a tiny smoke test, standard-library code or a script plus `requirements.txt` may be enough. For a formal manuscript, benchmark, or analysis with nontrivial dependencies, the Model stage should record enough environment detail for a later rerun.
+The system should prefer the simplest reproducible environment that can run the approved method. For a tiny smoke test, standard-library code or a script plus `requirements.txt` may be enough. For a formal manuscript, benchmark, or analysis with nontrivial dependencies, the Modeling stage should record enough environment detail for a later rerun.
 
 Recommended environment setup flow:
 
@@ -187,13 +187,13 @@ If the first executable run fails because of missing packages, incompatible vers
 
 For substantial runs, create or update:
 
-- `artifacts/<run_id>/run_manifest.json`
-- `artifacts/<run_id>/run_log.md`
-- `artifacts/<run_id>/run_summary.md`
+- `<run_dir>/run_manifest.json`
+- `<run_dir>/run_log.md`
+- `<run_dir>/run_summary.md`
 
-The run manifest should record run id, date, scope, mode, approved package inputs, data/source targets, scripts or tools used, output locations, validation status, and gate status. The run log should record chronological actions, decisions, failures, repairs, and user approvals. The run summary should explain what this run proved in human-readable form.
+The run manifest should record run id, date, scope, mode, approved package inputs, data/source targets, scripts or tools used, output locations, validation status, and gate status. The run log should record chronological actions, Tier 0 decisions, failures, and repairs; Tier 1 and Tier 2 decisions and user approvals go in the project `decision-log.md`. The run summary should explain what this run proved in human-readable form.
 
-Before acquisition, Model should confirm the source identity fields from the Plan Package:
+Before acquisition, Model should confirm the source identity fields from the Planning Package:
 
 - exact raw data host or query endpoint
 - official data source or owner
@@ -206,9 +206,9 @@ If these differ, Model should preserve the distinction. A documentation page for
 
 ## 6. Acquire Data Under Explicit Success Rules
 
-Data acquisition should be success-driven. The Model stage should not count a candidate source, metadata record, URL, search result, or inaccessible file as usable data.
+Data acquisition should be success-driven. The Modeling stage should not count a candidate source, metadata record, URL, search result, or inaccessible file as usable data.
 
-A data item counts only when it satisfies the acquisition success rule in the Approved Plan Package. For example:
+A data item counts only when it satisfies the acquisition success rule in the Approved Planning Package. For example:
 
 - a table counts only when it has been downloaded or queried and required variables can be read;
 - a document counts only when the full text, required section, or required metadata can be extracted;
@@ -356,13 +356,13 @@ Correctness must be checked before sufficiency. If the result may be wrong, the 
 
 ## 13. Run an Auto-Research-Inspired Control Pass
 
-The Model stage may borrow control mechanisms from auto-research systems, but it remains contract-bounded and human-gated. It should not autonomously change topics, chase significance, substitute methods, or escalate claims without approval.
+The Modeling stage may borrow control mechanisms from auto-research systems, but it remains contract-bounded and human-gated. It should not autonomously change topics, chase significance, substitute methods, or escalate claims without approval.
 
 After each Preliminary Finding Brief, the system should update three control artifacts.
 
 ### Model State Tracker
 
-The state tracker records where the Model stage is and what the next valid action is.
+The state tracker records where the Modeling stage is and what the next valid action is.
 
 Suggested states:
 
@@ -434,7 +434,7 @@ Failures, weak results, and thin evidence should be classified before the system
 
 ## 15. Repair, Cleaning, Optimization, Environment Repair, and Evidence-Deepening Loops
 
-The Model stage may iterate, but each loop must have a reason and a budget. Repair, cleaning, optimization, and evidence deepening are different actions and should not be collapsed into one generic "try again" loop.
+The Modeling stage may iterate, but each loop must have a reason and a budget. Repair, cleaning, optimization, and evidence deepening are different actions and should not be collapsed into one generic "try again" loop.
 
 ### Repair Loop
 
@@ -558,12 +558,12 @@ Stop when:
 
 ## 16. Prepare Reporting-Support Artifacts and Claim-Readiness Notes
 
-The Model stage should not write the final report, review, manuscript, slide deck, web page, or software package, but it should prepare the evidence needed for downstream Reporting. Many weak AI-generated outputs become short reports because the next stage receives only tables and figures, not enough interpretation scaffolding.
+The Modeling stage should not write the final report, review, manuscript, slide deck, web page, or software package, but it should prepare the evidence needed for downstream Reporting. Many weak AI-generated outputs become short reports because the next stage receives only tables and figures, not enough interpretation scaffolding.
 
 After the primary analysis is validated, the system should produce reporting-support artifacts:
 
 - main empirical findings, including null or weak results
-- result surprises or contradictions relative to the Plan-stage literature
+- result surprises or contradictions relative to the Planning-stage literature
 - robustness checks completed and not completed
 - data-quality issues that affect interpretation
 - assumptions that held, failed, or remain uncertain
@@ -586,11 +586,29 @@ If a downstream stage needs additional empirical support, it should create a **M
 - whether the request stays within the approved modeling contract
 - whether user approval is required
 
-The Model stage then performs a bounded addendum run, validates the new artifact, updates the Model Package, and returns to the requesting stage. Conceptual diagrams, workflow figures, and non-empirical explanatory visuals may be created in Reporting, but empirical figures must be produced or validated by Model.
+The Modeling stage then performs a bounded addendum run, validates the new artifact, updates the Modeling Package, and returns to the requesting stage. Conceptual diagrams, workflow figures, and non-empirical explanatory visuals may be created in Reporting, but empirical figures must be produced or validated by Model.
+
+## Decision Checkpoints During Modeling
+
+These Modeling decisions are Tier 1 checkpoints (see `decision-rights.md`) and
+go in `decision-log.md`:
+
+- the locked modeling contract, including labels, exclusion rules, evaluation
+  metrics, model search space, and validation split — locked **before** the
+  results they affect are visible;
+- acceptance of acquired data and any exclusions;
+- any change to a locked choice after results were seen (the entry must say
+  results were visible);
+- interpretation of results that makes causal, domain, or operational claims;
+- scale-up from exploratory demo to full study.
+
+Repairs, retries, cleaning within the locked rules, and code structure are
+Tier 0: the researcher decides and records them in the run log. If a Tier 0
+repair would change a Tier 1 choice, stop and raise a checkpoint.
 
 ## 17. Modeling Reviewer Pass
 
-Before the Model Gate, a reviewer agent should critique the Model Package when
+Before the Modeling Gate, a reviewer agent should critique the Modeling Package when
 a separate reviewer agent is available and approved. Use
 `reviewer-agents/modeling-reviewer-agent.md`.
 
@@ -604,13 +622,14 @@ The reviewer should inspect:
 - whether weak, null, or failed results are preserved honestly
 - whether Reporting can use the outputs without reconstructing scattered context
 
-The researcher agent must respond to reviewer findings before the Model Gate.
+The researcher agent must respond to reviewer findings before the Modeling Gate.
 Findings should be accepted and fixed, accepted but deferred, rejected with
-reason, or escalated for user decision.
+reason, or escalated for user decision. Deferred or rejected blocker and major
+findings are escalated to the user automatically.
 
 ## 18. Stopping Rules
 
-The Model stage should stop under any of these conditions:
+The Modeling stage should stop under any of these conditions:
 
 - **Pass**: required outputs satisfy the modeling contract.
 - **Pass with limitations**: outputs are valid and sufficient for a limited claim, but limitations must be carried into Reporting.
@@ -620,11 +639,11 @@ The Model stage should stop under any of these conditions:
 - **Backtrack to Plan**: data, method, or assumptions no longer support the approved plan.
 - **Terminate**: the task is infeasible under available data, time, or ethical constraints.
 
-Stopping is not failure. In an AI-native research workflow, stopping is part of scientific control. However, the system should not stop merely because it produced one table, one figure, or one executable result. It should stop when the result is correct and sufficient for the accepted claim level, or when further progress requires user judgment, new data, or a backtrack.
+Stopping is not failure. In a human–AI research workflow, stopping is part of scientific control. However, the system should not stop merely because it produced one table, one figure, or one executable result. It should stop when the result is correct and sufficient for the accepted claim level, or when further progress requires user judgment, new data, or a backtrack.
 
-## 19. Model Gate
+## 19. Modeling Gate
 
-After execution and validation, the workflow must pause for a Model Gate. The user should approve, edit, reject, request another bounded iteration, or backtrack the Model Package. The system should not automatically pass results into Reporting just because code ran successfully.
+After execution and validation, the workflow must pause for a Modeling Gate. The user should approve, edit, reject, request another bounded iteration, or backtrack the Modeling Package. The system should not automatically pass results into Reporting just because code ran successfully.
 
 Gate questions:
 
@@ -641,6 +660,8 @@ Gate questions:
 - Are assumptions and limitations explicit?
 - Is there enough reporting-support evidence for Reporting to package the results transparently?
 - Did the system stay within the approved plan?
+- Were locked analysis choices kept, or were changes after seeing results logged?
+- Do you uphold or overturn the researcher's response to each escalated finding?
 - Should Reporting begin, should Model iterate, or should Plan be revised?
 
 Possible decisions:
@@ -654,8 +675,8 @@ Possible decisions:
 - backtrack to Plan
 - terminate
 
-## 20. Model Package
+## 20. Modeling Package
 
-The Model stage outputs one compact Model Package.
+The Modeling stage outputs one compact Modeling Package.
 
 Use the template in `../templates/model-package.md`.

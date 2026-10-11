@@ -1,64 +1,26 @@
-# GitHub Publishing Guide
+# Repository Name and Publishing
 
-Recommended repository name:
+Repository name: `human-ai-collaborative-science-framework`
+Display title: `Human–AI Collaborative Science Framework`
 
-`human-gated-ai-research-framework`
-
-Recommended display title:
-
-`A Human-Gated, Skill-Guided Framework for AI-Native Academic Research`
-
-## Before Creating the Repository
-
-1. Review `docs/release-checklist.md`.
-2. Make sure `.env` is not committed.
-3. Decide whether generated example data and figures should be included.
-4. Replace contributor names and citation metadata if desired.
-5. Review `docs/paper.md` for citation correctness.
+The repository was renamed from its earlier name to match the companion paper
+*Designing Human–AI Collaborative Science: Organization, Coordination, and
+Evaluation*. To apply the rename on GitHub: Settings → General → Repository
+name. GitHub redirects the old URL; update local clones with
+`git remote set-url origin <new-url>`.
 
 ## Suggested Repository Description
 
-Human-gated, skill-guided framework for evidence-grounded academic research by domain researchers.
+Human–AI collaborative research workflow: four gated stages, explicit decision
+rights, reviewer escalation, and an orchestrator that works with any agent
+(CLI, API, or human).
 
 ## Suggested Topics
 
-- ai-research
-- academic-research
-- research-workflow
-- human-in-the-loop
-- reproducible-research
-- research-reporting
-- research-agents
-- llm-workflow
+ai-research, academic-research, research-workflow, human-in-the-loop,
+reproducible-research, research-agents, llm-workflow, human-ai-collaboration
 
-## First Commit Checklist
+## Before a Release
 
-From the repository folder:
-
-```powershell
-git init
-git add README.md LICENSE CONTRIBUTING.md CHANGELOG.md CITATION.cff .gitignore .env.example docs templates skills examples
-git status
-git commit -m "Prepare AI-Native Academic Research Framework v0.1"
-```
-
-Then create a GitHub repository named `human-gated-ai-research-framework` and follow GitHub's instructions to add the remote and push.
-
-After the repository URL exists, update:
-
-- `CITATION.cff`
-- `docs/paper.md`
-- `docs/release-checklist.md`
-
-## Suggested v0.1 Release Notes
-
-Initial development release of AI-Native Academic Research Framework, including:
-
-- four-stage Planning -> Modeling -> Reporting / Output Packaging -> Reviewing framework
-- demo-before-scale-up control and run-log conventions
-- human gate and synthetic gate semantics
-- package templates
-- workflow-native skills
-- smoke-test mode
-- lightweight examples folder and example organization rules
-- accompanying paper draft
+Work through [release-checklist.md](release-checklist.md), and describe the
+release from the matching section of `CHANGELOG.md`.

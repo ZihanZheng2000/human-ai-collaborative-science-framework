@@ -29,16 +29,25 @@ Check:
 - mature external tools or existing skills are reused where appropriate
 - proposed project-specific skills are necessary
 - venue or output route fits the evidence standard
-- Model-stage acceptance rubric is specific enough to prevent drift
+- Modeling-stage acceptance rubric is specific enough to prevent drift
 - major risks have mitigation, fallback, or user-decision paths
+- the Decision-Rights Map exists, names who authorizes each consequential decision class, and assigns a domain expert where the researcher and user lack the needed expertise
+
+Accountability checks (all stages):
+
+- consequential choices in the package (question, claim level, sources, labels, exclusions, methods, metrics, interpretations) trace to a decision-log entry with an authorizer; flag any that look self-authorized
+- analysis choices that should have been fixed before results were seen were not changed afterward without a recorded decision
+- earlier escalated or deferred findings are still visible and not silently closed
+- repeated corrections, escalations, or blockers in one area that suggest a reconfiguration (record under Reconfiguration Signals)
 
 ## Output
 
-Return findings in this shape:
+Write findings to `<run_dir>/reviewer-critique-planning.md` using the format in
+`cross-agent-handoff.md`. The findings table is:
 
-| Finding ID | Severity | Concern | Evidence or reasoning | Route | Blocks Planning Gate? | Recommended action |
+| Finding ID | Severity | Concern | Evidence or reasoning | Route | Blocks gate? | Recommended action |
 |---|---|---|---|---|---|---|
-| PR-1 | blocker / major / minor / suggestion / accepted limitation |  |  | Planning / Modeling / Reporting / Reviewing / Terminate | yes / no |  |
+| PR-1 | blocker / major / minor / suggestion / accepted limitation |  |  | Planning / Modeling / Reporting / Reviewing / Terminate / user decision | yes / no |  |
 
 ## Guardrails
 
@@ -47,4 +56,6 @@ Return findings in this shape:
 - Do not strengthen novelty or feasibility claims.
 - Do not change the research question, method, data source, or claim level.
 - Flag uncertainty instead of pretending the plan is verified.
-
+- Use the rights in `../decision-rights.md#reviewer-rights`: advisory and escalation, no approval, no veto.
+- In blind mode, write independent findings before reading the researcher's framing.
+- Mark a finding `Route: user decision` when the issue is a judgment only the user or a domain expert should make.

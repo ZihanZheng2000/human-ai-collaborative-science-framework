@@ -1,6 +1,6 @@
 # Contributing
 
-Thank you for helping improve AI-Native Academic Research Framework.
+Thank you for helping improve Human–AI Collaborative Science Framework.
 
 This repository is a research workflow kit. Contributions should preserve the core design:
 
@@ -15,8 +15,11 @@ This repository is a research workflow kit. Contributions should preserve the co
 - Improve stage specifications in `docs/`.
 - Improve package templates in `templates/`.
 - Add or refine workflow-native skills in `skills/`.
+- Edit researcher/reviewer agent instructions in `docs/agent-roles/`, then run `python scripts/build_agent_instructions.py` to regenerate `CLAUDE.md`, `AGENTS.md`, and `GEMINI.md` (do not edit those files directly).
+- Improve the orchestrator (`orchestrator/`) or add agent adapters; add a test in `tests/` with the scripted agent in `tests/fake_agent.py`.
 - Add small, reproducible examples in `examples/`.
-- Improve the paper draft in `docs/paper.md`.
+- Improve the organization, coordination, and evaluation layers (`docs/decision-rights.md`, `docs/coordination.md`, `docs/workflow-evaluation.md`).
+- Report workflow evaluation results from real or smoke-test runs (see `templates/example-run-notes.md`).
 - Add tests or smoke tests that reveal workflow gaps.
 
 ## Example Requirements
@@ -28,7 +31,8 @@ Examples should include:
 - acquisition success counts
 - code or notebook that can be rerun
 - generated figures or tables when relevant
-- a short writing or review artifact
+- a short report or review artifact
+- the decision log and run notes (with the Workflow Evaluation section)
 - known limitations
 
 For framework-only tests, use `templates/smoke-test-package.md`.

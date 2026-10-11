@@ -1,8 +1,10 @@
 # Research Project Organization
 
-This document defines the default layout for real research projects. Each new
-research workflow should get its own folder under `research/` before substantive
-Planning work begins.
+This document defines the layout of a research project folder. Each project gets
+its own folder before substantive Planning work begins. With the orchestrator
+the folder can be anywhere (`python -m orchestrator init <folder> --topic ...`
+creates the layout below). In manual runs inside this repository, the default
+location is `research/<research-name>/`, which git ignores.
 
 ## Default Layout
 
@@ -11,7 +13,13 @@ Use a descriptive, stable slug:
 ```text
 research/<research-name>/
   README.md
+  decision-log.md
   run-notes.md
+  inbox/
+    pending/        # decisions waiting for a person
+    answered/
+  .workflow/
+    state.json      # orchestrator state (orchestrated runs)
   packages/
     planning-package.md
     modeling-package.md
@@ -21,13 +29,16 @@ research/<research-name>/
   notes/
   artifacts/
     <run_id>/
-      review-request.md
-      reviewer-critique.md
+      gate-request-<stage>.md
+      review-request-<stage>.md
+      review-framing-<stage>.md
+      reviewer-critique-<stage>.md
       run_manifest.json
       run_log.md
       run_summary.md
       agent/
     input/
+      domain-materials/
     data/
     code/
     logs/
@@ -41,13 +52,16 @@ research/<research-name>/
 
 | Location | Purpose |
 |---|---|
-| `README.md` | Short orientation: research question, current stage, status, important paths |
-| `run-notes.md` | Provisional lessons, decisions, friction, and after-action notes |
+| `README.md` | Status block (see below) plus research question and important paths |
+| `decision-log.md` | Shared research state for decisions: every Tier 1 checkpoint, Tier 2 gate, escalation, reconfiguration, and informal review (template: `templates/decision-log.md`) |
+| `inbox/` | Checkpoint, gate, and task requests for people; answered requests are kept and linked from the decision log |
+| `.workflow/state.json` | Orchestrator state: stage, step, revision, settings, history |
+| `run-notes.md` | Provisional lessons, friction, and the workflow evaluation record (template: `templates/example-run-notes.md`) |
 | `packages/` | Compact stage handoff packages only |
 | `deliverables/` | Reader-facing outputs such as manuscript drafts, reports, slides, dashboards, or software packages |
 | `notes/` | Discussion notes, literature reviews, problem taxonomies, source notes, method sketches |
 | `artifacts/<run_id>/` | Run-scoped review requests, critiques, manifests, logs, summaries, and agent artifacts |
-| `artifacts/input/` | User-supplied files and route-defining inputs |
+| `artifacts/input/` | User-supplied files and route-defining inputs; `domain-materials/` holds Domain Onboarding materials |
 | `artifacts/data/` | Raw and cleaned datasets or literature/source matrices |
 | `artifacts/code/` | Scripts and notebooks |
 | `artifacts/logs/` | Command logs, environment repair logs, execution traces |
@@ -58,11 +72,14 @@ research/<research-name>/
 
 ## Startup Rule
 
-At the beginning of a new real research project, the researcher agent should:
+With the orchestrator, `python -m orchestrator init research/<research-name> --topic "..."`
+creates this layout. In manual runs, at the beginning of a new real research
+project, the researcher agent should:
 
 1. propose a `research/<research-name>/` slug;
 2. create the default folder skeleton after the user confirms or when the slug is safe to infer;
-3. create `README.md` and `run-notes.md`;
+3. create `README.md` (with the status block), `decision-log.md`, and `run-notes.md`;
+   record the Pre-Planning setup choices as `D-1`;
 4. create or revise only the active stage package in `packages/`;
 5. put detailed stepwise discussion artifacts in `notes/`;
 6. put review requests and reviewer critiques under `artifacts/<run_id>/`.
@@ -70,13 +87,23 @@ At the beginning of a new real research project, the researcher agent should:
 For framework tests or tiny smoke tests, a shorter layout is acceptable, but the
 run must still record where packages, notes, artifacts, and deliverables live.
 
-## Root Directory Rule
+## README Status Block
 
-Do not create new real-project packages directly under the repository-level
-`packages/` or new real-project run artifacts directly under the repository-level
-`artifacts/` unless the user explicitly requests a legacy layout. Those root
-folders may remain for older runs, templates, or migration staging, but new
-research projects should live under `research/<research-name>/`.
+Keep this block at the top of the project README and update it whenever the
+researcher stops:
+
+```markdown
+## Status
+
+- current stage:
+- active package:
+- last decision: D-<n> (date) — one line
+- open escalations: none / list
+- deferred items due soon: none / list
+- current workflow mode and reviewer strategy:
+- next action:
+- user decision needed now: none / what
+```
 
 ## Stepwise Work Rule
 

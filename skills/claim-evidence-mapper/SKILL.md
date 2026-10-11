@@ -15,8 +15,8 @@ description: Use during Reporting or Reviewing to ensure every important finding
 ## Inputs
 
 - Reporting Package, manuscript draft, or outline
-- Plan Package
-- Model Package
+- Planning Package
+- Modeling Package
 - literature map
 - source list or bibliography
 - figures and tables
@@ -44,6 +44,8 @@ description: Use during Reporting or Reviewing to ensure every important finding
 - accepted citation threshold and unresolved items by output type
 
 ## Guardrails
+
+- Do not map any claim at a higher claim level than the one authorized in the decision log; raising it is a Tier 1 checkpoint.
 
 - Do not use citations as decoration.
 - Do not cite a source unless it supports the sentence or clause being cited.

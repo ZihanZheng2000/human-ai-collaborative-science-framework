@@ -1,0 +1,77 @@
+{
+  "_comment": "Active configuration: Claude Code as researcher, Codex CLI as reviewer. See workflow.config.example.json for API reviewers, other CLIs, and human roles, and docs/orchestration.md.",
+  "agents": {
+    "claude-code": {
+      "kind": "cli",
+      "_comment": "Runs inside the project folder; --add-dir lets it read the framework's docs and templates. 'session' tells the orchestrator how to continue a Claude Code conversation; when to continue is set in workflow.sessions.",
+      "role_commands": {
+        "researcher": [
+          "claude",
+          "-p",
+          "{prompt}",
+          "--permission-mode",
+          "acceptEdits",
+          "--allowedTools",
+          "Read,Write,Edit,Glob,Grep,Bash",
+          "--add-dir",
+          "{framework_dir}"
+        ],
+        "reviewer": [
+          "claude",
+          "-p",
+          "{prompt}",
+          "--permission-mode",
+          "acceptEdits",
+          "--allowedTools",
+          "Read,Glob,Grep,Write",
+          "--add-dir",
+          "{framework_dir}"
+        ]
+      },
+      "session": {
+        "start_args": [
+          "--output-format",
+          "json"
+        ],
+        "resume_args": [
+          "--resume",
+          "{session_id}"
+        ],
+        "id_key": "session_id",
+        "text_key": "result"
+      },
+      "timeout_seconds": 3600
+    },
+    "codex": {
+      "kind": "cli",
+      "_comment": "OpenAI Codex CLI, signed in with your ChatGPT account or an API key. Check the flags with `codex exec --help` for your version. The orchestrator stops the run if the reviewer changes any file other than its critique.",
+      "command": [
+        "codex",
+        "exec",
+        "--sandbox",
+        "workspace-write",
+        "--skip-git-repo-check",
+        "{prompt}"
+      ],
+      "timeout_seconds": 3600
+    }
+  },
+  "roles": {
+    "researcher": "claude-code",
+    "reviewer": "codex"
+  },
+  "workflow": {
+    "mode": "step-by-step",
+    "reviewer": "use",
+    "gates": "real",
+    "review_modes": {
+      "reviewing": "blind"
+    },
+    "sessions": {
+      "researcher": "run",
+      "reviewer": "stage",
+      "fresh_researcher_at": []
+    },
+    "_sessions_comment": "researcher: 'run' = one conversation for the whole project (default), 'stage' = new one each stage, 'off' = new one every step; fresh_researcher_at lists stages where the researcher starts a new conversation. reviewer: 'stage' = new conversation each stage (default). A blind review's independent pass always starts a new conversation. Agents without a 'session' spec (for example API reviewers) always start fresh."
+  }
+}

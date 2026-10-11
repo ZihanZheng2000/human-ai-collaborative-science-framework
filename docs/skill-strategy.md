@@ -49,23 +49,25 @@ The following external skills are useful companions for this workflow. They shou
 | [Research-Paper-Writing-Skills](https://github.com/Master-cai/Research-Paper-Writing-Skills) | Reporting | ML/CV/NLP manuscript drafting, abstract/introduction/related-work refinement, and claim-evidence-aware writing suggestions for manuscript output mode | Creating unsupported claims, finalizing citations, or bypassing the claim-evidence mapper | Record manuscript section input, generated or revised prose, claim changes, citation requirements, unsupported claims, and Reporting-stage verification status |
 | [CCF-Figure](https://github.com/Deepshare-Official/CCF-Figure) | Reporting | AI/CS method figures, conceptual diagrams, workflow diagrams, graphical-abstract prompts, and non-empirical visual structure selection | Creating new empirical figures, robustness plots, data-derived charts, or final publication graphics without review | Record selected diagram type, assembled prompt, source claims used, whether the visual is conceptual or empirical, and caption/evidence limits |
 
-These four skills cover common external needs without changing the framework's core control logic: deep research, Codex-native academic workflow support, manuscript-output assistance inside Reporting, and research-figure prompting. They should normally be referenced in the Plan Package as external tool candidates, then invoked only when a stage has a clear input and a clear verification path.
+These four skills cover common external needs without changing the framework's core control logic: deep research, academic workflow support (packaged for Codex), manuscript-output assistance inside Reporting, and research-figure prompting. They should normally be referenced in the Planning Package as external tool candidates, then invoked only when a stage has a clear input and a clear verification path.
 
-### Claude Code as Researcher: Built-in Capability Coverage (Config B)
+### Built-in Capability Coverage by Agent
 
-When Claude Code is the researcher agent (Config B), the four Codex-specific
-external skills above are not directly available. Claude Code's built-in
-capabilities cover the same functional needs without additional installation.
+Some of the external skills above are packaged for a particular agent runtime
+(for example Codex). Any researcher agent may use them if its runtime supports
+them; otherwise its built-in capabilities usually cover the same needs. The
+table shows the coverage for Claude Code; record the equivalent for other
+agents in run notes when you use them.
 
-| Codex external skill | CC built-in replacement | Assessment |
+| External skill | Claude Code built-in replacement | Assessment |
 |---|---|---|
 | Academic Research Skills for Codex | WebSearch + WebFetch + native literature synthesis | Sufficient — CC can retrieve, summarize, and position prior work; apply the same external-handoff recording rules |
 | Deep-Research-skills | WebSearch + WebFetch with outline-first prompting | Sufficient — instruct CC to follow an outline-first research plan and record queries, sources screened, and verification gaps as required by the external handoff rules |
 | Research-Paper-Writing-Skills | Native writing capability | Sufficient for most manuscript modes — CC can draft ML/CV/NLP and non-CS manuscripts; apply the claim-evidence mapper skill to verify support before finalizing |
 | CCF-Figure | Native diagram description + Mermaid / draw.io prompting | Partial — CC can specify figure structure, assembly notes, and caption logic; for precise CCF-style outputs, provide venue exemplars as user-supplied materials so CC can match the style |
 
-When Claude Code is the researcher, record the same external handoff information
-required for Codex external skills: what capability was used, what inputs were
+Whichever agent is the researcher, record the same external handoff information
+for built-in capabilities as for external skills: what capability was used, what inputs were
 given, what was produced, and what verification gaps remain.
 
 ### Workflow-Native Skills: Claude Code Slash Commands
@@ -117,7 +119,7 @@ Current internal skills fall into two practical groups:
 
 These are narrow skills created for one project or domain, such as a water-science manuscript-revision skill.
 
-Project-specific skills should usually live inside the project folder or a run-specific agent artifact folder, such as `artifacts/<run_id>/agent/`, until they have been reused across more than one project. A project-specific skill can be promoted to `skills/` only when it is general enough, documented, and useful beyond the original case.
+Project-specific skills should usually live inside the project folder or a run-specific agent artifact folder, such as `<run_dir>/agent/` (see `docs/stage-handoffs.md`), until they have been reused across more than one project. A project-specific skill can be promoted to `skills/` only when it is general enough, documented, and useful beyond the original case.
 
 ## Decision Rules
 
