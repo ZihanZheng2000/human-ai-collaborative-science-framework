@@ -11,6 +11,21 @@ workflow automatically; people step in at defined decision points. Any agent can
 be plugged in: command-line agents such as Claude Code, Codex, or Gemini CLI,
 model APIs, or people.
 
+## Relationship to the 9A Framework
+
+This is **one reference implementation**, not the definition of the [9A Framework for Human–AI Collaborative Science](https://github.com/ZihanZheng2000/human-ai-collaborative-science). The companion theory distinguishes **Organization** (Activity, Actor, Authority), **Coordination** (Awareness, Accountability, Adaptability), and **Evaluation** (Achievement, Attribution, Assurance). This repository turns selected design implications into a configurable research workflow.
+
+See **[Design Rationale](docs/design-rationale.md)** for the theory → requirement → mechanism → implementation → evaluation mapping, implementation boundaries, and open questions.
+
+**Important distinctions:**
+
+- **Activity is not Stage.** Scientific activities (hypothesizing, retrieving evidence, modeling, critiquing, reframing) may recur across stages. Planning → Modeling → Reporting → Reviewing is the current **default workflow template**, not a required scientific discovery sequence.
+- **Human approval is not automatically collaboration.** This implementation is human-gated. Substantive human–AI collaboration additionally requires reciprocal engagement that materially shapes scientific reasoning, judgment, or research direction; gate counts alone cannot demonstrate it.
+- **Approval is not validation.** Decision authority, epistemic expertise, and scientific evidence are distinct. A recorded authorization does not establish scientific correctness.
+- **Execution is not efficacy.** Existing smoke tests and examples show particular workflows can run; they do not yet establish system-design gain or generalizable improvements in scientific research.
+
+The four stages, decision tiers, gate frequency, reviewer setup, bundled skills, and on-disk file formats are **implementation choices**. They can be evaluated and revised without changing the nine theoretical concepts.
+
 ## What It Is
 
 The framework is implemented through a four-stage workflow:
@@ -26,9 +41,9 @@ Each stage uses a maker-checker loop before the user gate: the researcher agent 
 
 ## Three Layers Around the Four Stages
 
-The four stages say *what work* happens in what order. Three cross-cutting
-layers say how the human–AI research system around those stages is organized,
-kept coherent, and evaluated:
+The four stages provide the **current workflow order**, while the three cross-cutting
+layers describe how the human–AI research arrangement is organized,
+coordinated, and evaluated. Scientific activities can span or recur across stages:
 
 | Layer | Document | Core idea |
 |---|---|---|
@@ -210,7 +225,7 @@ Example folders follow [docs/example-organization.md](docs/example-organization.
 
 ## Paper
 
-The repository's name and design follow the companion paper, *Designing
+The repository's name and design are informed by the companion conceptual paper, *Designing
 Human–AI Collaborative Science: Organization, Coordination, and Evaluation*
 (Zheng, Pan, and Lan; in preparation, maintained separately). The paper's organization layer (activity, actor, authority) maps to
 [docs/decision-rights.md](docs/decision-rights.md) and the agent roster in
@@ -220,7 +235,8 @@ scientific accountability loop, adaptive reconfiguration) maps to
 [orchestrator](docs/orchestration.md); its evaluation layer maps to
 [docs/workflow-evaluation.md](docs/workflow-evaluation.md).
 This repository is one concrete instantiation of that framework for academic
-research, not a claim of full scientific automation.
+research, not a claim of full scientific automation, substantive collaboration in every run,
+or demonstrated improvement in scientific outcomes. See [Design Rationale](docs/design-rationale.md).
 
 ## Current Status
 
@@ -229,6 +245,7 @@ This is an early research-framework repository (v0.3-dev). The workflow docs, te
 - an API researcher (tool-using agent loop), so a single API key can run the whole workflow
 - one domain case study
 - workflow evaluation results from at least one real run (`docs/workflow-evaluation.md`)
+- comparative tests of whether authority, state, and critique mechanisms improve research outcomes relative to simpler workflows, accounting for human and compute costs
 
 ## License
 
