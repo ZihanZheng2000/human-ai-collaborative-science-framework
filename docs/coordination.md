@@ -50,8 +50,16 @@ reconstruction and audit, not to force identical context on every critic.
 
 ## Scientific Accountability Loop
 
-Consequential contributions should not move directly from generation to action.
-The loop is:
+**Theory alignment (2026-10-13):** The companion paper now defines accountability
+as the broader, iterative advancement of scientific work through proposal,
+execution, examination, revision/resolution, and shared-state updates. See
+[Accountability Contract](accountability-contract.md). The decision-review sequence
+below is an **operational subprotocol for consequential decisions**, not a
+mandatory scientific sequence for every activity. The current orchestrator
+still implements its existing review and gate behavior.
+
+Consequential decisions should not bypass appropriate review and authorization.
+The existing decision-review subprotocol is:
 
 ```text
 propose -> critique -> respond -> authorize -> act -> record
