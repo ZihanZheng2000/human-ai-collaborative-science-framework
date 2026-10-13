@@ -26,6 +26,11 @@ See **[Design Rationale](docs/design-rationale.md)** for the theory → requirem
 
 The four stages, decision tiers, gate frequency, reviewer setup, bundled skills, and on-disk file formats are **implementation choices**. They can be evaluated and revised without changing the nine theoretical concepts.
 
+The [Adaptive Reconfiguration Contract](docs/adaptive-reconfiguration-contract.md)
+describes how to diagnose organizational mismatch, distinguish it from ordinary
+scientific iteration, and propose authorized and reversible changes. It is a
+design proposal, not an automated runtime policy.
+
 The [Accountability Contract](docs/accountability-contract.md) distinguishes the
 iterative scientific inquiry cycle (propose, execute, examine, revise/resolve,
 update state) from the existing reviewer-and-gate decision subprotocol. This is
