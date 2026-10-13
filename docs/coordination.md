@@ -76,7 +76,12 @@ contribution is epistemically adequate. Authorization decides whether it is
 allowed to change the project. The actor best placed to judge a technical point
 may not be the one authorized to act on it.
 
-### Scaling the loop by tier
+Scientific inquiry may iterate or branch without a new gate when it stays within
+approved scope. Critique can occur before, during, or after an experiment;
+scientific resolution and authorization remain distinct. A failed attempt or
+ordinary disagreement is not by itself grounds for organizational reconfiguration.
+
+### Scaling the decision-review subprotocol by tier
 
 | Tier | Propose | Critique | Respond | Authorize | Record |
 |---|---|---|---|---|---|
