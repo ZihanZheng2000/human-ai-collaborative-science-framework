@@ -26,6 +26,11 @@ See **[Design Rationale](docs/design-rationale.md)** for the theory → requirem
 
 The four stages, decision tiers, gate frequency, reviewer setup, bundled skills, and on-disk file formats are **implementation choices**. They can be evaluated and revised without changing the nine theoretical concepts.
 
+The [Accountability Contract](docs/accountability-contract.md) distinguishes the
+iterative scientific inquiry cycle (propose, execute, examine, revise/resolve,
+update state) from the existing reviewer-and-gate decision subprotocol. This is
+a theoretical/design clarification, **not a runtime change**.
+
 The proposed [Shared Research State Contract](docs/shared-research-state-contract.md)
 sets out a compact current-state view linked to original evidence and decisions.
 It is a **design proposal**, not an existing automatic feature.
