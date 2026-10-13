@@ -110,6 +110,11 @@ This initial revision is **documentation-only** and does not alter orchestrator 
 - **“More reliable/better”:** credible comparative evidence under controlled or priced resources, with stated validation and uncertainty.
 - **“Generalizable”:** evaluation across multiple tasks, actors, and domains; a single case is insufficient.
 
+The proposed [Organization Data Contract](organization-contract.md) spells out minimal
+activity, actor, contribution, and decision-link records without changing the
+current runtime. Its acceptance tests must be satisfied before making
+implementation claims.
+
 ## 8. Open design questions
 
 1. What is the smallest useful unit of scientific activity and contribution for reconstruction without excessive logging?
