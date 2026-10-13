@@ -26,6 +26,10 @@ See **[Design Rationale](docs/design-rationale.md)** for the theory → requirem
 
 The four stages, decision tiers, gate frequency, reviewer setup, bundled skills, and on-disk file formats are **implementation choices**. They can be evaluated and revised without changing the nine theoretical concepts.
 
+The proposed [Shared Research State Contract](docs/shared-research-state-contract.md)
+sets out a compact current-state view linked to original evidence and decisions.
+It is a **design proposal**, not an existing automatic feature.
+
 ## What It Is
 
 The framework is implemented through a four-stage workflow:
