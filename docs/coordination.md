@@ -152,6 +152,12 @@ file wins.
 
 ## Adaptive Reconfiguration
 
+See [Adaptive Reconfiguration Contract](adaptive-reconfiguration-contract.md) for the
+proposed diagnostic procedure and validation criteria. The triggers below are
+**screening signals for a possible organizational mismatch**, not automatic
+proof that reassignment is necessary. Ordinary scientific disagreement or failure
+is handled through inquiry iteration; the orchestrator's behavior is unchanged.
+
 Backtracking and reconfiguration are different:
 
 - **Backtracking** changes the *inquiry*: work returns to an earlier stage
