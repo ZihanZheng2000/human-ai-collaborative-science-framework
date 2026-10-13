@@ -1,9 +1,11 @@
 # Decision Rights and Authority
 
-This document is the **organization layer** of the framework. The four-stage
-workflow says *what work* happens in which stage. This document says *who
-performs* each kind of work and *who holds authority* over the decisions that
-work produces.
+This document specifies **decision authority within the organization layer**.
+The four workflow stages are management boundaries, not the definition of scientific
+activities. This document distinguishes who performs work from who may authorize
+consequential decisions. See [Organization Data Contract](organization-contract.md)
+for a proposed stage-independent activity/actor/contribution representation; it
+is not yet implemented by the orchestrator.
 
 Three things are kept separate:
 
