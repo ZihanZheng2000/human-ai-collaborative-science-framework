@@ -14,6 +14,13 @@ and changed as the project evolves. It relies on three mechanisms:
 
 ## Shared Research State
 
+The [Shared Research State Contract](shared-research-state-contract.md) proposes a
+**decision-relevant current view** over the existing historical evidence trail.
+It is a design specification, **not an implemented orchestrator feature**.
+The current summary must preserve open disagreements and link to original evidence;
+a concise summary must never substitute for original critique or human authorization.
+
+
 Every real project keeps its state in three places with distinct jobs:
 
 | File | Job |
