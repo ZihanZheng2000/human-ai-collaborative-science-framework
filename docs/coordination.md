@@ -168,8 +168,10 @@ Backtracking and reconfiguration are different:
 
 ### Triggers
 
-The researcher must propose a reconfiguration, and the reviewer should flag the
-need for one, when any of these occur:
+The researcher should diagnose possible organizational mismatch, and the reviewer
+should flag it for consideration, when any of these occur. A proposal to
+reconfigure is warranted when the current activity, actor, or authority
+assignment is no longer suitable; a signal alone does not mandate redesign:
 
 | Signal | Typical reconfiguration |
 |---|---|
