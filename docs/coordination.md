@@ -197,4 +197,6 @@ assignment is no longer suitable; a signal alone does not mandate redesign:
    new arrangement.
 
 Because changing the organization is itself a consequential decision, it passes
-through the same loop as any other Tier 1 decision.
+through the same loop as any other Tier 1 decision. Record a revisit/rollback
+condition and evaluate the cost and effect of the new mapping; this additional
+requirement is proposed design guidance, not yet enforced by the runtime.
