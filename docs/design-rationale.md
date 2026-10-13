@@ -115,6 +115,11 @@ activity, actor, contribution, and decision-link records without changing the
 current runtime. Its acceptance tests must be satisfied before making
 implementation claims.
 
+The proposed [Accountability Contract](accountability-contract.md) distinguishes
+the broader scientific inquiry cycle from the existing consequential-decision
+review subprotocol. This responds to the updated companion paper's Coordination
+section; no engine semantics have changed.
+
 The proposed [Shared Research State Contract](shared-research-state-contract.md)
 separates a compact current, decision-relevant view from the historical evidence
 trail, with safeguards for claim status, unresolved objections, and blind review.
