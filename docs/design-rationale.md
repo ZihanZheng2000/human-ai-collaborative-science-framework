@@ -115,6 +115,11 @@ activity, actor, contribution, and decision-link records without changing the
 current runtime. Its acceptance tests must be satisfied before making
 implementation claims.
 
+The proposed [Shared Research State Contract](shared-research-state-contract.md)
+separates a compact current, decision-relevant view from the historical evidence
+trail, with safeguards for claim status, unresolved objections, and blind review.
+No automatic state-view generation has been implemented.
+
 ## 8. Open design questions
 
 1. What is the smallest useful unit of scientific activity and contribution for reconstruction without excessive logging?
