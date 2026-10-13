@@ -14,6 +14,13 @@ and changed as the project evolves. It relies on three mechanisms:
 
 ## Shared Research State
 
+The [Shared Research State Contract](shared-research-state-contract.md) proposes a
+**decision-relevant current view** over the existing historical evidence trail.
+It is a design specification, **not an implemented orchestrator feature**.
+The current summary must preserve open disagreements and link to original evidence;
+a concise summary must never substitute for original critique or human authorization.
+
+
 Every real project keeps its state in three places with distinct jobs:
 
 | File | Job |
@@ -43,8 +50,16 @@ reconstruction and audit, not to force identical context on every critic.
 
 ## Scientific Accountability Loop
 
-Consequential contributions should not move directly from generation to action.
-The loop is:
+**Theory alignment (2026-10-13):** The companion paper now defines accountability
+as the broader, iterative advancement of scientific work through proposal,
+execution, examination, revision/resolution, and shared-state updates. See
+[Accountability Contract](accountability-contract.md). The decision-review sequence
+below is an **operational subprotocol for consequential decisions**, not a
+mandatory scientific sequence for every activity. The current orchestrator
+still implements its existing review and gate behavior.
+
+Consequential decisions should not bypass appropriate review and authorization.
+The existing decision-review subprotocol is:
 
 ```text
 propose -> critique -> respond -> authorize -> act -> record
@@ -61,7 +76,12 @@ contribution is epistemically adequate. Authorization decides whether it is
 allowed to change the project. The actor best placed to judge a technical point
 may not be the one authorized to act on it.
 
-### Scaling the loop by tier
+Scientific inquiry may iterate or branch without a new gate when it stays within
+approved scope. Critique can occur before, during, or after an experiment;
+scientific resolution and authorization remain distinct. A failed attempt or
+ordinary disagreement is not by itself grounds for organizational reconfiguration.
+
+### Scaling the decision-review subprotocol by tier
 
 | Tier | Propose | Critique | Respond | Authorize | Record |
 |---|---|---|---|---|---|
@@ -132,6 +152,12 @@ file wins.
 
 ## Adaptive Reconfiguration
 
+See [Adaptive Reconfiguration Contract](adaptive-reconfiguration-contract.md) for the
+proposed diagnostic procedure and validation criteria. The triggers below are
+**screening signals for a possible organizational mismatch**, not automatic
+proof that reassignment is necessary. Ordinary scientific disagreement or failure
+is handled through inquiry iteration; the orchestrator's behavior is unchanged.
+
 Backtracking and reconfiguration are different:
 
 - **Backtracking** changes the *inquiry*: work returns to an earlier stage
@@ -142,8 +168,10 @@ Backtracking and reconfiguration are different:
 
 ### Triggers
 
-The researcher must propose a reconfiguration, and the reviewer should flag the
-need for one, when any of these occur:
+The researcher should diagnose possible organizational mismatch, and the reviewer
+should flag it for consideration, when any of these occur. A proposal to
+reconfigure is warranted when the current activity, actor, or authority
+assignment is no longer suitable; a signal alone does not mandate redesign:
 
 | Signal | Typical reconfiguration |
 |---|---|
@@ -169,4 +197,6 @@ need for one, when any of these occur:
    new arrangement.
 
 Because changing the organization is itself a consequential decision, it passes
-through the same loop as any other Tier 1 decision.
+through the same loop as any other Tier 1 decision. Record a revisit/rollback
+condition and evaluate the cost and effect of the new mapping; this additional
+requirement is proposed design guidance, not yet enforced by the runtime.

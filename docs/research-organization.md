@@ -87,6 +87,14 @@ project, the researcher agent should:
 For framework tests or tiny smoke tests, a shorter layout is acceptable, but the
 run must still record where packages, notes, artifacts, and deliverables live.
 
+## Optional decision-relevant research summary (proposed)
+
+See [Shared Research State Contract](shared-research-state-contract.md). A future
+pilot may add `notes/current-research-state.md` for current claims, supporting
+evidence, open disputes, authorizations, and next scientific actions. This is
+**optional and not created automatically**; the existing status block, packages,
+and decision log remain the sources of record. Do not assume it exists in older runs.
+
 ## README Status Block
 
 Keep this block at the top of the project README and update it whenever the
