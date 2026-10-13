@@ -125,6 +125,11 @@ separates a compact current, decision-relevant view from the historical evidence
 trail, with safeguards for claim status, unresolved objections, and blind review.
 No automatic state-view generation has been implemented.
 
+The proposed [Adaptive Reconfiguration Contract](adaptive-reconfiguration-contract.md)
+requires diagnosing an organizational mismatch before changing the activity–actor–authority
+mapping. Fixed trigger counts are screening heuristics, not theory-level laws;
+the current runtime's control semantics have not been changed.
+
 ## 8. Open design questions
 
 1. What is the smallest useful unit of scientific activity and contribution for reconstruction without excessive logging?
