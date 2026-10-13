@@ -15,7 +15,7 @@ model APIs, or people.
 
 This is **one reference implementation**, not the definition of the [9A Framework for Human–AI Collaborative Science](https://github.com/ZihanZheng2000/human-ai-collaborative-science). The companion theory distinguishes **Organization** (Activity, Actor, Authority), **Coordination** (Awareness, Accountability, Adaptability), and **Evaluation** (Achievement, Attribution, Assurance). This repository turns selected design implications into a configurable research workflow.
 
-See **[Design Rationale](docs/design-rationale.md)** for the theory → requirement → mechanism → implementation → evaluation mapping, implementation boundaries, and open questions.
+See **[Design Rationale](docs/design-rationale.md)** for the theory → requirement → mechanism → implementation → evaluation mapping, implementation boundaries, and open questions. The [Organization Data Contract](docs/organization-contract.md) proposes stage-independent records for scientific activities, actor contributions, and links to authorization; this schema is **not yet supported by the runtime**.
 
 **Important distinctions:**
 
